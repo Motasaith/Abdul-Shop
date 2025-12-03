@@ -20,6 +20,7 @@ const Header: React.FC = () => {
   const wishlistItemCount = useAppSelector(selectWishlistItemCount);
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch wishlist when user is authenticated
@@ -126,25 +127,59 @@ const Header: React.FC = () => {
             {/* User menu */}
             <div className="relative hidden md:block">
               {isAuthenticated ? (
-                <div className="flex items-center space-x-2">
-                  <Link to="/profile" className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors">
-                    <UserIcon className="h-6 w-6" />
-                    <span className="hidden lg:block">{user?.name}</span>
-                  </Link>
-                  {user?.role === 'admin' && (
-                    <Link
-                      to="/admin"
-                      className="text-purple-600 hover:text-purple-700 transition-colors text-sm font-medium hidden lg:block"
-                    >
-                      Admin Dashboard
-                    </Link>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="text-gray-700 hover:text-blue-600 transition-colors text-sm"
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors focus:outline-none"
                   >
-                    Logout
+                    <UserIcon className="h-6 w-6" />
+                    <span className="hidden lg:block font-medium">{user?.name}</span>
                   </button>
+
+                  {/* Dropdown Menu */}
+                  {isProfileMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                      <Link
+                        to="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        to="/orders"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                      >
+                        My Orders
+                      </Link>
+                      <Link
+                        to="/reviews"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                      >
+                        My Reviews
+                      </Link>
+                      {user?.role === 'admin' && (
+                        <Link
+                          to="/admin"
+                          className="block px-4 py-2 text-sm text-purple-600 hover:bg-gray-100"
+                          onClick={() => setIsProfileMenuOpen(false)}
+                        >
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setIsProfileMenuOpen(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
@@ -265,6 +300,13 @@ const Header: React.FC = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Wishlist
+                </Link>
+                <Link
+                  to="/reviews"
+                  className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  My Reviews
                 </Link>
                 {user?.role === 'admin' && (
                   <Link

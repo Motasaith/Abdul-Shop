@@ -24,6 +24,7 @@ import {
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import WishlistButton from '../components/common/WishlistButton';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/currency';
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -235,10 +236,10 @@ const ProductDetailPage: React.FC = () => {
 
               {/* Price */}
               <div className="flex items-center space-x-4">
-                <span className="text-3xl font-bold text-orange-600">Rs. {product.price}</span>
+                <span className="text-3xl font-bold text-orange-600">{formatPrice(product.price)}</span>
                 {product.comparePrice && (
                   <>
-                    <span className="text-xl text-gray-500 line-through">Rs. {product.comparePrice}</span>
+                    <span className="text-xl text-gray-500 line-through">{formatPrice(product.comparePrice)}</span>
                     <span className="bg-orange-100 text-orange-600 px-2 py-1 rounded text-sm font-medium">
                       -{Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%
                     </span>

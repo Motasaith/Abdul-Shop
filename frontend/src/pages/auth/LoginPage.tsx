@@ -187,6 +187,10 @@ const LoginPage: React.FC = () => {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 type="button"
+                onClick={() => {
+                  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+                  window.location.href = `${API_URL}/api/auth/google`;
+                }}
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -212,6 +216,10 @@ const LoginPage: React.FC = () => {
 
               <button
                 type="button"
+                onClick={() => {
+                  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+                  window.location.href = `${API_URL}/api/auth/facebook`;
+                }}
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">

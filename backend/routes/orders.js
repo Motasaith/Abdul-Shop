@@ -292,7 +292,9 @@ router.get('/:id', auth, async (req, res) => {
     }
 
     // Check if user owns this order or is admin
-    if (order.user.toString() !== req.user.id && !req.user.isAdmin) {
+    // Note: order.user is populated, so we need to check order.user._id or order.user.id
+    const orderUserId = order.user._id ? order.user._id.toString() : order.user.toString();
+    if (orderUserId !== req.user.id && !req.user.isAdmin) {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 

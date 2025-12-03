@@ -96,6 +96,49 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route    GET api/products/reviews/my
+// @desc     Get logged in user's reviews
+// @access   Private
+router.get('/reviews/my', auth, async (req, res) => {
+  try {
+    // Find products that have reviews by this user
+    const products = await Product.find({
+      'reviews.user': req.user.id
+    }).select('name images reviews');
+
+    // Extract only the user's reviews from these products
+    const userReviews = [];
+    
+    products.forEach(product => {
+      const reviews = product.reviews.filter(
+        review => review.user.toString() === req.user.id
+      );
+      
+      reviews.forEach(review => {
+        userReviews.push({
+          _id: review._id,
+          rating: review.rating,
+          comment: review.comment,
+          createdAt: review.createdAt,
+          product: {
+            _id: product._id,
+            name: product.name,
+            image: product.images[0]?.url
+          }
+        });
+      });
+    });
+
+    // Sort by newest first
+    userReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json(userReviews);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route    GET api/products/:id
 // @desc     Get product by ID
 // @access   Public

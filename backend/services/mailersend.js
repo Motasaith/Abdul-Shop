@@ -296,7 +296,7 @@ class MailerSendService {
           ${item.quantity}
         </td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
-          $${item.price.toFixed(2)}
+          Rs. ${Math.round(item.price)}
         </td>
       </tr>
     `).join('');
@@ -331,7 +331,7 @@ class MailerSendService {
               <tfoot>
                 <tr style="background: #e9ecef; font-weight: bold;">
                   <td colspan="2" style="padding: 10px;">Total</td>
-                  <td style="padding: 10px; text-align: right;">$${order.totalAmount.toFixed(2)}</td>
+                  <td style="padding: 10px; text-align: right;">Rs. ${Math.round(order.totalAmount)}</td>
                 </tr>
               </tfoot>
             </table>

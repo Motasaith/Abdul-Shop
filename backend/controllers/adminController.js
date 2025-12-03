@@ -117,9 +117,6 @@ const getAdminProducts = async (req, res) => {
 // @access  Private/Admin
 const createProduct = async (req, res) => {
   try {
-    console.log('Request body:', req.body);
-    console.log('Request files:', req.files);
-    
     const {
       name,
       description,
@@ -138,11 +135,6 @@ const createProduct = async (req, res) => {
       images,
       videos
     } = req.body;
-
-    console.log('Extracted name:', name);
-    console.log('Extracted description:', description);
-    console.log('Extracted price:', price);
-    console.log('Extracted category:', category);
 
     // Validate required fields
     if (!name || !description || !price || !category || !countInStock) {
@@ -247,16 +239,6 @@ const createProduct = async (req, res) => {
       tags: tags ? (Array.isArray(tags) ? tags : [tags]) : [],
       seoTitle,
       seoDescription,
-      createdBy: req.user.id
-    });
-
-    console.log('Creating product with data:', {
-      name,
-      category,
-      price,
-      countInStock,
-      images: allImages.length,
-      videos: allVideos.length,
       createdBy: req.user.id
     });
 

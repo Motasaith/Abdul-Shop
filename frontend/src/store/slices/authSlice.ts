@@ -31,7 +31,6 @@ export const registerUser = createAsyncThunk(
       const response = await authService.register(userData);
       return response.data;
     } catch (error: any) {
-      console.log('Registration error:', error);
       const errorMessage = error.response?.data?.errors?.[0]?.msg || 
                           error.response?.data?.message || 
                           'Registration failed';
@@ -202,6 +201,12 @@ const authSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
       localStorage.setItem('token', action.payload);
+    },
+    setCredentials: (state, action: PayloadAction<{ user: User; token: string }>) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isAuthenticated = true;
+      localStorage.setItem('token', action.payload.token);
     },
   },
   extraReducers: (builder) => {
@@ -387,5 +392,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError, setToken } = authSlice.actions;
+export const { logout, clearError, setToken, setCredentials } = authSlice.actions;
 export default authSlice.reducer;

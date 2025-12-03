@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import orderService from '../services/orderService';
+import { formatPrice } from '../utils/currency';
 
 interface TrackingEvent {
   status: string;
@@ -274,7 +275,7 @@ const TrackOrderPage: React.FC = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Total Amount:</span>
-                      <span className="font-semibold text-gray-900">${order.totalPrice.toFixed(2)}</span>
+                      <span className="font-semibold text-gray-900">{formatPrice(order.totalPrice)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Status:</span>

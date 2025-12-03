@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { orderService } from '../../services/orderService';
+import { formatPrice } from '../../utils/currency';
 import {
   ChartBarIcon,
   ArrowUpIcon,
@@ -9,9 +10,7 @@ import {
   ShoppingCartIcon,
   UsersIcon,
   CurrencyDollarIcon,
-  CalendarIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon
+  ArrowTrendingUpIcon
 } from '@heroicons/react/24/outline';
 
 interface AnalyticsData {
@@ -62,13 +61,6 @@ const AdminAnalytics: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
   };
 
   const formatNumber = (num: number) => {
@@ -147,7 +139,7 @@ const AdminAnalytics: React.FC = () => {
                   <dt className="text-sm font-medium text-gray-500">Total Revenue</dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-bold text-gray-900">
-                      {formatCurrency(analytics.totalRevenue)}
+                      {formatPrice(analytics.totalRevenue)}
                     </div>
                     <div className={`ml-2 flex items-baseline text-sm font-semibold ${getGrowthColor(analytics.revenueGrowth)}`}>
                       {getGrowthIcon(analytics.revenueGrowth)}
@@ -225,7 +217,7 @@ const AdminAnalytics: React.FC = () => {
                   <dt className="text-sm font-medium text-gray-500">Avg. Order Value</dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-bold text-gray-900">
-                      {formatCurrency(analytics.averageOrderValue)}
+                      {formatPrice(analytics.averageOrderValue)}
                     </div>
                     <div className="ml-2 flex items-baseline text-sm font-semibold text-gray-600">
                       <span>{analytics.conversionRate}% conv.</span>
@@ -278,7 +270,7 @@ const AdminAnalytics: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">{formatCurrency(product.revenue)}</p>
+                    <p className="text-sm font-medium text-gray-900">{formatPrice(product.revenue)}</p>
                   </div>
                 </div>
               ))}

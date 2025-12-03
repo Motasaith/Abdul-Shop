@@ -6,8 +6,35 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const emailService = require('../services/emailService');
 const axios = require('axios');
+const passport = require('passport');
 
 const router = express.Router();
+
+// Google Auth Routes
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login', session: false }),
+  (req, res) => {
+    // Generate token
+    const token = req.user.generateAuthToken();
+    // Redirect to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/oauth-success?token=${token}`);
+  }
+);
+
+// Facebook Auth Routes
+router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+
+router.get('/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
+  (req, res) => {
+    // Generate token
+    const token = req.user.generateAuthToken();
+    // Redirect to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/oauth-success?token=${token}`);
+  }
+);
 
 // Phone validation function using RapidAPI
 async function validatePhoneNumber(phoneNumber, countryCode = '') {
@@ -217,24 +244,20 @@ router.post(
     }
 
     const { name, email, password, phone } = req.body;
-    console.log('Extracted data:', { name, email, phone, password: password ? '[HIDDEN]' : 'MISSING' });
 
     try {
       // Check if user already exists with email
       let user = await User.findOne({ email });
       if (user) {
-        console.log('User already exists with email:', email);
         return res.status(400).json({ errors: [{ msg: 'User already exists with this email address' }] });
       }
 
       // Check if phone number is already in use
       const existingPhoneUser = await User.findOne({ phone });
       if (existingPhoneUser) {
-        console.log('Phone number already in use:', phone);
         return res.status(400).json({ errors: [{ msg: 'This phone number is already registered with another account' }] });
       }
 
-      console.log('Creating new user...');
       user = new User({
         name,
         email,
@@ -246,14 +269,11 @@ router.post(
       const emailVerificationToken = crypto.randomBytes(32).toString('hex');
       user.emailVerificationToken = emailVerificationToken;
       
-      console.log('Saving user to database...');
       await user.save();
-      console.log('User saved successfully:', user._id);
       
       // Send welcome email with verification
       try {
         const emailResult = await emailService.sendWelcomeEmail(user, emailVerificationToken);
-        console.log('Welcome email sent:', emailResult.success);
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
       }
@@ -269,8 +289,6 @@ router.post(
       // Just save the phone number without verification for now
       user.phone = phone;
       await user.save();
-      
-      console.log('User registration completed successfully');
 
       const payload = {
         user: {

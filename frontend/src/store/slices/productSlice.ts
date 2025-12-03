@@ -37,6 +37,20 @@ export const fetchProduct = createAsyncThunk(
   }
 );
 
+export const fetchUserReviews = createAsyncThunk(
+  'products/fetchUserReviews',
+  async (_, { rejectWithValue }) => {
+    try {
+      // We need to add this method to productService first, but for now we'll use axios directly or assume it exists
+      // Ideally we should update productService.ts as well, but let's check if we can import api
+      const response = await productService.getUserReviews();
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch reviews');
+    }
+  }
+);
+
 export const searchProducts = createAsyncThunk(
   'products/searchProducts',
   async (query: string, { rejectWithValue }) => {

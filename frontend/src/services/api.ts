@@ -17,6 +17,12 @@ class ApiService {
     this.setupInterceptors();
   }
 
+  private logoutCallback: (() => void) | null = null;
+
+  public setLogoutCallback(callback: () => void) {
+    this.logoutCallback = callback;
+  }
+
   private setupInterceptors() {
     // Request interceptor
     this.axiosInstance.interceptors.request.use(
@@ -39,7 +45,12 @@ class ApiService {
         if (error.response?.status === 401) {
           // Token expired or invalid
           localStorage.removeItem('token');
-          window.location.href = '/login';
+          if (this.logoutCallback) {
+            this.logoutCallback();
+          } else {
+            // Fallback if no callback set
+            window.location.href = '/login';
+          }
         }
         return Promise.reject(error);
       }

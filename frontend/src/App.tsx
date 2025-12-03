@@ -4,8 +4,9 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Toaster } from 'react-hot-toast';
 import { store, persistor } from './store';
-import { useAppDispatch } from './hooks/redux';
-import { getCurrentUser } from './store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from './hooks/redux';
+import { getCurrentUser, logout } from './store/slices/authSlice';
+import { apiService } from './services/api';
 
 // Layout Components
 import Layout from './components/layout/Layout';
@@ -21,6 +22,7 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import LoginPage from './pages/auth/LoginPage';
+import OAuthSuccessPage from './pages/auth/OAuthSuccessPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import VerifyPhonePage from './pages/auth/VerifyPhonePage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
@@ -30,6 +32,7 @@ import PasswordResetPage from './pages/PasswordResetPage';
 import ProfilePage from './pages/ProfilePage';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
+import MyReviewsPage from './pages/MyReviewsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -62,13 +65,22 @@ const LoadingSpinner = () => (
 // App component with authentication check
 function AppContent() {
   const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
+    // Setup API interceptor logout callback
+    apiService.setLogoutCallback(() => {
+      dispatch(logout());
+    });
+
     const token = localStorage.getItem('token');
     if (token) {
       dispatch(getCurrentUser());
+    } else if (isAuthenticated) {
+      // If no token but state says authenticated, logout
+      dispatch(logout());
     }
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated]);
 
   return (
     <Router>
@@ -82,6 +94,7 @@ function AppContent() {
             <Route path="products/:id" element={<ProductDetailPage />} />
             <Route path="cart" element={<CartPage />} />
             <Route path="login" element={<LoginPage />} />
+            <Route path="oauth-success" element={<OAuthSuccessPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="verify-phone" element={<VerifyPhonePage />} />
             <Route path="email-verification" element={<EmailVerificationPage />} />
@@ -114,6 +127,7 @@ function AppContent() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="orders" element={<OrdersPage />} />
             <Route path="orders/:id" element={<OrderDetailPage />} />
+            <Route path="reviews" element={<MyReviewsPage />} />
             <Route path="wishlist" element={<WishlistPage />} />
           </Route>
 

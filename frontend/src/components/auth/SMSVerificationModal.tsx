@@ -87,7 +87,7 @@ const SMSVerificationModal: React.FC<SMSVerificationModalProps> = ({
       setCanResend(false);
       // Update dev code if available
       if (result.devCode) {
-        console.log('New dev code:', result.devCode);
+        // Dev code received
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to resend code');

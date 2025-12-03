@@ -30,9 +30,7 @@ const WishlistPage: React.FC = () => {
   // Debug: Log wishlist items to see structure
   React.useEffect(() => {
     if (wishlistItems.length > 0) {
-      console.log('Wishlist items:', wishlistItems);
-      console.log('First item product:', wishlistItems[0]?.product);
-      console.log('First item images:', wishlistItems[0]?.product?.images);
+      // Wishlist items loaded
     }
   }, [wishlistItems]);
   const loading = useAppSelector(selectWishlistLoading);

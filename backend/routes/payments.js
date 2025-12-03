@@ -8,7 +8,7 @@ const router = express.Router();
 // @desc     Create payment intent for Stripe
 // @access   Private
 router.post('/create-payment-intent', auth, async (req, res) => {
-  const { amount, currency = 'usd' } = req.body;
+  const { amount, currency = 'pkr' } = req.body;
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({

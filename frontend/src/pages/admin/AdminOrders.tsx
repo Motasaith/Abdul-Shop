@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import adminService from '../../services/adminService';
 import { toast } from 'react-hot-toast';
+import { formatPrice } from '../../utils/currency';
 
 interface Order {
   _id: string;
@@ -255,7 +256,7 @@ const AdminOrders: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
-                      ${order.totalPrice.toFixed(2)}
+                      {formatPrice(order.totalPrice)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -334,7 +335,7 @@ const AdminOrders: React.FC = () => {
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <div className="text-2xl font-bold text-gray-900">
-            ${orders.reduce((sum, order) => sum + order.totalPrice, 0).toFixed(2)}
+            {formatPrice(orders.reduce((acc, order) => acc + order.totalPrice, 0))}
           </div>
           <div className="text-sm text-gray-600">Total Revenue</div>
         </div>

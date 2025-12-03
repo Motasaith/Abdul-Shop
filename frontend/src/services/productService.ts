@@ -59,6 +59,11 @@ class ProductService {
     return apiService.get(`/products/${productId}/reviews`);
   }
 
+  // Get user reviews
+  async getUserReviews() {
+    return apiService.get('/products/reviews/my');
+  }
+
   // Add product review
   async addProductReview(productId: string, review: { rating: number; comment: string }) {
     return apiService.post(`/products/${productId}/reviews`, review);

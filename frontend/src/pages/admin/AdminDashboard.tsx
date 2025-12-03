@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import adminService from '../../services/adminService';
 import { toast } from 'react-hot-toast';
+import { formatPrice } from '../../utils/currency';
 
 interface DashboardStats {
   totalUsers: number;
@@ -179,7 +180,7 @@ const AdminDashboard: React.FC = () => {
                     <p className="text-sm text-gray-500">#{order._id.slice(-8)}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">${order.totalPrice.toFixed(2)}</p>
+                    <p className="text-sm font-medium text-gray-900">{formatPrice(order.totalPrice)}</p>
                     <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
                   </div>
                 </div>
@@ -221,7 +222,7 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">${product.price.toFixed(2)}</p>
+                    <p className="text-sm font-medium text-gray-900">{formatPrice(product.price)}</p>
                     <p className="text-xs text-gray-500">{product.countInStock} in stock</p>
                   </div>
                 </div>

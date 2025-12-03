@@ -10,6 +10,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { formatPrice } from '../utils/currency';
 
 const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -74,6 +75,19 @@ const ProductsPage: React.FC = () => {
     
     dispatch(fetchProducts(params));
   }, [dispatch, currentCategory, currentSearch, currentSort, currentPage_, currentMinPrice, currentMaxPrice, currentRating]);
+
+  // Sync local state with URL params
+  useEffect(() => {
+    setFilters({
+      category: currentCategory,
+      search: currentSearch,
+      sort: currentSort,
+      page: currentPage_,
+      minPrice: currentMinPrice,
+      maxPrice: currentMaxPrice,
+      rating: currentRating
+    });
+  }, [currentCategory, currentSearch, currentSort, currentPage_, currentMinPrice, currentMaxPrice, currentRating]);
   
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = { ...filters, [key]: value, page: 1 };
@@ -327,10 +341,10 @@ const ProductsPage: React.FC = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg font-bold text-gray-900">${product.price}</span>
+                            <span className="text-lg font-bold text-gray-900">{formatPrice(product.price)}</span>
                             {product.comparePrice && (
                               <span className="text-sm text-gray-500 line-through">
-                                ${product.comparePrice}
+                                {formatPrice(product.comparePrice)}
                               </span>
                             )}
                           </div>

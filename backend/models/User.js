@@ -38,6 +38,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  facebookId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
   phoneVerified: {
     type: Boolean,
     default: false

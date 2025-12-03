@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fetchOrders } from '../store/slices/orderSlice';
+import { formatPrice } from '../utils/currency';
 
 interface Order {
   _id: string;
@@ -109,7 +110,7 @@ const OrdersPage: React.FC = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium text-gray-900">
-                        ${order.totalPrice.toFixed(2)}
+                        {formatPrice(order.totalPrice)}
                       </p>
                       <p className="text-sm text-gray-500">
                         {order.orderItems.length} item{order.orderItems.length > 1 ? 's' : ''}

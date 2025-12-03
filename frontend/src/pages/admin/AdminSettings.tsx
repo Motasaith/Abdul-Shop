@@ -67,7 +67,7 @@ const AdminSettings: React.FC = () => {
       siteUrl: 'https://shophub.com',
       adminEmail: 'admin@shophub.com',
       timezone: 'UTC',
-      currency: 'USD',
+      currency: 'PKR',
       language: 'en'
     },
     notifications: {
@@ -194,6 +194,7 @@ const AdminSettings: React.FC = () => {
               onChange={(e) => updateSetting('general', 'currency', e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             >
+              <option value="PKR">PKR - Pakistani Rupee</option>
               <option value="USD">USD - US Dollar</option>
               <option value="EUR">EUR - Euro</option>
               <option value="GBP">GBP - British Pound</option>

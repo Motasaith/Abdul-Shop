@@ -337,7 +337,7 @@ Please verify your email address to secure your ShopHub account. This applies to
       <tr style="border-bottom: 1px solid #eee;">
         <td style="padding: 12px 8px; color: #333;">${item.product.name}</td>
         <td style="padding: 12px 8px; text-align: center; color: #666;">${item.quantity}</td>
-        <td style="padding: 12px 8px; text-align: right; color: #333; font-weight: bold;">$${item.price.toFixed(2)}</td>
+        <td style="padding: 12px 8px; text-align: right; color: #333; font-weight: bold;">Rs. ${Math.round(item.price)}</td>
       </tr>
     `).join('');
 
@@ -382,7 +382,7 @@ Please verify your email address to secure your ShopHub account. This applies to
                 <tfoot>
                   <tr style="background: #e9ecef; font-weight: bold; border-top: 2px solid #dee2e6;">
                     <td colspan="2" style="padding: 15px 8px; color: #495057; font-size: 16px;">Total</td>
-                    <td style="padding: 15px 8px; text-align: right; color: #28a745; font-size: 18px; font-weight: bold;">$${order.totalAmount.toFixed(2)}</td>
+                    <td style="padding: 15px 8px; text-align: right; color: #28a745; font-size: 18px; font-weight: bold;">Rs. ${Math.round(order.totalAmount)}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -426,9 +426,9 @@ Please verify your email address to secure your ShopHub account. This applies to
       Thank you for your order! Your order #${order._id} has been confirmed and is being processed.
       
       Order Details:
-      ${order.items.map(item => `- ${item.product.name} x${item.quantity} - $${item.price.toFixed(2)}`).join('\n')}
+      ${order.items.map(item => `- ${item.product.name} x${item.quantity} - Rs. ${Math.round(item.price)}`).join('\n')}
       
-      Total: $${order.totalAmount.toFixed(2)}
+      Total: Rs. ${Math.round(order.totalAmount)}
       
       What's Next?
       • We'll send you another email when your order ships

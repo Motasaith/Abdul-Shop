@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import WishlistButton from '../components/common/WishlistButton';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/currency';
 
 const CartPage: React.FC = () => {
   const navigate = useNavigate();
@@ -214,26 +215,26 @@ const CartPage: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal ({totalItems} items)</span>
-                  <span className="font-medium">Rs. {totalPrice.toFixed(2)}</span>
+                  <span className="font-medium">{formatPrice(totalPrice)}</span>
                 </div>
                 
                 <div className="flex justify-between">
                   <span className="text-gray-600">Delivery Fee</span>
                   <span className={`font-medium ${deliveryFee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
-                    {deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`}
+                    {deliveryFee === 0 ? 'FREE' : formatPrice(deliveryFee)}
                   </span>
                 </div>
                 
                 {deliveryFee > 0 && (
                   <div className="text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
-                    Add Rs. {(1000 - totalPrice).toFixed(2)} more for FREE delivery!
+                    Add {formatPrice(1000 - totalPrice)} more for FREE delivery!
                   </div>
                 )}
                 
                 <div className="border-t pt-4">
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Total</span>
-                    <span className="text-orange-600">Rs. {totalWithDelivery.toFixed(2)}</span>
+                    <span className="text-orange-600">{formatPrice(totalWithDelivery)}</span>
                   </div>
                 </div>
 

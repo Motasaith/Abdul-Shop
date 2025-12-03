@@ -8,7 +8,8 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const morgan = require('morgan');
 const path = require('path');
-require('dotenv').config();
+require('dotenv').config(); // Load env vars before other imports
+const passport = require('./config/passport');
 
 // Default to development if NODE_ENV is not set
 if (!process.env.NODE_ENV) {
@@ -50,6 +51,8 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:3001',
+      'http://localhost:3002',
+      'http://localhost:3003',
       'https://mern-ecommerce-frontend.onrender.com',
       process.env.CORS_ORIGIN,
       process.env.CORS_ORIGIN?.replace(/\/$/, ''), // Remove trailing slash
@@ -77,6 +80,9 @@ console.log(`CORS configured with dynamic origin checking including: ${process.e
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
+
+// Passport middleware
+app.use(passport.initialize());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());

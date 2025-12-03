@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fetchOrder } from '../store/slices/orderSlice';
+import { formatPrice } from '../utils/currency';
 
 const OrderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -91,13 +92,37 @@ const OrderDetailPage: React.FC = () => {
               {currentOrder.orderStatus}
             </span>
             <Link
+              to={`/track/${currentOrder.trackingNumber || currentOrder._id}`}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 mr-3 print:hidden"
+            >
+              Track Package
+            </Link>
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 mr-3 print:hidden"
+            >
+              Print Receipt
+            </button>
+            <Link
               to="/orders"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 print:hidden"
             >
               Back to Orders
             </Link>
           </div>
         </div>
+
+        {/* Print Styles */}
+        <style>
+          {`
+            @media print {
+              @page { margin: 2cm; }
+              body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+              .print\\:hidden { display: none !important; }
+              header, footer { display: none !important; }
+            }
+          `}
+        </style>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Order Items */}
@@ -115,15 +140,25 @@ const OrderDetailPage: React.FC = () => {
                       className="w-16 h-16 object-cover rounded-md"
                     />
                     <div className="flex-1">
-                      <h3 className="text-sm font-medium text-gray-900">{item.name}</h3>
+                      <Link to={`/products/${item.product}`} className="text-sm font-medium text-gray-900 hover:text-blue-600">
+                        {item.name}
+                      </Link>
                       <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                      {currentOrder.isDelivered && (
+                        <Link 
+                          to={`/products/${item.product}?review=true`}
+                          className="text-xs text-orange-600 hover:text-orange-700 font-medium mt-1 inline-block print:hidden"
+                        >
+                          Write a Review
+                        </Link>
+                      )}
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium text-gray-900">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </p>
                       <p className="text-sm text-gray-500">
-                        ${item.price.toFixed(2)} each
+                        {formatPrice(item.price)} each
                       </p>
                     </div>
                   </div>
@@ -184,20 +219,20 @@ const OrderDetailPage: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">${currentOrder.itemsPrice.toFixed(2)}</span>
+                  <span className="text-gray-900">{formatPrice(currentOrder.itemsPrice)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="text-gray-900">${currentOrder.shippingPrice.toFixed(2)}</span>
+                  <span className="text-gray-900">{formatPrice(currentOrder.shippingPrice)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Tax</span>
-                  <span className="text-gray-900">${currentOrder.taxPrice.toFixed(2)}</span>
+                  <span className="text-gray-900">{formatPrice(currentOrder.taxPrice)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-base font-semibold">
                     <span className="text-gray-900">Total</span>
-                    <span className="text-gray-900">${currentOrder.totalPrice.toFixed(2)}</span>
+                    <span className="text-gray-900">{formatPrice(currentOrder.totalPrice)}</span>
                   </div>
                 </div>
               </div>

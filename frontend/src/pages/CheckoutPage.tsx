@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { clearCart } from '../store/slices/cartSlice';
 import { createOrder } from '../store/slices/orderSlice';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/currency';
 import {
   TruckIcon,
   ShieldCheckIcon,
@@ -81,7 +82,7 @@ const CheckoutPage: React.FC = () => {
         ? 'Cash on Delivery' 
         : 'Credit Card';
 
-      await dispatch(createOrder({
+      const result = await dispatch(createOrder({
         orderItems: items,
         user: user.id,
         shippingAddress: transformedShippingAddress,
@@ -95,7 +96,7 @@ const CheckoutPage: React.FC = () => {
       
       dispatch(clearCart());
       toast.success('Order placed successfully!');
-      navigate('/orders');
+      navigate(`/orders/${result._id}`);
     } catch (error) {
       toast.error('Failed to place order!');
     } finally {
@@ -309,7 +310,7 @@ const CheckoutPage: React.FC = () => {
                     </div>
                     <div className="flex-shrink-0 text-right">
                       <span className="text-sm font-semibold text-gray-900">
-                        Rs. {(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </span>
                     </div>
                   </div>
@@ -318,19 +319,19 @@ const CheckoutPage: React.FC = () => {
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Subtotal ({totalItems} items)</span>
-                    <span className="text-sm font-medium">Rs. {totalPrice.toFixed(2)}</span>
+                    <span className="text-sm font-medium">{formatPrice(totalPrice)}</span>
                   </div>
                   
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Delivery Fee</span>
                     <span className={`text-sm font-medium ${deliveryFee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
-                      {deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`}
+                      {deliveryFee === 0 ? 'FREE' : formatPrice(deliveryFee)}
                     </span>
                   </div>
                   
                   <div className="flex justify-between text-base font-semibold">
                     <span>Total</span>
-                    <span className="text-orange-600">Rs. {totalWithDelivery.toFixed(2)}</span>
+                    <span className="text-orange-600">{formatPrice(totalWithDelivery)}</span>
                   </div>
                 </div>
               </div>

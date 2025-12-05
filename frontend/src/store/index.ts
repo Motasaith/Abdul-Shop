@@ -8,11 +8,13 @@ import productReducer from './slices/productSlice';
 import cartReducer from './slices/cartSlice';
 import orderReducer from './slices/orderSlice';
 import wishlistReducer from './slices/wishlistSlice';
+import settingReducer from './slices/settingSlice';
+import preferenceReducer from './slices/preferenceSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'cart'], // Only persist auth and cart
+  whitelist: ['cart', 'auth', 'settings', 'preferences'],
 };
 
 const rootReducer = combineReducers({
@@ -21,6 +23,8 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   orders: orderReducer,
   wishlist: wishlistReducer,
+  settings: settingReducer,
+  preferences: preferenceReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

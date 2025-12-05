@@ -79,6 +79,21 @@ router.post('/subscribe', [
       // Don't fail the subscription if email fails
     }
 
+    // Create system notification for admin
+    try {
+      const notificationService = require('../services/notificationService');
+      await notificationService.createNotification(
+        'newsletter',
+        `New newsletter subscriber: ${email}`,
+        {
+          email,
+          source
+        }
+      );
+    } catch (notifyError) {
+      console.error('Failed to create admin notification:', notifyError);
+    }
+
     res.status(201).json({ 
       success: true,
       message: 'Successfully subscribed to newsletter! Check your email for confirmation.' 

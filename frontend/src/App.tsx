@@ -6,6 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import { store, persistor } from './store';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { getCurrentUser, logout } from './store/slices/authSlice';
+import { getPublicSettings } from './store/slices/settingSlice';
+import { fetchRates } from './store/slices/preferenceSlice';
 import { apiService } from './services/api';
 
 // Layout Components
@@ -54,6 +56,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminNotifications from './pages/admin/AdminNotifications';
 
 // Loading component
 const LoadingSpinner = () => (
@@ -72,6 +75,11 @@ function AppContent() {
     apiService.setLogoutCallback(() => {
       dispatch(logout());
     });
+
+    // Fetch public settings
+    dispatch(getPublicSettings());
+    // Fetch currency rates
+    dispatch(fetchRates());
 
     const token = localStorage.getItem('token');
     if (token) {
@@ -147,6 +155,7 @@ function AppContent() {
             <Route path="newsletter" element={<AdminNewsletter />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="notifications" element={<AdminNotifications />} />
           </Route>
 
           {/* 404 Page */}

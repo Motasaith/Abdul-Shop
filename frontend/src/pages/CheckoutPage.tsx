@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { clearCart } from '../store/slices/cartSlice';
 import { createOrder } from '../store/slices/orderSlice';
@@ -39,8 +39,18 @@ const CheckoutPage: React.FC = () => {
   });
   const [errors, setErrors] = useState<Partial<CheckoutFormData>>({});
 
-  const deliveryFee = totalPrice > 999 ? 0 : 135;
-  const totalWithDelivery = totalPrice + deliveryFee;
+  const location = useLocation();
+  const buyNowItem = location.state?.buyNowItem;
+  
+  // Use buyNowItem if available, otherwise use cart items
+  const checkoutItems = buyNowItem ? [buyNowItem] : items;
+  
+  // Calculate totals based on checkoutItems
+  const checkoutTotalItems = buyNowItem ? buyNowItem.quantity : totalItems;
+  const checkoutTotalPrice = buyNowItem ? buyNowItem.price * buyNowItem.quantity : totalPrice;
+  
+  const deliveryFee = checkoutTotalPrice > 999 ? 0 : 135;
+  const totalWithDelivery = checkoutTotalPrice + deliveryFee;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,18 +93,21 @@ const CheckoutPage: React.FC = () => {
         : 'Credit Card';
 
       const result = await dispatch(createOrder({
-        orderItems: items,
+        orderItems: checkoutItems,
         user: user.id,
         shippingAddress: transformedShippingAddress,
         paymentMethod: backendPaymentMethod,
-        itemsPrice: totalPrice,
+        itemsPrice: checkoutTotalPrice,
         shippingPrice: deliveryFee,
         totalPrice: totalWithDelivery,
         isPaid: false,
         isDelivered: false
       })).unwrap();
       
-      dispatch(clearCart());
+      // Only clear cart if we're not in "Buy Now" mode
+      if (!buyNowItem) {
+        dispatch(clearCart());
+      }
       toast.success('Order placed successfully!');
       navigate(`/orders/${result._id}`);
     } catch (error) {
@@ -113,7 +126,7 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
-  if (items.length === 0) {
+  if (checkoutItems.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -295,7 +308,7 @@ const CheckoutPage: React.FC = () => {
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
               
               <div className="space-y-4">
-                {items.map((item) => (
+                {checkoutItems.map((item: any) => (
                   <div key={item.product} className="flex items-center space-x-3">
                     <div className="flex-shrink-0">
                       <img
@@ -318,8 +331,8 @@ const CheckoutPage: React.FC = () => {
                 
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Subtotal ({totalItems} items)</span>
-                    <span className="text-sm font-medium">{formatPrice(totalPrice)}</span>
+                    <span className="text-sm text-gray-600">Subtotal ({checkoutTotalItems} items)</span>
+                    <span className="text-sm font-medium">{formatPrice(checkoutTotalPrice)}</span>
                   </div>
                   
                   <div className="flex justify-between">

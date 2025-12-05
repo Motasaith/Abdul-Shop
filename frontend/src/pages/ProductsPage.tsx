@@ -10,10 +10,12 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
-import { formatPrice } from '../utils/currency';
+
+import { usePrice } from '../hooks/usePrice';
 
 const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { formatPrice } = usePrice();
   const { products, loading, totalPages, currentPage, totalProducts } = useAppSelector((state) => state.products);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import {
-  CogIcon,
   BellIcon,
-  ShieldCheckIcon,
   GlobeAltIcon,
   EnvelopeIcon,
   KeyIcon,
@@ -12,30 +10,20 @@ import {
   BuildingStorefrontIcon,
   PhotoIcon,
   PaintBrushIcon,
-  ServerIcon
+  ServerIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { getSettings, updateSettings } from '../../store/slices/settingSlice';
 
 interface Settings {
-  general: {
-    siteName: string;
-    siteUrl: string;
-    adminEmail: string;
-    timezone: string;
-    currency: string;
-    language: string;
-  };
+
   notifications: {
     emailNotifications: boolean;
     orderNotifications: boolean;
     lowStockAlerts: boolean;
     userRegistrations: boolean;
     newsletterUpdates: boolean;
-  };
-  security: {
-    twoFactorAuth: boolean;
-    sessionTimeout: number;
-    passwordPolicy: string;
-    ipWhitelist: string[];
   };
   payment: {
     stripeEnabled: boolean;
@@ -60,171 +48,98 @@ interface Settings {
   };
 }
 
-const AdminSettings: React.FC = () => {
-  const [settings, setSettings] = useState<Settings>({
-    general: {
-      siteName: 'ShopHub',
-      siteUrl: 'https://shophub.com',
-      adminEmail: 'admin@shophub.com',
-      timezone: 'UTC',
-      currency: 'PKR',
-      language: 'en'
-    },
-    notifications: {
-      emailNotifications: true,
-      orderNotifications: true,
-      lowStockAlerts: true,
-      userRegistrations: false,
-      newsletterUpdates: true
-    },
-    security: {
-      twoFactorAuth: false,
-      sessionTimeout: 30,
-      passwordPolicy: 'strong',
-      ipWhitelist: []
-    },
-    payment: {
-      stripeEnabled: true,
-      paypalEnabled: false,
-      codEnabled: true,
-      testMode: true
-    },
-    email: {
-      provider: 'brevo',
-      fromName: 'ShopHub',
-      fromEmail: 'noreply@shophub.com',
-      smtpHost: 'smtp-relay.brevo.com',
-      smtpPort: 587,
-      smtpSecure: true
-    },
-    appearance: {
-      primaryColor: '#3B82F6',
-      secondaryColor: '#1E40AF',
-      logoUrl: '',
-      faviconUrl: '',
-      darkMode: false
-    }
-  });
 
-  const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('general');
+
+const AdminSettings: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { settings, loading, error } = useAppSelector((state) => state.settings);
+  const [localSettings, setLocalSettings] = useState<Settings | null>(null);
+  const [activeTab, setActiveTab] = useState('notifications');
+
+  useEffect(() => {
+    dispatch(getSettings());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (settings) {
+      setLocalSettings(settings);
+    }
+  }, [settings]);
 
   const tabs = [
-    { id: 'general', name: 'General', icon: CogIcon },
     { id: 'notifications', name: 'Notifications', icon: BellIcon },
-    { id: 'security', name: 'Security', icon: ShieldCheckIcon },
     { id: 'payment', name: 'Payment', icon: CreditCardIcon },
     { id: 'email', name: 'Email', icon: EnvelopeIcon },
     { id: 'appearance', name: 'Appearance', icon: PaintBrushIcon }
   ];
 
   const handleSave = async () => {
-    setLoading(true);
+    if (!localSettings) return;
+    
     try {
-      // Mock API call - replace with actual implementation
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await dispatch(updateSettings(localSettings)).unwrap();
       toast.success('Settings saved successfully!');
     } catch (error) {
       toast.error('Failed to save settings');
-    } finally {
-      setLoading(false);
     }
   };
 
   const updateSetting = (category: keyof Settings, key: string, value: any) => {
-    setSettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [key]: value
-      }
-    }));
+    if (!localSettings) return;
+    
+    setLocalSettings(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [key]: value
+        }
+      };
+    });
   };
 
-  const renderGeneralSettings = () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">General Settings</h3>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Site Name</label>
-            <input
-              type="text"
-              value={settings.general.siteName}
-              onChange={(e) => updateSetting('general', 'siteName', e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <XMarkIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Site URL</label>
-            <input
-              type="url"
-              value={settings.general.siteUrl}
-              onChange={(e) => updateSetting('general', 'siteUrl', e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Admin Email</label>
-            <input
-              type="email"
-              value={settings.general.adminEmail}
-              onChange={(e) => updateSetting('general', 'adminEmail', e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Timezone</label>
-            <select
-              value={settings.general.timezone}
-              onChange={(e) => updateSetting('general', 'timezone', e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="UTC">UTC</option>
-              <option value="America/New_York">Eastern Time</option>
-              <option value="America/Chicago">Central Time</option>
-              <option value="America/Denver">Mountain Time</option>
-              <option value="America/Los_Angeles">Pacific Time</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Currency</label>
-            <select
-              value={settings.general.currency}
-              onChange={(e) => updateSetting('general', 'currency', e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="PKR">PKR - Pakistani Rupee</option>
-              <option value="USD">USD - US Dollar</option>
-              <option value="EUR">EUR - Euro</option>
-              <option value="GBP">GBP - British Pound</option>
-              <option value="JPY">JPY - Japanese Yen</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Language</label>
-            <select
-              value={settings.general.language}
-              onChange={(e) => updateSetting('general', 'language', e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-            </select>
+          <div className="ml-3">
+            <p className="text-sm text-red-700">
+              Error loading settings: {error}
+            </p>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (!localSettings) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+
 
   const renderNotificationSettings = () => (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium text-gray-900 mb-4">Notification Settings</h3>
         <div className="space-y-4">
-          {Object.entries(settings.notifications).map(([key, value]) => (
+          {Object.entries(localSettings.notifications).map(([key, value]) => (
             <div key={key} className="flex items-center justify-between">
               <div>
                 <label className="text-sm font-medium text-gray-900 capitalize">
@@ -258,59 +173,7 @@ const AdminSettings: React.FC = () => {
     </div>
   );
 
-  const renderSecuritySettings = () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Security Settings</h3>
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <label className="text-sm font-medium text-gray-900">Two-Factor Authentication</label>
-              <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => updateSetting('security', 'twoFactorAuth', !settings.security.twoFactorAuth)}
-              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                settings.security.twoFactorAuth ? 'bg-blue-600' : 'bg-gray-200'
-              }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  settings.security.twoFactorAuth ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Session Timeout (minutes)</label>
-            <input
-              type="number"
-              min="5"
-              max="120"
-              value={settings.security.sessionTimeout}
-              onChange={(e) => updateSetting('security', 'sessionTimeout', parseInt(e.target.value))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:max-w-xs"
-            />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password Policy</label>
-            <select
-              value={settings.security.passwordPolicy}
-              onChange={(e) => updateSetting('security', 'passwordPolicy', e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:max-w-xs"
-            >
-              <option value="basic">Basic (8+ characters)</option>
-              <option value="strong">Strong (8+ chars, numbers, symbols)</option>
-              <option value="very-strong">Very Strong (12+ chars, mixed case, numbers, symbols)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   const renderPaymentSettings = () => (
     <div className="space-y-6">
@@ -324,14 +187,14 @@ const AdminSettings: React.FC = () => {
             </div>
             <button
               type="button"
-              onClick={() => updateSetting('payment', 'stripeEnabled', !settings.payment.stripeEnabled)}
+              onClick={() => updateSetting('payment', 'stripeEnabled', !localSettings.payment.stripeEnabled)}
               className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                settings.payment.stripeEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                localSettings.payment.stripeEnabled ? 'bg-blue-600' : 'bg-gray-200'
               }`}
             >
               <span
                 className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  settings.payment.stripeEnabled ? 'translate-x-5' : 'translate-x-0'
+                  localSettings.payment.stripeEnabled ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
@@ -344,14 +207,14 @@ const AdminSettings: React.FC = () => {
             </div>
             <button
               type="button"
-              onClick={() => updateSetting('payment', 'paypalEnabled', !settings.payment.paypalEnabled)}
+              onClick={() => updateSetting('payment', 'paypalEnabled', !localSettings.payment.paypalEnabled)}
               className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                settings.payment.paypalEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                localSettings.payment.paypalEnabled ? 'bg-blue-600' : 'bg-gray-200'
               }`}
             >
               <span
                 className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  settings.payment.paypalEnabled ? 'translate-x-5' : 'translate-x-0'
+                  localSettings.payment.paypalEnabled ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
@@ -364,14 +227,14 @@ const AdminSettings: React.FC = () => {
             </div>
             <button
               type="button"
-              onClick={() => updateSetting('payment', 'codEnabled', !settings.payment.codEnabled)}
+              onClick={() => updateSetting('payment', 'codEnabled', !localSettings.payment.codEnabled)}
               className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                settings.payment.codEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                localSettings.payment.codEnabled ? 'bg-blue-600' : 'bg-gray-200'
               }`}
             >
               <span
                 className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  settings.payment.codEnabled ? 'translate-x-5' : 'translate-x-0'
+                  localSettings.payment.codEnabled ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
@@ -384,14 +247,14 @@ const AdminSettings: React.FC = () => {
             </div>
             <button
               type="button"
-              onClick={() => updateSetting('payment', 'testMode', !settings.payment.testMode)}
+              onClick={() => updateSetting('payment', 'testMode', !localSettings.payment.testMode)}
               className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                settings.payment.testMode ? 'bg-blue-600' : 'bg-gray-200'
+                localSettings.payment.testMode ? 'bg-blue-600' : 'bg-gray-200'
               }`}
             >
               <span
                 className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  settings.payment.testMode ? 'translate-x-5' : 'translate-x-0'
+                  localSettings.payment.testMode ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
@@ -409,7 +272,7 @@ const AdminSettings: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Email Provider</label>
             <select
-              value={settings.email.provider}
+              value={localSettings.email.provider}
               onChange={(e) => updateSetting('email', 'provider', e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             >
@@ -423,7 +286,7 @@ const AdminSettings: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">From Name</label>
             <input
               type="text"
-              value={settings.email.fromName}
+              value={localSettings.email.fromName}
               onChange={(e) => updateSetting('email', 'fromName', e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
@@ -432,7 +295,7 @@ const AdminSettings: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">From Email</label>
             <input
               type="email"
-              value={settings.email.fromEmail}
+              value={localSettings.email.fromEmail}
               onChange={(e) => updateSetting('email', 'fromEmail', e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
@@ -441,7 +304,7 @@ const AdminSettings: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">SMTP Host</label>
             <input
               type="text"
-              value={settings.email.smtpHost}
+              value={localSettings.email.smtpHost}
               onChange={(e) => updateSetting('email', 'smtpHost', e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
@@ -450,7 +313,7 @@ const AdminSettings: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">SMTP Port</label>
             <input
               type="number"
-              value={settings.email.smtpPort}
+              value={localSettings.email.smtpPort}
               onChange={(e) => updateSetting('email', 'smtpPort', parseInt(e.target.value))}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
@@ -458,7 +321,7 @@ const AdminSettings: React.FC = () => {
           <div className="flex items-center">
             <input
               type="checkbox"
-              checked={settings.email.smtpSecure}
+              checked={localSettings.email.smtpSecure}
               onChange={(e) => updateSetting('email', 'smtpSecure', e.target.checked)}
               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
@@ -479,13 +342,13 @@ const AdminSettings: React.FC = () => {
             <div className="flex items-center space-x-3 mt-1">
               <input
                 type="color"
-                value={settings.appearance.primaryColor}
+                value={localSettings.appearance.primaryColor}
                 onChange={(e) => updateSetting('appearance', 'primaryColor', e.target.value)}
                 className="h-10 w-16 rounded border border-gray-300"
               />
               <input
                 type="text"
-                value={settings.appearance.primaryColor}
+                value={localSettings.appearance.primaryColor}
                 onChange={(e) => updateSetting('appearance', 'primaryColor', e.target.value)}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
@@ -496,13 +359,13 @@ const AdminSettings: React.FC = () => {
             <div className="flex items-center space-x-3 mt-1">
               <input
                 type="color"
-                value={settings.appearance.secondaryColor}
+                value={localSettings.appearance.secondaryColor}
                 onChange={(e) => updateSetting('appearance', 'secondaryColor', e.target.value)}
                 className="h-10 w-16 rounded border border-gray-300"
               />
               <input
                 type="text"
-                value={settings.appearance.secondaryColor}
+                value={localSettings.appearance.secondaryColor}
                 onChange={(e) => updateSetting('appearance', 'secondaryColor', e.target.value)}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
@@ -512,7 +375,7 @@ const AdminSettings: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">Logo URL</label>
             <input
               type="url"
-              value={settings.appearance.logoUrl}
+              value={localSettings.appearance.logoUrl}
               onChange={(e) => updateSetting('appearance', 'logoUrl', e.target.value)}
               placeholder="https://example.com/logo.png"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -522,7 +385,7 @@ const AdminSettings: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">Favicon URL</label>
             <input
               type="url"
-              value={settings.appearance.faviconUrl}
+              value={localSettings.appearance.faviconUrl}
               onChange={(e) => updateSetting('appearance', 'faviconUrl', e.target.value)}
               placeholder="https://example.com/favicon.ico"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -537,14 +400,14 @@ const AdminSettings: React.FC = () => {
           </div>
           <button
             type="button"
-            onClick={() => updateSetting('appearance', 'darkMode', !settings.appearance.darkMode)}
+            onClick={() => updateSetting('appearance', 'darkMode', !localSettings.appearance.darkMode)}
             className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-              settings.appearance.darkMode ? 'bg-blue-600' : 'bg-gray-200'
+              localSettings.appearance.darkMode ? 'bg-blue-600' : 'bg-gray-200'
             }`}
           >
             <span
               className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                settings.appearance.darkMode ? 'translate-x-5' : 'translate-x-0'
+                localSettings.appearance.darkMode ? 'translate-x-5' : 'translate-x-0'
               }`}
             />
           </button>
@@ -555,12 +418,8 @@ const AdminSettings: React.FC = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'general':
-        return renderGeneralSettings();
       case 'notifications':
         return renderNotificationSettings();
-      case 'security':
-        return renderSecuritySettings();
       case 'payment':
         return renderPaymentSettings();
       case 'email':
@@ -568,7 +427,7 @@ const AdminSettings: React.FC = () => {
       case 'appearance':
         return renderAppearanceSettings();
       default:
-        return renderGeneralSettings();
+        return renderNotificationSettings();
     }
   };
 

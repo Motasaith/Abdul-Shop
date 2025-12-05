@@ -128,6 +128,9 @@ app.use('/api/verification', require('./routes/verification'));
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/wishlist', require('./routes/wishlist'));
+app.use('/api/settings', require('./routes/settings'));
+app.use('/api/currency', require('./routes/currency'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

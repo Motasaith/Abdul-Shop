@@ -24,9 +24,10 @@ import {
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import WishlistButton from '../components/common/WishlistButton';
 import toast from 'react-hot-toast';
-import { formatPrice } from '../utils/currency';
+import { usePrice } from '../hooks/usePrice';
 
 const ProductDetailPage: React.FC = () => {
+  const { formatPrice } = usePrice();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -54,8 +55,18 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [dispatch, product?.category]);
 
+  const { items } = useAppSelector((state) => state.cart);
+
   const handleAddToCart = () => {
     if (!product) return;
+    
+    const existingItem = items.find(item => item.product === product._id);
+    const currentQty = existingItem ? existingItem.quantity : 0;
+    
+    if (currentQty + quantity > product.countInStock) {
+      toast.error(`Cannot add more items. You already have ${currentQty} in cart and only ${product.countInStock} are available.`);
+      return;
+    }
     
     dispatch(addToCart({
       product: product._id,
@@ -111,18 +122,17 @@ const ProductDetailPage: React.FC = () => {
       return;
     }
     
-    // Add item to cart and navigate to checkout
-    dispatch(addToCart({
+    const buyNowItem = {
       product: product._id,
       name: product.name,
       image: product.images[0]?.url || '',
       price: product.price,
       countInStock: product.countInStock,
       quantity
-    }));
+    };
     
-    // Navigate directly to checkout
-    navigate('/checkout');
+    // Navigate directly to checkout with the item in state
+    navigate('/checkout', { state: { buyNowItem } });
   };
 
   if (loading) {
@@ -330,7 +340,7 @@ const ProductDetailPage: React.FC = () => {
                         <span className="text-sm text-gray-700">Standard Delivery</span>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-medium text-gray-900">Rs. {product.deliveryInfo.standardDelivery.cost || 135}</div>
+                        <div className="text-sm font-medium text-gray-900">{formatPrice(product.deliveryInfo.standardDelivery.cost || 135)}</div>
                         <div className="text-xs text-gray-500">{product.deliveryInfo.standardDelivery.days}</div>
                       </div>
                     </div>
@@ -690,10 +700,10 @@ const ProductDetailPage: React.FC = () => {
                       }
                     </h4>
                     <div className="flex items-center space-x-2">
-                      <span className="font-bold text-orange-600">Rs. {similarProduct.price}</span>
+                      <span className="font-bold text-orange-600">{formatPrice(similarProduct.price)}</span>
                       {similarProduct.comparePrice && (
                         <span className="text-sm text-gray-500 line-through">
-                          Rs. {similarProduct.comparePrice}
+                          {formatPrice(similarProduct.comparePrice)}
                         </span>
                       )}
                     </div>

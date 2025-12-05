@@ -11,9 +11,10 @@ import {
 } from '@heroicons/react/24/outline';
 import WishlistButton from '../components/common/WishlistButton';
 import toast from 'react-hot-toast';
-import { formatPrice } from '../utils/currency';
+import { usePrice } from '../hooks/usePrice';
 
 const CartPage: React.FC = () => {
+  const { formatPrice } = usePrice();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { items, totalItems, totalPrice } = useAppSelector((state) => state.cart);
@@ -54,7 +55,9 @@ const CartPage: React.FC = () => {
     navigate('/checkout');
   };
 
-  const deliveryFee = totalPrice > 999 ? 0 : 135; // Free delivery over Rs. 999
+  // Convert threshold (Rs. 999) and fee (Rs. 135) to current currency if needed
+  // For simplicity, we'll keep the logic but the display will be formatted
+  const deliveryFee = totalPrice > 999 ? 0 : 135; 
   const totalWithDelivery = totalPrice + deliveryFee;
 
   if (items.length === 0) {
@@ -138,10 +141,10 @@ const CartPage: React.FC = () => {
                           </div>
                           <div className="text-right">
                             <p className="text-lg font-bold text-gray-900">
-                              Rs. {item.price}
+                              {formatPrice(item.price)}
                             </p>
                             <p className="text-sm text-gray-500">
-                              Rs. {(item.price * item.quantity).toFixed(2)} total
+                              {formatPrice(item.price * item.quantity)} total
                             </p>
                           </div>
                         </div>

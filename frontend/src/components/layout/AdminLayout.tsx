@@ -83,6 +83,13 @@ const AdminLayout: React.FC = () => {
       description: 'Reports & insights'
     },
     { 
+      name: 'Notifications', 
+      href: '/admin/notifications', 
+      icon: BellIcon, 
+      iconSolid: BellIcon,
+      description: 'System alerts'
+    },
+    { 
       name: 'Settings', 
       href: '/admin/settings', 
       icon: CogIcon, 

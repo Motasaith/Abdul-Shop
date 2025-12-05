@@ -14,7 +14,10 @@ import {
   PhoneIcon
 } from '@heroicons/react/24/outline';
 
+import { usePrice } from '../hooks/usePrice';
+
 const HomePage: React.FC = () => {
+  const { formatPrice } = usePrice();
   const dispatch = useAppDispatch();
   const { products, loading } = useAppSelector((state) => state.products);
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -70,7 +73,7 @@ const HomePage: React.FC = () => {
     {
       icon: TruckIcon,
       title: 'Free Shipping',
-      description: 'Free shipping on orders over $50'
+      description: `Free shipping on orders over ${formatPrice(50)}`
     },
     {
       icon: ShieldCheckIcon,
@@ -213,7 +216,7 @@ const HomePage: React.FC = () => {
                           <span className="text-sm text-gray-600 ml-2">({product.numReviews})</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-gray-900">RS {product.price}</span>
+                          <span className="text-lg font-bold text-gray-900">{formatPrice(product.price)}</span>
                           <button className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
                             <ShoppingCartIcon className="h-4 w-4" />
                           </button>

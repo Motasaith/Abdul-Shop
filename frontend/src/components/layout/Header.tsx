@@ -11,12 +11,17 @@ import {
   XMarkIcon,
   HeartIcon
 } from '@heroicons/react/24/outline';
+import CurrencySelector from '../common/CurrencySelector';
+import LanguageSelector from '../common/LanguageSelector';
+import { usePrice } from '../../hooks/usePrice';
 
 const Header: React.FC = () => {
+  const { formatPrice } = usePrice();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const { totalItems } = useAppSelector((state) => state.cart);
+  const { publicSettings } = useAppSelector((state) => state.settings);
   const wishlistItemCount = useAppSelector(selectWishlistItemCount);
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -61,12 +66,16 @@ const Header: React.FC = () => {
       <div className="bg-blue-600 text-white py-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center text-sm">
-            <span className="hidden sm:block">Free shipping on orders over $50</span>
-            <span className="sm:hidden">Free shipping $50+</span>
+            <span className="hidden sm:block">Free shipping on orders over {formatPrice(50)}</span>
+            <span className="sm:hidden">Free shipping {formatPrice(50)}+</span>
             <div className="flex space-x-2 sm:space-x-4">
               <Link to="/help" className="hover:text-blue-200">Help</Link>
               <Link to="/track" className="hover:text-blue-200 hidden sm:inline">Track Order</Link>
               <Link to="/track" className="hover:text-blue-200 sm:hidden">Track</Link>
+              <div className="flex items-center border-l border-blue-400 pl-4 ml-2 space-x-2">
+                <CurrencySelector />
+                <LanguageSelector />
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +87,7 @@ const Header: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold text-blue-600">
-              ShopHub
+              {publicSettings?.siteName || 'ShopHub'}
             </Link>
           </div>
 

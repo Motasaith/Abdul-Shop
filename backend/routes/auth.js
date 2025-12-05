@@ -296,6 +296,22 @@ router.post(
         },
       };
 
+      // Create system notification for admin
+      try {
+        const notificationService = require('../services/notificationService');
+        await notificationService.createNotification(
+          'user',
+          `New user registration: ${user.name} (${user.email})`,
+          {
+            userId: user.id,
+            name: user.name,
+            email: user.email
+          }
+        );
+      } catch (notifyError) {
+        console.error('Failed to create admin notification:', notifyError);
+      }
+
       jwt.sign(
         payload,
         process.env.JWT_SECRET,

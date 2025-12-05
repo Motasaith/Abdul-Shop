@@ -68,6 +68,35 @@ router.post('/', [
     console.log('Order object created, attempting to save...');
     const createdOrder = await order.save();
     console.log('Order saved successfully with ID:', createdOrder._id);
+
+    // Update product stock and check for low stock
+    try {
+      const notificationService = require('../services/notificationService');
+      const Product = require('../models/Product');
+      
+      for (const item of orderItems) {
+        const product = await Product.findById(item.product);
+        if (product) {
+          product.countInStock = Math.max(0, product.countInStock - (item.qty || item.quantity));
+          await product.save();
+
+          // Check for low stock (threshold: 5)
+          if (product.countInStock <= 5) {
+            await notificationService.createNotification(
+              'stock',
+              `Low stock alert: ${product.name} (Remaining: ${product.countInStock})`,
+              {
+                productId: product._id,
+                productName: product.name,
+                currentStock: product.countInStock
+              }
+            );
+          }
+        }
+      }
+    } catch (stockError) {
+      console.error('Failed to update stock or create alert:', stockError);
+    }
     
     // Populate the order with user and product details for email
     console.log('Populating order for email...');
@@ -104,6 +133,22 @@ router.post('/', [
       // Don't fail the request if email fails
     }
     
+    // Create system notification for admin
+    try {
+      const notificationService = require('../services/notificationService');
+      await notificationService.createNotification(
+        'order',
+        `New order #${createdOrder._id} placed by ${req.user.name}`,
+        {
+          orderId: createdOrder._id,
+          userId: req.user.id,
+          amount: createdOrder.totalPrice
+        }
+      );
+    } catch (notifyError) {
+      console.error('Failed to create admin notification:', notifyError);
+    }
+
     console.log('Order creation successful, returning response');
     res.status(201).json(createdOrder);
   } catch (err) {
@@ -398,7 +443,38 @@ router.put('/:id/deliver', [auth, admin], async (req, res) => {
 
     order.isDelivered = true;
     order.deliveredAt = Date.now();
+    order.orderStatus = 'Delivered';
 
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    PUT api/orders/:id/cancel
+// @desc     Cancel order
+// @access   Private
+router.put('/:id/cancel', auth, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ msg: 'Order not found' });
+    }
+
+    // Check if user owns this order
+    if (order.user.toString() !== req.user.id && !req.user.isAdmin) {
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+
+    // Check if order is processing
+    if (order.orderStatus !== 'Processing') {
+      return res.status(400).json({ msg: 'Order cannot be cancelled' });
+    }
+
+    order.orderStatus = 'Cancelled';
     const updatedOrder = await order.save();
     res.json(updatedOrder);
   } catch (err) {

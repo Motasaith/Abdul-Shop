@@ -17,9 +17,12 @@ const cartSlice = createSlice({
       const existingItem = state.items.find(item => item.product === action.payload.product);
       
       if (existingItem) {
-        existingItem.quantity += action.payload.quantity;
+        const newQuantity = existingItem.quantity + action.payload.quantity;
+        existingItem.quantity = Math.min(newQuantity, action.payload.countInStock);
       } else {
-        state.items.push(action.payload);
+        const newItem = { ...action.payload };
+        newItem.quantity = Math.min(newItem.quantity, newItem.countInStock);
+        state.items.push(newItem);
       }
       
       cartSlice.caseReducers.calculateTotals(state);
@@ -33,8 +36,11 @@ const cartSlice = createSlice({
     updateQuantity: (state, action: PayloadAction<{ productId: string; quantity: number }>) => {
       const item = state.items.find(item => item.product === action.payload.productId);
       if (item) {
-        item.quantity = action.payload.quantity;
+      if (item) {
+        // Ensure we don't exceed stock
+        item.quantity = Math.min(action.payload.quantity, item.countInStock);
         cartSlice.caseReducers.calculateTotals(state);
+      }
       }
     },
     

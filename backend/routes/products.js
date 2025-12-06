@@ -63,6 +63,11 @@ router.get('/', async (req, res) => {
     if (req.query.newArrivals === 'true') {
        filter.isNewArrival = true;
     }
+    
+    // Vendor filter
+    if (req.query.vendor) {
+      filter.owner = req.query.vendor;
+    }
 
     // Sort options
     let sortOption = { createdAt: -1 }; // Default: newest first
@@ -420,10 +425,9 @@ router.put(
 
 // @route    POST api/products
 // @desc     Create a product
-// @access   Private/Admin
+// @access   Private/Admin/Vendor
 router.post('/', [
   auth,
-  admin,
   [
     check('name', 'Name is required').not().isEmpty(),
     check('price', 'Price is required and must be a number').isNumeric(),
@@ -437,9 +441,15 @@ router.post('/', [
   }
 
   try {
+    // Check if user is admin or vendor
+    if (req.user.role !== 'admin' && req.user.role !== 'vendor') {
+      return res.status(403).json({ msg: 'Not authorized to create products' });
+    }
+
     const newProduct = new Product({
       ...req.body,
-      createdBy: req.user.id
+      createdBy: req.user.id,
+      owner: req.user.id
     });
 
     const product = await newProduct.save();
@@ -452,13 +462,22 @@ router.post('/', [
 
 // @route    PUT api/products/:id
 // @desc     Update product
-// @access   Private/Admin
-router.put('/:id', [auth, admin], async (req, res) => {
+// @access   Private/Admin/Vendor
+router.put('/:id', auth, async (req, res) => {
   try {
     let product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({ msg: 'Product not found' });
+    }
+
+    // Check ownership or admin status
+    const isOwner = product.owner && product.owner.toString() === req.user.id;
+    // Fallback for legacy products (check createdBy or just Admin)
+    const isCreator = product.createdBy && product.createdBy.toString() === req.user.id;
+    
+    if (req.user.role !== 'admin' && !isOwner && !isCreator) {
+      return res.status(401).json({ msg: 'Not authorized to update this product' });
     }
 
     product = await Product.findByIdAndUpdate(
@@ -476,13 +495,21 @@ router.put('/:id', [auth, admin], async (req, res) => {
 
 // @route    DELETE api/products/:id
 // @desc     Delete product
-// @access   Private/Admin
-router.delete('/:id', [auth, admin], async (req, res) => {
+// @access   Private/Admin/Vendor
+router.delete('/:id', auth, async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({ msg: 'Product not found' });
+    }
+
+    // Check ownership or admin status
+    const isOwner = product.owner && product.owner.toString() === req.user.id;
+    const isCreator = product.createdBy && product.createdBy.toString() === req.user.id;
+
+    if (req.user.role !== 'admin' && !isOwner && !isCreator) {
+       return res.status(401).json({ msg: 'Not authorized to delete this product' });
     }
 
     await Product.findByIdAndDelete(req.params.id);

@@ -27,6 +27,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import LoginPage from './pages/auth/LoginPage';
 import OAuthSuccessPage from './pages/auth/OAuthSuccessPage';
 import RegisterPage from './pages/auth/RegisterPage';
+import VendorRegisterPage from './pages/auth/VendorRegisterPage';
 import VerifyPhonePage from './pages/auth/VerifyPhonePage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
 import EmailVerificationSuccessPage from './pages/EmailVerificationSuccessPage';
@@ -62,10 +63,12 @@ import AdminSettings from './pages/admin/AdminSettings';
 import AdminNotifications from './pages/admin/AdminNotifications';
 import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminSupportDetailPage from './pages/admin/AdminSupportDetailPage';
+import AdminVendorRequests from './pages/admin/AdminVendorRequests';
 
 // User Support Pages
 import SupportTicketListPage from './pages/profile/SupportTicketListPage';
 import SupportTicketDetailPage from './pages/profile/SupportTicketDetailPage';
+import VendorDashboard from './pages/vendor/VendorDashboard';
 
 // Loading component
 const LoadingSpinner = () => (
@@ -113,6 +116,7 @@ function AppContent() {
             <Route path="login" element={<LoginPage />} />
             <Route path="oauth-success" element={<OAuthSuccessPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="register/vendor" element={<VendorRegisterPage />} />
             <Route path="verify-phone" element={<VerifyPhonePage />} />
             <Route path="email-verification" element={<EmailVerificationPage />} />
             <Route path="verify-email" element={<EmailVerificationSuccessPage />} />
@@ -150,6 +154,7 @@ function AppContent() {
             <Route path="wishlist" element={<WishlistPage />} />
             <Route path="profile/tickets" element={<SupportTicketListPage />} />
             <Route path="profile/tickets/:id" element={<SupportTicketDetailPage />} />
+            <Route path="vendor/dashboard" element={<VendorDashboard />} />
           </Route>
 
           {/* Admin Routes */}
@@ -165,6 +170,7 @@ function AppContent() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="vendors/requests" element={<AdminVendorRequests />} />
             <Route path="newsletter" element={<AdminNewsletter />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />

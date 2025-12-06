@@ -27,8 +27,18 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin', 'vendor'],
     default: 'user'
+  },
+  vendorDetails: {
+    shopName: { type: String, trim: true },
+    walletBalance: { type: Number, default: 0 },
+    bankDetails: { type: String, trim: true }
+  },
+  vendorStatus: {
+    type: String,
+    enum: ['none', 'pending', 'approved', 'rejected'],
+    default: 'none'
   },
   avatar: {
     public_id: String,

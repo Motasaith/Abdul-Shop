@@ -243,7 +243,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, phone, role, vendorDetails } = req.body;
 
     try {
       // Check if user already exists with email
@@ -258,11 +258,35 @@ router.post(
         return res.status(400).json({ errors: [{ msg: 'This phone number is already registered with another account' }] });
       }
 
+      // Determine initial role and status
+      let userRole = 'user';
+      let vendorStatus = 'none';
+      let userVendorDetails = undefined;
+
+      // Handle vendor registration request
+      if (role === 'vendor') {
+        // Enforce user role until approved
+        userRole = 'user';
+        vendorStatus = 'pending';
+        
+        if (vendorDetails && vendorDetails.shopName) {
+          userVendorDetails = {
+            shopName: vendorDetails.shopName,
+            walletBalance: 0
+          };
+        } else {
+             return res.status(400).json({ errors: [{ msg: 'Shop Name is required for vendor registration' }] });
+        }
+      }
+
       user = new User({
         name,
         email,
         password,
         phone,
+        role: userRole,
+        vendorStatus,
+        vendorDetails: userVendorDetails
       });
 
       // Generate email verification token
@@ -301,11 +325,14 @@ router.post(
         const notificationService = require('../services/notificationService');
         await notificationService.createNotification(
           'user',
-          `New user registration: ${user.name} (${user.email})`,
+          role === 'vendor' 
+            ? `New Vendor Application: ${user.name} (${user.email}) - Shop: ${user.vendorDetails?.shopName}`
+            : `New user registration: ${user.name} (${user.email})`,
           {
             userId: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            type: role === 'vendor' ? 'vendor_application' : 'registration'
           }
         );
       } catch (notifyError) {
@@ -328,7 +355,10 @@ router.post(
               phone: user.phone,
               phoneVerified: user.phoneVerified || false,
               emailVerified: user.emailVerified || false,
-              role: user.role
+              emailVerified: user.emailVerified || false,
+              role: user.role,
+              vendorStatus: user.vendorStatus,
+              vendorDetails: user.vendorDetails
             }
           });
         }
@@ -402,7 +432,10 @@ router.post('/login', [
             email: user.email,
             phone: user.phone,
             phoneVerified: user.phoneVerified,
-            role: user.role
+            phoneVerified: user.phoneVerified,
+            role: user.role,
+            vendorStatus: user.vendorStatus,
+            vendorDetails: user.vendorDetails
           }
         });
       }

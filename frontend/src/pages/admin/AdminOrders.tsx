@@ -220,10 +220,10 @@ const AdminOrders: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {order.user.name}
+                        {order.user ? order.user.name : 'Unknown User'}
                       </div>
                       <div className="text-sm text-gray-500">
-                        {order.user.email}
+                        {order.user ? order.user.email : 'N/A'}
                       </div>
                     </div>
                   </td>

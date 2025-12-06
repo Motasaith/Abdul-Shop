@@ -58,24 +58,24 @@ class ApiService {
   }
 
   // HTTP methods
-  get(url: string, config?: AxiosRequestConfig) {
-    return this.axiosInstance.get(url, config);
+  get<T = any>(url: string, config?: AxiosRequestConfig) {
+    return this.axiosInstance.get<T>(url, config);
   }
 
-  post(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.axiosInstance.post(url, data, config);
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return this.axiosInstance.post<T>(url, data, config);
   }
 
-  put(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.axiosInstance.put(url, data, config);
+  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return this.axiosInstance.put<T>(url, data, config);
   }
 
-  delete(url: string, config?: AxiosRequestConfig) {
-    return this.axiosInstance.delete(url, config);
+  delete<T = any>(url: string, config?: AxiosRequestConfig) {
+    return this.axiosInstance.delete<T>(url, config);
   }
 
-  patch(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.axiosInstance.patch(url, data, config);
+  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return this.axiosInstance.patch<T>(url, data, config);
   }
 
   // File upload

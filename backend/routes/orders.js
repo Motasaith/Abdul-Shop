@@ -376,6 +376,50 @@ router.put('/:id/pay', auth, async (req, res) => {
     };
 
     const updatedOrder = await order.save();
+    
+    // Commission & Wallet Logic: Distribute funds to vendors
+    try {
+      // Re-fetch order with populated product details to access owner
+      const populatedOrder = await Order.findById(order._id).populate('orderItems.product');
+      
+      const vendorEarningsMap = {}; // vendorId -> amount to credit
+
+      populatedOrder.orderItems.forEach(item => {
+        // Ensure product still exists and has an owner
+        if (item.product && item.product.owner) {
+          const vendorId = item.product.owner.toString();
+          
+          // Calculate earnings (deduct 5% commission)
+          const itemTotal = item.quantity * item.price;
+          const commissionRate = 0.05; // Platform fee
+          const earning = itemTotal * (1 - commissionRate);
+
+          if (vendorEarningsMap[vendorId]) {
+            vendorEarningsMap[vendorId] += earning;
+          } else {
+            vendorEarningsMap[vendorId] = earning;
+          }
+        }
+      });
+
+      // Update Vendor Wallets
+      for (const [vendorId, amount] of Object.entries(vendorEarningsMap)) {
+        await User.findByIdAndUpdate(vendorId, {
+          $inc: { 'vendorDetails.walletBalance': amount }
+        });
+        
+        // Optional: Create a transaction record or notification for the vendor
+        // For now, just updating balance is sufficient for MVP
+      }
+      
+      console.log('Commission distributed successfully:', vendorEarningsMap);
+
+    } catch (commissionError) {
+      console.error('Commission calculation error:', commissionError);
+      // We do not revert the payment status as the payment was successful.
+      // Admin should be alerted to fix balances manually if this fails.
+    }
+
     res.json(updatedOrder);
   } catch (err) {
     console.error(err.message);
@@ -690,6 +734,96 @@ router.get('/admin/all', [auth, admin], async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
+  }
+});
+
+// @route    GET api/orders/vendor/stats
+// @desc     Get vendor dashboard statistics
+// @access   Private (Vendor only)
+router.get('/vendor/stats', auth, async (req, res) => {
+  try {
+    // 1. Get Vendor's Products
+    const Product = require('../models/Product');
+    const vendorProducts = await Product.find({ owner: req.user.id });
+    const vendorProductIds = vendorProducts.map(p => p._id);
+
+    // 2. Get Orders containing these products
+    const orders = await Order.find({
+      'orderItems.product': { $in: vendorProductIds }
+    }).populate('user', 'name');
+
+    // 3. Calculate Stats
+    let totalRevenue = 0;
+    let totalOrders = orders.length;
+    const recentOrders = [];
+
+    // Process orders to calculate vendor-specific revenue
+    orders.forEach(order => {
+      let orderRevenue = 0;
+      let hasVendorItem = false;
+
+      order.orderItems.forEach(item => {
+        // Check if this item is one of the vendor's products
+        // Note: item.product is an ObjectId, vendorProductIds are ObjectIds
+        if (vendorProductIds.some(id => id.toString() === item.product.toString())) {
+           orderRevenue += item.quantity * item.price;
+           hasVendorItem = true;
+        }
+      });
+
+      if (hasVendorItem) {
+        totalRevenue += orderRevenue;
+        // Add to recent orders list (simplified version)
+        if (recentOrders.length < 5) {
+           recentOrders.push({
+             _id: order._id,
+             user: order.user,
+             totalPrice: order.totalPrice, // Note: This shows FULL order price, maybe confusing? 
+             // Ideally we show "Your Share: $X", but for now let's keep it consistent with UI
+             // or better, show the order total and status.
+             orderStatus: order.orderStatus,
+             createdAt: order.createdAt
+           });
+        }
+      }
+    });
+    
+    // Sort recent orders by date desc
+    recentOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json({
+      totalProducts: vendorProducts.length,
+      totalOrders,
+      totalRevenue,
+      recentOrders,
+      walletBalance: req.user.vendorDetails?.walletBalance || 0
+    });
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    GET api/orders/vendor/list
+// @desc     Get all orders for a vendor
+// @access   Private (Vendor only)
+router.get('/vendor/list', auth, async (req, res) => {
+  try {
+     const Product = require('../models/Product');
+     const vendorProducts = await Product.find({ owner: req.user.id }).select('_id');
+     const vendorProductIds = vendorProducts.map(p => p._id);
+
+     const orders = await Order.find({
+       'orderItems.product': { $in: vendorProductIds }
+     })
+     .populate('user', 'name email')
+     .sort({ createdAt: -1 });
+
+     res.json(orders);
+  } catch (err) {
+     console.error(err.message);
+     res.status(500).send('Server Error');
   }
 });
 

@@ -82,6 +82,7 @@ const Header: React.FC = () => {
             <span className="hidden sm:block">{t('common.freeShipping')} {formatPrice(50)}</span>
             <div className="flex justify-end w-full sm:w-auto items-center space-x-2 sm:space-x-4">
               <Link to="/help" className="hidden sm:inline hover:text-blue-200">{t('common.help')}</Link>
+              <Link to="/register/vendor" className="hidden sm:inline hover:text-blue-200 font-medium">Sell on ShopHub</Link>
               <Link to="/track" className="hidden sm:inline hover:text-blue-200">{t('common.trackOrder')}</Link>
               <div className="flex items-center sm:border-l sm:border-blue-400 sm:pl-4 sm:ml-2 space-x-2">
                 <CurrencySelector />

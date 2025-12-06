@@ -28,6 +28,7 @@ const ProductsPage: React.FC = () => {
   const currentMinPrice = searchParams.get('minPrice') || '';
   const currentMaxPrice = searchParams.get('maxPrice') || '';
   const currentRating = searchParams.get('rating') || '';
+  const currentVendor = searchParams.get('vendor') || '';
   
   // Local state for filters
   const [filters, setFilters] = useState({
@@ -37,7 +38,8 @@ const ProductsPage: React.FC = () => {
     page: currentPage_,
     minPrice: currentMinPrice,
     maxPrice: currentMaxPrice,
-    rating: currentRating
+    rating: currentRating,
+    vendor: currentVendor
   });
   
   const categories = [
@@ -71,12 +73,13 @@ const ProductsPage: React.FC = () => {
         sort: currentSort,
         minPrice: currentMinPrice ? parseFloat(currentMinPrice) : undefined,
         maxPrice: currentMaxPrice ? parseFloat(currentMaxPrice) : undefined,
-        rating: currentRating ? parseInt(currentRating) : undefined
+        rating: currentRating ? parseInt(currentRating) : undefined,
+        vendor: currentVendor || undefined
       }
     };
     
     dispatch(fetchProducts(params));
-  }, [dispatch, currentCategory, currentSearch, currentSort, currentPage_, currentMinPrice, currentMaxPrice, currentRating]);
+  }, [dispatch, currentCategory, currentSearch, currentSort, currentPage_, currentMinPrice, currentMaxPrice, currentRating, currentVendor]);
 
   // Sync local state with URL params
   useEffect(() => {
@@ -87,9 +90,10 @@ const ProductsPage: React.FC = () => {
       page: currentPage_,
       minPrice: currentMinPrice,
       maxPrice: currentMaxPrice,
-      rating: currentRating
+      rating: currentRating,
+      vendor: currentVendor
     });
-  }, [currentCategory, currentSearch, currentSort, currentPage_, currentMinPrice, currentMaxPrice, currentRating]);
+  }, [currentCategory, currentSearch, currentSort, currentPage_, currentMinPrice, currentMaxPrice, currentRating, currentVendor]);
   
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = { ...filters, [key]: value, page: 1 };
@@ -122,7 +126,8 @@ const ProductsPage: React.FC = () => {
       page: 1,
       minPrice: '',
       maxPrice: '',
-      rating: ''
+      rating: '',
+      vendor: ''
     });
     
     const params = new URLSearchParams();

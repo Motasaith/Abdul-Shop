@@ -487,6 +487,73 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// @desc    Get pending vendor requests
+// @route   GET /api/admin/vendors/requests
+// @access  Private/Admin
+const getVendorRequests = async (req, res) => {
+  try {
+    console.log('Fetching vendor requests...');
+    const requests = await User.find({ vendorStatus: 'pending' })
+      .select('name email phone vendorDetails createdAt')
+      .sort({ createdAt: -1 });
+
+    res.json(requests);
+  } catch (error) {
+    console.error('Get vendor requests error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Approve vendor request
+// @route   PUT /api/admin/vendors/:id/approve
+// @access  Private/Admin
+const approveVendor = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.vendorStatus !== 'pending') {
+      return res.status(400).json({ message: 'User is not pending approval' });
+    }
+
+    user.role = 'vendor';
+    user.vendorStatus = 'approved';
+    await user.save();
+
+    // Notify user (email implementation omitted for brevity)
+    
+    res.json({ message: 'Vendor approved', user });
+  } catch (error) {
+    console.error('Approve vendor error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Reject vendor request
+// @route   PUT /api/admin/vendors/:id/reject
+// @access  Private/Admin
+const rejectVendor = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.vendorStatus = 'rejected';
+    // Optionally remove vendorDetails or keep them for future re-application
+    await user.save();
+
+    res.json({ message: 'Vendor rejected', user });
+  } catch (error) {
+    console.error('Reject vendor error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   getDashboardStats,
   getAdminProducts,
@@ -497,5 +564,9 @@ module.exports = {
   updateUserStatus,
   deleteUser,
   getAdminOrders,
-  updateOrderStatus
+  getAdminOrders,
+  updateOrderStatus,
+  getVendorRequests,
+  approveVendor,
+  rejectVendor
 };

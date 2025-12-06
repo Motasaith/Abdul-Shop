@@ -1,8 +1,15 @@
 export interface User {
-  id: string;
+  _id: string;
+  id?: string;
   name: string;
   email: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'vendor';
+  vendorStatus?: 'none' | 'pending' | 'approved' | 'rejected';
+  vendorDetails?: {
+    shopName: string;
+    walletBalance: number;
+    bankDetails?: string;
+  };
   avatar?: {
     public_id: string;
     url: string;
@@ -238,6 +245,7 @@ export interface FilterOptions {
   search?: string;
   onSale?: boolean;
   newArrivals?: boolean;
+  vendor?: string;
 }
 
 export interface CategoryStats {

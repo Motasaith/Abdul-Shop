@@ -178,7 +178,7 @@ const AdminDashboard: React.FC = () => {
               <div key={order._id} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{order.user.name}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">{order.user?.name || 'Unknown User'}</p>
                     <p className="text-xs text-gray-500">#{order._id.slice(-8)}</p>
                   </div>
                   <div className="flex items-center justify-between sm:justify-end sm:text-right gap-4">

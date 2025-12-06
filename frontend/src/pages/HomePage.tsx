@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fetchProducts } from '../store/slices/productSlice';
+import { addToCart } from '../store/slices/cartSlice';
+// Service Imports
 import newsletterService from '../services/newsletterService';
 import { toast } from 'react-hot-toast';
 import { 
@@ -16,6 +18,7 @@ import {
 
 import { usePrice } from '../hooks/usePrice';
 import { useTranslation } from '../hooks/useTranslation';
+import ProductCard from '../components/common/ProductCard';
 
 const HomePage: React.FC = () => {
   const { formatPrice } = usePrice();
@@ -57,6 +60,18 @@ const HomePage: React.FC = () => {
     } finally {
       setNewsletterLoading(false);
     }
+  };
+
+  const handleAddToCart = (product: any) => {
+    dispatch(addToCart({
+      product: product._id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0]?.url || '',
+      quantity: 1,
+      countInStock: product.countInStock
+    }));
+    toast.success('Added to cart!');
   };
 
   const featuredProducts = products.slice(0, 4);
@@ -115,7 +130,7 @@ const HomePage: React.FC = () => {
                 <ArrowRightIcon className="ml-2 h-5 w-5" />
               </Link>
               <Link
-                to="/deals"
+                to="/sales"
                 className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-flex items-center justify-center"
               >
                 {t('common.todaysDeals')}
@@ -152,15 +167,16 @@ const HomePage: React.FC = () => {
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
-            {categories.map((category) => (
+            {categories.map((category, index) => (
               <Link
                 key={category.name}
                 to={`/products?category=${category.name}`}
-                className="group"
+                className="group animate-slide-up"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
-                <div className={`${category.color} rounded-lg p-6 text-center hover:shadow-lg transition-shadow group-hover:scale-105 transform transition-transform`}>
-                  <div className="text-4xl mb-3">{category.icon}</div>
-                  <h3 className="font-semibold text-gray-900">{t(`categories.${category.name}`)}</h3>
+                <div className={`${category.color} rounded-xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2`}>
+                  <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300">{category.icon}</div>
+                  <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{t(`categories.${category.name}`)}</h3>
                 </div>
               </Link>
             ))}
@@ -186,44 +202,12 @@ const HomePage: React.FC = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                {featuredProducts.map((product) => (
-                  <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                    <Link to={`/products/${product._id}`}>
-                      <div className="aspect-w-1 aspect-h-1 bg-gray-200">
-                        <img
-                          src={product.images?.[0]?.url || 'https://via.placeholder.com/300x300?text=No+Image'}
-                          alt={product.name}
-                          className="w-full h-48 object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/300x300?text=No+Image';
-                          }}
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
-                        <div className="flex items-center mb-2">
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <StarIcon
-                                key={i}
-                                className={`h-4 w-4 ${
-                                  i < Math.floor(product.rating)
-                                    ? 'text-yellow-400 fill-current'
-                                    : 'text-gray-300'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-sm text-gray-600 ml-2">({product.numReviews})</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-gray-900">{formatPrice(product.price)}</span>
-                          <button className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
-                            <ShoppingCartIcon className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </Link>
+                {featuredProducts.map((product, index) => (
+                  <div key={product._id} className="animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+                    <ProductCard 
+                      product={product} 
+                      onAddToCart={() => handleAddToCart(product)}
+                    />
                   </div>
                 ))}
               </div>

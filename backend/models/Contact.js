@@ -50,7 +50,7 @@ const contactSchema = new mongoose.Schema({
     trim: true,
     validate: {
       validator: function(v) {
-        return !v || /^[\+]?[1-9][\d]{0,15}$/.test(v);
+        return !v || /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$|^0\d{10}$|^[\+]?\d{10,15}$/.test(v);
       },
       message: 'Please enter a valid phone number'
     }

@@ -131,6 +131,7 @@ router.get('/reviews/my', auth, async (req, res) => {
           _id: review._id,
           rating: review.rating,
           comment: review.comment,
+          followUp: review.followUp,
           createdAt: review.createdAt,
           product: {
             _id: product._id,
@@ -240,6 +241,77 @@ router.post(
       await product.save();
 
       res.status(201).json({ msg: 'Review added' });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route    PUT api/products/:id/reviews/:reviewId/followup
+// @desc     Add follow-up to a review
+// @access   Private
+router.put(
+  '/:id/reviews/:reviewId/followup',
+  [
+    auth,
+    [check('comment', 'Comment is required').not().isEmpty()]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const product = await Product.findById(req.params.id);
+      const Order = require('../models/Order');
+
+      if (!product) {
+        return res.status(404).json({ msg: 'Product not found' });
+      }
+
+      // Find the review
+      const review = product.reviews.id(req.params.reviewId);
+
+      if (!review) {
+        return res.status(404).json({ msg: 'Review not found' });
+      }
+
+      // Verify ownership
+      if (review.user.toString() !== req.user.id) {
+        return res.status(401).json({ msg: 'User not authorized' });
+      }
+
+      // Check for delivered order
+      // We need to find an order by this user that contains this product and is delivered
+      const order = await Order.findOne({
+        user: req.user.id,
+        'orderItems.product': req.params.id,
+        isDelivered: true
+      }).sort({ deliveredAt: -1 });
+
+      if (!order) {
+        return res.status(400).json({ msg: 'You must have a delivered order for this product to leave a follow-up review.' });
+      }
+
+      // Check delivery date vs today
+      const { isSameDay, parseISO } = require('date-fns');
+      const deliveredAt = new Date(order.deliveredAt);
+      const now = new Date();
+
+      if (isSameDay(deliveredAt, now)) {
+        return res.status(400).json({ msg: 'You cannot submit a follow-up review on the same day as delivery.' });
+      }
+
+      review.followUp = {
+        comment: req.body.comment,
+        date: Date.now()
+      };
+
+      await product.save();
+
+      res.json(product.reviews);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');

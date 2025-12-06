@@ -55,6 +55,8 @@ export interface Product {
   seoTitle?: string;
   seoDescription?: string;
   isActive: boolean;
+  isNewArrival?: boolean;
+  onSale?: boolean;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -128,6 +130,10 @@ export interface Review {
   rating: number;
   comment: string;
   createdAt: string;
+  followUp?: {
+    comment: string;
+    date: string;
+  };
 }
 
 export interface CartItem {

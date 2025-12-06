@@ -136,6 +136,35 @@ export const translations = {
       google: 'Google',
       facebook: 'Facebook'
     },
+    support: {
+      myTickets: 'My Tickets',
+      newTicket: 'New Ticket',
+      noTickets: 'No tickets found',
+      noTicketsDesc: 'You haven\'t submitted any support tickets yet.',
+      createFirst: 'Create your first ticket',
+      backToTickets: 'Back to Tickets',
+      closeTicket: 'Close Ticket',
+      yourMessage: 'Your Message',
+      adminResponse: 'Admin Response',
+      markedResolved: 'This ticket has been marked as resolved.',
+      ticketClosed: 'Ticket Closed',
+      closeConfirm: 'Are you sure you want to close this ticket?',
+      closeSuccess: 'Ticket closed successfully',
+      closeError: 'Failed to close ticket',
+      fetchError: 'Failed to load tickets',
+      
+      // Tracking Page
+      trackTitle: 'Track Your Support Request',
+      trackSubtitle: 'Enter your Ticket ID and Email to view the status of your request.',
+      ticketIdLabel: 'Ticket ID',
+      emailLabel: 'Email Address',
+      trackButton: 'Track Ticket',
+      trackSuccess: 'Ticket found',
+      trackError: 'Ticket not found or email does not match',
+      trackErrorInput: 'Please enter both Ticket ID and Email',
+      trackAnother: 'Track Another Ticket',
+      date: 'Date Submitted'
+    },
     footer: {
       description: 'Your one-stop destination for all your shopping needs. Quality products at affordable prices.',
       quickLinks: 'Quick Links',
@@ -757,6 +786,23 @@ export const translations = {
       rememberMe: 'Recuérdame',
       google: 'Google',
       facebook: 'Facebook'
+    },
+    support: {
+      myTickets: 'Mis Tickets',
+      newTicket: 'Nuevo Ticket',
+      noTickets: 'No se encontraron tickets',
+      noTicketsDesc: 'Aún no has enviado ningún ticket de soporte.',
+      createFirst: 'Crea tu primer ticket',
+      backToTickets: 'Volver a Tickets',
+      closeTicket: 'Cerrar Ticket',
+      yourMessage: 'Tu Mensaje',
+      adminResponse: 'Respuesta del Administrador',
+      markedResolved: 'Este ticket ha sido marcado como resuelto.',
+      ticketClosed: 'Ticket Cerrado',
+      closeConfirm: '¿Estás seguro de que deseas cerrar este ticket?',
+      closeSuccess: 'Ticket cerrado exitosamente',
+      closeError: 'Error al cerrar el ticket',
+      fetchError: 'Error al cargar tickets'
     },
     footer: {
       description: 'Tu destino único para todas tus compras. Productos de calidad a precios asequibles.',

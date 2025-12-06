@@ -12,7 +12,7 @@ const router = express.Router();
 // Rate limiting for contact form submissions
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 requests per windowMs
+  max: 50, // Limit each IP to 50 requests per windowMs
   message: {
     error: 'Too many contact form submissions, please try again later.'
   }
@@ -111,6 +111,117 @@ router.post('/', [
       error: 'Server Error',
       message: 'Something went wrong. Please try again later.'
     });
+  }
+});
+
+// @route    GET api/contact/my-tickets
+// @desc     Get all tickets for the logged-in user
+// @access   Private
+router.get('/my-tickets', auth, async (req, res) => {
+  try {
+    const user = await req.user; // Get user from auth middleware
+    // Find tickets where email matches user's email
+    const tickets = await Contact.find({ email: user.email })
+      .sort({ createdAt: -1 })
+      .select('-ipAddress -userAgent'); // Exclude sensitive info
+
+    res.json(tickets);
+  } catch (err) {
+    console.error('Get my tickets error:', err);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// @route    GET api/contact/my-tickets/:id
+// @desc     Get single ticket for the logged-in user
+// @access   Private
+router.get('/my-tickets/:id', auth, async (req, res) => {
+  try {
+    const user = await req.user;
+    const ticket = await Contact.findById(req.params.id)
+      .populate('response.respondedBy', 'name');
+
+    if (!ticket) {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+
+    // Check if ticket belongs to user
+    if (ticket.email !== user.email) {
+      return res.status(403).json({ msg: 'Not authorized to view this ticket' });
+    }
+
+    res.json(ticket);
+  } catch (err) {
+    console.error('Get my ticket error:', err);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// @route    PUT api/contact/my-tickets/:id/close
+// @desc     Allow user to close their own ticket
+// @access   Private
+router.put('/my-tickets/:id/close', auth, async (req, res) => {
+  try {
+    const user = await req.user;
+    const ticket = await Contact.findById(req.params.id);
+
+    if (!ticket) {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+
+    // Check if ticket belongs to user
+    if (ticket.email !== user.email) {
+      return res.status(403).json({ msg: 'Not authorized to manage this ticket' });
+    }
+
+    if (ticket.status === 'closed') {
+       return res.status(400).json({ msg: 'Ticket is already closed' });
+    }
+
+    ticket.status = 'closed';
+    await ticket.save();
+
+    res.json({ msg: 'Ticket closed successfully', ticket });
+
+  } catch (err) {
+    console.error('Close my ticket error:', err);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// @route    DELETE api/contact/my-tickets/:id
+// @desc     Allow user to delete their own ticket
+// @access   Private
+router.delete('/my-tickets/:id', auth, async (req, res) => {
+  try {
+    const user = await req.user;
+    const ticket = await Contact.findById(req.params.id);
+
+    if (!ticket) {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+
+    // Check if ticket belongs to user
+    if (ticket.email !== user.email) {
+      return res.status(403).json({ msg: 'Not authorized to delete this ticket' });
+    }
+
+    await Contact.findByIdAndDelete(req.params.id);
+
+    res.json({ msg: 'Ticket deleted successfully' });
+
+  } catch (err) {
+    console.error('Delete my ticket error:', err);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+    res.status(500).json({ error: 'Server Error' });
   }
 });
 

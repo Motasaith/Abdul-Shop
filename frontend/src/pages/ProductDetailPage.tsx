@@ -689,6 +689,16 @@ const ProductDetailPage: React.FC = () => {
                             <p className="text-sm text-gray-500 mt-2">
                               {new Date(review.createdAt).toLocaleDateString()}
                             </p>
+
+                            {/* Follow-up Section */}
+                            {review.followUp && (
+                              <div className="mt-3 pt-3 border-t border-gray-100">
+                                <p className="text-xs font-semibold text-orange-600 mb-1">
+                                  Follow-up ({new Date(review.followUp.date).toLocaleDateString()}):
+                                </p>
+                                <p className="text-gray-700 text-sm">{review.followUp.comment}</p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

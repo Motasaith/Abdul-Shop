@@ -15,7 +15,8 @@ import {
   ArrowLeftOnRectangleIcon,
   BellIcon,
   MagnifyingGlassIcon,
-  UserIcon
+  UserIcon,
+  ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline';
 import {
   HomeIcon as HomeIconSolid,
@@ -24,7 +25,8 @@ import {
   UsersIcon as UsersIconSolid,
   ChartBarIcon as ChartBarIconSolid,
   CogIcon as CogIconSolid,
-  EnvelopeIcon as EnvelopeIconSolid
+  EnvelopeIcon as EnvelopeIconSolid,
+  ChatBubbleLeftRightIcon as ChatBubbleLeftRightIconSolid
 } from '@heroicons/react/24/solid';
 
 import notificationService from '../../services/notificationService';
@@ -109,6 +111,13 @@ const AdminLayout: React.FC = () => {
       description: 'System alerts'
     },
     { 
+      name: 'Support', 
+      href: '/admin/support', 
+      icon: ChatBubbleLeftRightIcon, 
+      iconSolid: ChatBubbleLeftRightIconSolid,
+      description: 'User tickets'
+    },
+    { 
       name: 'Settings', 
       href: '/admin/settings', 
       icon: CogIcon, 
@@ -147,7 +156,7 @@ const AdminLayout: React.FC = () => {
             </div>
             
             {/* Mobile navigation */}
-            <nav className="flex-1 space-y-1 px-4 py-6">
+            <nav className="flex-1 space-y-1 px-4 py-6 overflow-y-auto min-h-0">
               {navigation.map((item) => {
                 const isActive = isCurrentPath(item.href);
                 const Icon = isActive ? item.iconSolid : item.icon;
@@ -218,7 +227,7 @@ const AdminLayout: React.FC = () => {
           </div>
           
           {/* Desktop navigation */}
-          <nav className="flex-1 space-y-1 px-4 py-6">
+          <nav className="flex-1 space-y-1 px-4 py-6 overflow-y-auto min-h-0">
             {navigation.map((item) => {
               const isActive = isCurrentPath(item.href);
               const Icon = isActive ? item.iconSolid : item.icon;

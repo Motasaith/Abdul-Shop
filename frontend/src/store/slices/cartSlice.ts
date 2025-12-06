@@ -36,11 +36,9 @@ const cartSlice = createSlice({
     updateQuantity: (state, action: PayloadAction<{ productId: string; quantity: number }>) => {
       const item = state.items.find(item => item.product === action.payload.productId);
       if (item) {
-      if (item) {
         // Ensure we don't exceed stock
         item.quantity = Math.min(action.payload.quantity, item.countInStock);
         cartSlice.caseReducers.calculateTotals(state);
-      }
       }
     },
     

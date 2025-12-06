@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// Force HMR update
+// Force HMR update 2
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -60,6 +60,12 @@ import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminNotifications from './pages/admin/AdminNotifications';
+import AdminSupportPage from './pages/admin/AdminSupportPage';
+import AdminSupportDetailPage from './pages/admin/AdminSupportDetailPage';
+
+// User Support Pages
+import SupportTicketListPage from './pages/profile/SupportTicketListPage';
+import SupportTicketDetailPage from './pages/profile/SupportTicketDetailPage';
 
 // Loading component
 const LoadingSpinner = () => (
@@ -142,6 +148,8 @@ function AppContent() {
             <Route path="orders/:id" element={<OrderDetailPage />} />
             <Route path="reviews" element={<MyReviewsPage />} />
             <Route path="wishlist" element={<WishlistPage />} />
+            <Route path="profile/tickets" element={<SupportTicketListPage />} />
+            <Route path="profile/tickets/:id" element={<SupportTicketDetailPage />} />
           </Route>
 
           {/* Admin Routes */}
@@ -161,6 +169,8 @@ function AppContent() {
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="notifications" element={<AdminNotifications />} />
+            <Route path="support" element={<AdminSupportPage />} />
+            <Route path="support/:id" element={<AdminSupportDetailPage />} />
           </Route>
 
           {/* 404 Page */}

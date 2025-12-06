@@ -12,6 +12,7 @@ import {
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { usePrice } from '../hooks/usePrice';
 import { useTranslation } from '../hooks/useTranslation';
+import ProductCard from '../components/common/ProductCard';
 
 const SalesPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -115,61 +116,13 @@ const SalesPage: React.FC = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {products.map((product) => {
-                 const discount = calculateDiscount(product.price, product.comparePrice);
-                 return (
-                <div key={product._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                  <Link to={`/products/${product._id}`}>
-                    <div className="aspect-w-1 aspect-h-1 bg-gray-200 relative">
-                      <img
-                        src={product.images?.[0]?.url || '/api/placeholder/300/300'}
-                        alt={product.name}
-                        className="w-full h-48 object-cover"
-                      />
-                      {discount > 0 && (
-                        <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-                          -{discount}%
-                        </div>
-                      )}
-                      <div className="absolute bottom-2 left-2 bg-yellow-400 text-red-900 text-xs font-bold px-2 py-0.5 rounded shadow-sm flex items-center">
-                        <FireIcon className="w-3 h-3 mr-1" /> DEAL
-                      </div>
-                    </div>
-                  </Link>
-                  <div className="p-4">
-                    <Link to={`/products/${product._id}`}>
-                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-red-600 transition-colors">
-                        {product.name}
-                      </h3>
-                    </Link>
-                    <div className="flex items-center mb-2">
-                      {renderStars(product.rating)}
-                      <span className="text-sm text-gray-600 ml-2">({product.numReviews})</span>
-                    </div>
-                    <div className="flex items-center justify-between mt-3">
-                      <div className="flex flex-col">
-                        <span className="text-2xl font-bold text-red-600">{formatPrice(product.price)}</span>
-                        {product.comparePrice && (
-                          <span className="text-sm text-gray-400 line-through">
-                            {formatPrice(product.comparePrice)}
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        disabled={product.countInStock === 0}
-                        className={`p-3 rounded-full transition-colors ${
-                          product.countInStock > 0
-                            ? 'bg-red-600 text-white hover:bg-red-700 shadow-lg'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
-                      >
-                        <ShoppingCartIcon className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )})}
+              {products.map((product) => (
+                <ProductCard 
+                  key={product._id} 
+                  product={product} 
+                  onAddToCart={() => handleAddToCart(product)}
+                />
+              ))}
             </div>
             
             {totalPages > 1 && (

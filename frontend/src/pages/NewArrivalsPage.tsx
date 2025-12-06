@@ -11,6 +11,7 @@ import {
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { usePrice } from '../hooks/usePrice';
 import { useTranslation } from '../hooks/useTranslation';
+import ProductCard from '../components/common/ProductCard';
 
 const NewArrivalsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -99,47 +100,12 @@ const NewArrivalsPage: React.FC = () => {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {products.map((product) => (
-                <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                  <Link to={`/products/${product._id}`}>
-                    <div className="aspect-w-1 aspect-h-1 bg-gray-200 relative">
-                      <img
-                        src={product.images?.[0]?.url || '/api/placeholder/300/300'}
-                        alt={product.name}
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="absolute top-2 left-2 bg-teal-500 text-white text-xs font-bold px-2 py-1 rounded">
-                        NEW
-                      </div>
-                    </div>
-                  </Link>
-                  <div className="p-4">
-                    <Link to={`/products/${product._id}`}>
-                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-teal-600 transition-colors">
-                        {product.name}
-                      </h3>
-                    </Link>
-                    <div className="flex items-center mb-2">
-                      {renderStars(product.rating)}
-                      <span className="text-sm text-gray-600 ml-2">({product.numReviews})</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-gray-900">{formatPrice(product.price)}</span>
-                      </div>
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        disabled={product.countInStock === 0}
-                        className={`p-2 rounded-full transition-colors ${
-                          product.countInStock > 0
-                            ? 'bg-teal-600 text-white hover:bg-teal-700 shadow-md'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
-                      >
-                        <ShoppingCartIcon className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <ProductCard 
+                  key={product._id} 
+                  product={product} 
+                  onAddToCart={() => handleAddToCart(product)}
+                  showNewBadge={true}
+                />
               ))}
             </div>
             

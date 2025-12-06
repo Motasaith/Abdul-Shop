@@ -73,6 +73,11 @@ class ProductService {
     return apiService.post(`/products/${productId}/reviews`, review);
   }
 
+  // Add follow-up review
+  async addFollowUpReview(productId: string, reviewId: string, comment: string) {
+    return apiService.put(`/products/${productId}/reviews/${reviewId}/followup`, { comment });
+  }
+
   // Add product review
   async addProductQuestion(productId: string, question: { question: string }) {
     return apiService.post(`/products/${productId}/questions`, question);

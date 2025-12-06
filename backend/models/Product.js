@@ -29,7 +29,12 @@ const reviewSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }]
+
+  }],
+  followUp: {
+    comment: String,
+    date: Date
+  }
 }, {
   timestamps: true
 });

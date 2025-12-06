@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import contactService, { ContactFormData } from '../services/contactService';
 import { useTranslation } from '../hooks/useTranslation';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const ContactPage: React.FC = () => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams(); // Needs import
+  
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
-    subject: 'general',
-    message: '',
+    subject: (searchParams.get('subject') as any) || 'general',
+    message: searchParams.get('message') || '',
     phone: '',
-    orderNumber: ''
+    orderNumber: searchParams.get('orderNumber') || ''
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -94,9 +97,18 @@ const ContactPage: React.FC = () => {
               <p className="text-lg font-mono font-semibold text-gray-900 bg-gray-100 px-3 py-2 rounded">
                 #{ticketId.slice(-8).toUpperCase()}
               </p>
-              <p className="text-xs text-gray-500 mt-3">
-                {t('contactPage.success.saveId')}
+              <p className="text-xs text-gray-500 mt-3 mb-4">
+                You can view this ticket in your profile.
               </p>
+              <Link
+                to={`/profile/tickets/${ticketId}`}
+                className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+              >
+                View Ticket
+                <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
             </div>
             <button
               onClick={() => {

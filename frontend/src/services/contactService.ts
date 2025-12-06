@@ -83,6 +83,40 @@ class ContactService {
   async deleteContact(id: string) {
     return apiService.delete(`/contact/${id}`);
   }
+
+  // --- User Methods ---
+
+  // Get current user's tickets
+  async getMyContacts() {
+    return apiService.get('/contact/my-tickets');
+  }
+
+  // Get single ticket for current user
+  async getMyContact(id: string) {
+    return apiService.get(`/contact/my-tickets/${id}`);
+  }
+
+  // Close own ticket
+  async closeMyContact(id: string) {
+    return apiService.put(`/contact/my-tickets/${id}/close`, {});
+  }
+
+  // Delete own ticket
+  async deleteMyContact(id: string) {
+    return apiService.delete(`/contact/my-tickets/${id}`);
+  }
+
+  // --- Public Tracking Methods ---
+
+  // Track ticket by ID and Email
+  async trackTicket(ticketId: string, email: string) {
+    return apiService.post('/contact/track', { ticketId, email });
+  }
+
+  // Close ticket publicly
+  async closeTicketPublic(ticketId: string, email: string) {
+    return apiService.put('/contact/track/close', { ticketId, email });
+  }
 }
 
 export const contactService = new ContactService();

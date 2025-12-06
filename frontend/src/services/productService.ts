@@ -25,6 +25,8 @@ class ProductService {
     if (filters.rating) queryParams.append('rating', filters.rating.toString());
     if (filters.sort) queryParams.append('sort', filters.sort);
     if (filters.search) queryParams.append('search', filters.search);
+    if (filters.onSale) queryParams.append('onSale', 'true');
+    if (filters.newArrivals) queryParams.append('newArrivals', 'true');
     
     return apiService.get(`/products?${queryParams.toString()}`);
   }
@@ -65,8 +67,20 @@ class ProductService {
   }
 
   // Add product review
-  async addProductReview(productId: string, review: { rating: number; comment: string }) {
+  async addProductReview(productId: string, review: any) {
+    // If review is FormData, axios handles headers automatically
+    // If it's a plain object, it's sent as JSON
     return apiService.post(`/products/${productId}/reviews`, review);
+  }
+
+  // Add product review
+  async addProductQuestion(productId: string, question: { question: string }) {
+    return apiService.post(`/products/${productId}/questions`, question);
+  }
+
+  // Answer product question (admin)
+  async answerProductQuestion(productId: string, questionId: string, answer: { answer: string }) {
+    return apiService.put(`/products/${productId}/questions/${questionId}/answer`, answer);
   }
 
   // Create product (admin only)

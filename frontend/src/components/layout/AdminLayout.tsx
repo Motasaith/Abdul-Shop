@@ -27,12 +27,31 @@ import {
   EnvelopeIcon as EnvelopeIconSolid
 } from '@heroicons/react/24/solid';
 
+import notificationService from '../../services/notificationService';
+
 const AdminLayout: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAppSelector((state) => state.auth);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  React.useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const data = await notificationService.getNotifications(1, 1);
+        setUnreadCount(data.unreadCount);
+      } catch (error) {
+        console.error('Error fetching unread notifications:', error);
+      }
+    };
+
+    fetchUnreadCount();
+    // Poll every 60 seconds
+    const interval = setInterval(fetchUnreadCount, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -143,9 +162,16 @@ const AdminLayout: React.FC = () => {
                         : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
-                    <Icon className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                      isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
-                    }`} />
+                    <div className="relative">
+                      <Icon className={`mr-3 h-5 w-5 flex-shrink-0 ${
+                        isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
+                      }`} />
+                      {item.name === 'Notifications' && unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                      )}
+                    </div>
                     <div>
                       <div className="font-medium">{item.name}</div>
                       <div className="text-xs text-gray-500">{item.description}</div>
@@ -206,9 +232,16 @@ const AdminLayout: React.FC = () => {
                       : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
-                  <Icon className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                    isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
-                  }`} />
+                  <div className="relative">
+                    <Icon className={`mr-3 h-5 w-5 flex-shrink-0 ${
+                      isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
+                    }`} />
+                    {item.name === 'Notifications' && unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </div>
                   <div>
                     <div className="font-medium">{item.name}</div>
                     <div className="text-xs text-gray-500">{item.description}</div>

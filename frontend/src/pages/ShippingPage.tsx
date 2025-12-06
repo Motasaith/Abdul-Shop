@@ -15,25 +15,27 @@ import {
   ChevronUpIcon
 } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
+import { useTranslation } from '../hooks/useTranslation';
 
 const ShippingPage: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('domestic');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [zipCode, setZipCode] = useState('');
 
   const tabs = [
-    { id: 'domestic', label: 'Domestic Shipping', icon: MapPinIcon },
-    { id: 'international', label: 'International', icon: GlobeAltIcon },
-    { id: 'calculator', label: 'Shipping Calculator', icon: CalculatorIcon }
+    { id: 'domestic', label: t('shippingPage.tabs.domestic'), icon: MapPinIcon },
+    { id: 'international', label: t('shippingPage.tabs.international'), icon: GlobeAltIcon },
+    { id: 'calculator', label: t('shippingPage.tabs.calculator'), icon: CalculatorIcon }
   ];
 
   const shippingOptions = [
     {
       id: 'standard',
-      name: 'Standard Shipping',
+      name: t('shippingPage.domestic.options.standard.name'),
       price: 'FREE',
       originalPrice: 'Rs. 150',
-      time: '5-7 business days',
+      time: t('shippingPage.domestic.options.standard.time'),
       description: 'Free shipping on orders over Rs. 1000',
       icon: TruckIcon,
       features: ['Tracking included', 'Insurance included', 'Signature not required'],
@@ -41,9 +43,9 @@ const ShippingPage: React.FC = () => {
     },
     {
       id: 'express',
-      name: 'Express Shipping',
+      name: t('shippingPage.domestic.options.express.name'),
       price: 'Rs. 300',
-      time: '2-3 business days',
+      time: t('shippingPage.domestic.options.express.time'),
       description: 'Faster delivery for urgent orders',
       icon: ClockIcon,
       features: ['Priority handling', 'Tracking included', 'Insurance included'],
@@ -51,9 +53,9 @@ const ShippingPage: React.FC = () => {
     },
     {
       id: 'overnight',
-      name: 'Overnight Express',
+      name: t('shippingPage.domestic.options.overnight.name'),
       price: 'Rs. 800',
-      time: '1 business day',
+      time: t('shippingPage.domestic.options.overnight.time'),
       description: 'Next day delivery for major cities',
       icon: CheckCircleIcon,
       features: ['Next day delivery', 'Signature required', 'Full insurance'],
@@ -63,7 +65,7 @@ const ShippingPage: React.FC = () => {
 
   const internationalZones = [
     {
-      zone: 'Zone 1',
+      zone: t('shippingPage.international.zones.zone1'),
       countries: ['United States', 'Canada', 'United Kingdom', 'Australia'],
       price: 'Rs. 1,500',
       time: '7-14 business days',
@@ -71,7 +73,7 @@ const ShippingPage: React.FC = () => {
       expressTime: '3-5 business days'
     },
     {
-      zone: 'Zone 2',
+      zone: t('shippingPage.international.zones.zone2'),
       countries: ['Germany', 'France', 'Japan', 'South Korea'],
       price: 'Rs. 1,800',
       time: '10-16 business days',
@@ -79,7 +81,7 @@ const ShippingPage: React.FC = () => {
       expressTime: '4-7 business days'
     },
     {
-      zone: 'Zone 3',
+      zone: t('shippingPage.international.zones.zone3'),
       countries: ['Brazil', 'Russia', 'South Africa', 'Middle East'],
       price: 'Rs. 2,200',
       time: '14-21 business days',
@@ -90,28 +92,28 @@ const ShippingPage: React.FC = () => {
 
   const faqs = [
     {
-      question: 'How do I qualify for free shipping?',
-      answer: 'Free standard shipping is available on all orders over Rs. 1,000 within Pakistan. The discount is automatically applied at checkout when your order meets the minimum threshold.'
+      question: t('shippingPage.faq.q1.q'),
+      answer: t('shippingPage.faq.q1.a')
     },
     {
-      question: 'Do you ship on weekends and holidays?',
-      answer: 'We process orders Monday through Friday. Weekend and holiday orders are processed on the next business day. Express and overnight shipping is not available on weekends and holidays.'
+      question: t('shippingPage.faq.q2.q'),
+      answer: t('shippingPage.faq.q2.a')
     },
     {
-      question: 'Can I change my shipping address after placing an order?',
-      answer: 'You can change your shipping address within 1 hour of placing your order by contacting customer service. After that, we cannot guarantee the change as your order may have already been processed.'
+      question: t('shippingPage.faq.q3.q'),
+      answer: t('shippingPage.faq.q3.a')
     },
     {
-      question: 'What happens if I\'m not home for delivery?',
-      answer: 'Our delivery partner will attempt delivery 3 times. If unsuccessful, the package will be held at the local facility for 7 days. You\'ll receive notifications and can arrange redelivery or pickup.'
+      question: t('shippingPage.faq.q4.q'),
+      answer: t('shippingPage.faq.q4.a')
     },
     {
-      question: 'Do you ship to PO Boxes?',
-      answer: 'We can ship to PO Boxes using standard shipping only. Express and overnight shipping options are not available for PO Box addresses due to signature requirements.'
+      question: t('shippingPage.faq.q5.q'),
+      answer: t('shippingPage.faq.q5.a')
     },
     {
-      question: 'How accurate are delivery estimates?',
-      answer: 'Our delivery estimates are accurate 95% of the time. Delays may occur due to weather, customs (for international), or high-volume periods like holidays. We\'ll notify you of any delays.'
+      question: t('shippingPage.faq.q6.q'),
+      answer: t('shippingPage.faq.q6.a')
     }
   ];
 
@@ -129,22 +131,22 @@ const ShippingPage: React.FC = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-8 text-center">
         <TruckIcon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Fast & Reliable Shipping</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('shippingPage.domestic.heroTitle')}</h2>
         <p className="text-lg text-gray-600 mb-6">
-          We deliver across Pakistan with multiple shipping options to meet your needs.
+          {t('shippingPage.hero.subtitle')}
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <div className="flex items-center text-green-600">
             <CheckCircleIconSolid className="h-5 w-5 mr-2" />
-            <span className="font-medium">Free Shipping Rs. 1000+</span>
+            <span className="font-medium">{t('shippingPage.hero.badges.free')}</span>
           </div>
           <div className="flex items-center text-green-600">
             <CheckCircleIconSolid className="h-5 w-5 mr-2" />
-            <span className="font-medium">Tracking Included</span>
+            <span className="font-medium">{t('shippingPage.hero.badges.tracking')}</span>
           </div>
           <div className="flex items-center text-green-600">
             <CheckCircleIconSolid className="h-5 w-5 mr-2" />
-            <span className="font-medium">Secure Packaging</span>
+            <span className="font-medium">{t('shippingPage.hero.badges.packaging')}</span>
           </div>
         </div>
       </div>
@@ -197,11 +199,11 @@ const ShippingPage: React.FC = () => {
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
           <MapPinIcon className="h-6 w-6 text-blue-600 mr-2" />
-          Delivery Coverage Areas
+          {t('shippingPage.domestic.coverage')}
         </h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">Major Cities (1-2 Days)</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">{t('shippingPage.domestic.majorCities')} (1-2 Days)</h4>
             <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
               <div className="flex items-center">
                 <CheckCircleIconSolid className="h-4 w-4 text-green-500 mr-2" />
@@ -230,7 +232,7 @@ const ShippingPage: React.FC = () => {
             </div>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">Other Areas (3-7 Days)</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">{t('shippingPage.domestic.otherAreas')} (3-7 Days)</h4>
             <div className="text-sm text-gray-600 space-y-2">
               <div className="flex items-center">
                 <CheckCircleIconSolid className="h-4 w-4 text-blue-500 mr-2" />
@@ -251,12 +253,12 @@ const ShippingPage: React.FC = () => {
 
       {/* Special Services */}
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">Special Shipping Services</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-6">{t('shippingPage.domestic.services')}</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="p-4 border border-gray-200 rounded-lg">
             <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
               <ShieldCheckIcon className="h-5 w-5 text-green-500 mr-2" />
-              Fragile Item Shipping
+              {t('shippingPage.domestic.fragile')}
             </h4>
             <p className="text-gray-600 text-sm">
               Special packaging and handling for delicate items. Additional Rs. 200 for extra protection.
@@ -265,7 +267,7 @@ const ShippingPage: React.FC = () => {
           <div className="p-4 border border-gray-200 rounded-lg">
             <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
               <CalendarDaysIcon className="h-5 w-5 text-blue-500 mr-2" />
-              Scheduled Delivery
+              {t('shippingPage.domestic.scheduled')}
             </h4>
             <p className="text-gray-600 text-sm">
               Choose a specific delivery date and time slot. Available for express shipping only.
@@ -280,9 +282,9 @@ const ShippingPage: React.FC = () => {
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8 text-center">
         <GlobeAltIcon className="h-16 w-16 text-purple-600 mx-auto mb-4" />
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">International Shipping</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('shippingPage.international.title')}</h2>
         <p className="text-lg text-gray-600 mb-6">
-          We ship worldwide with reliable delivery and customs support.
+          {t('shippingPage.international.subtitle')}
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <div className="flex items-center text-green-600">
@@ -337,7 +339,7 @@ const ShippingPage: React.FC = () => {
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
         <h3 className="text-lg font-semibold text-amber-900 mb-4 flex items-center">
           <InformationCircleIcon className="h-6 w-6 mr-2" />
-          Important International Shipping Information
+          {t('shippingPage.international.info')}
         </h3>
         <ul className="space-y-2 text-amber-800">
           <li>• Customs duties and taxes are the responsibility of the recipient</li>
@@ -355,9 +357,9 @@ const ShippingPage: React.FC = () => {
     <div className="space-y-8">
       <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 text-center">
         <CalculatorIcon className="h-16 w-16 text-green-600 mx-auto mb-4" />
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Shipping Calculator</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('shippingPage.calculator.title')}</h2>
         <p className="text-lg text-gray-600">
-          Calculate shipping costs and delivery times for your location.
+          {t('shippingPage.calculator.subtitle')}
         </p>
       </div>
 
@@ -372,20 +374,20 @@ const ShippingPage: React.FC = () => {
                 type="text"
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
-                placeholder="Enter ZIP code"
+                placeholder={t('shippingPage.calculator.placeholder')}
                 className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <button
                 onClick={calculateShipping}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Calculate
+                {t('shippingPage.calculator.calculate')}
               </button>
             </div>
           </div>
 
           <div className="p-6 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-4">Quick Estimates</h4>
+            <h4 className="font-semibold text-gray-900 mb-4">{t('shippingPage.calculator.estimates')}</h4>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Standard Shipping</span>
@@ -458,10 +460,9 @@ const ShippingPage: React.FC = () => {
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Shipping Information</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('shippingPage.hero.title')}</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Fast, reliable shipping with multiple options to meet your needs. 
-              Free shipping on orders over Rs. 1,000.
+              {t('shippingPage.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -498,8 +499,8 @@ const ShippingPage: React.FC = () => {
         {/* FAQ Section */}
         <div className="mt-12">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Shipping FAQ</h2>
-            <p className="text-gray-600">Common questions about our shipping policies and procedures.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('shippingPage.faq.title')}</h2>
+            <p className="text-gray-600">{t('helpPage.subtitle')}</p>
           </div>
 
           <div className="space-y-4">
@@ -528,22 +529,22 @@ const ShippingPage: React.FC = () => {
 
         {/* Contact Section */}
         <div className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white text-center">
-          <h2 className="text-2xl font-bold mb-4">Need Help with Shipping?</h2>
+          <h2 className="text-2xl font-bold mb-4">{t('shippingPage.contact.title')}</h2>
           <p className="text-blue-100 mb-6">
-            Our customer service team is ready to help with any shipping questions or concerns.
+            {t('shippingPage.contact.subtitle')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               to="/contact"
               className="inline-flex items-center px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors font-medium"
             >
-              Contact Support
+              {t('shippingPage.contact.contact')}
             </Link>
             <Link
               to="/track"
               className="inline-flex items-center px-6 py-3 border border-white text-white rounded-lg hover:bg-white hover:text-blue-600 transition-colors font-medium"
             >
-              Track Your Order
+              {t('shippingPage.contact.track')}
             </Link>
           </div>
         </div>

@@ -4,10 +4,12 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { loginUser, clearError } from '../../store/slices/authSlice';
 import toast from 'react-hot-toast';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const LoginPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { loading, error, isAuthenticated, user } = useAppSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
@@ -69,15 +71,15 @@ const LoginPage: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            {t('auth.loginTitle')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            {t('auth.newCustomer')}{' '}
             <Link
               to="/register"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              create a new account
+              {t('auth.registerHere')}
             </Link>
           </p>
           <div className="mt-4 p-3 bg-purple-50 rounded-lg">
@@ -91,7 +93,7 @@ const LoginPage: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                {t('auth.email')}
               </label>
               <input
                 id="email"
@@ -100,7 +102,7 @@ const LoginPage: React.FC = () => {
                 autoComplete="email"
                 required
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
+                placeholder={t('auth.email')}
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -108,7 +110,7 @@ const LoginPage: React.FC = () => {
             
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                {t('auth.password')}
               </label>
               <div className="mt-1 relative">
                 <input
@@ -118,7 +120,7 @@ const LoginPage: React.FC = () => {
                   autoComplete="current-password"
                   required
                   className="appearance-none relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your password"
+                  placeholder={t('auth.password')}
                   value={formData.password}
                   onChange={handleChange}
                 />
@@ -146,7 +148,7 @@ const LoginPage: React.FC = () => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
+                {t('auth.rememberMe')}
               </label>
             </div>
 
@@ -155,7 +157,7 @@ const LoginPage: React.FC = () => {
                 to="/forgot-password"
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
-                Forgot your password?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
           </div>
@@ -169,7 +171,7 @@ const LoginPage: React.FC = () => {
               {loading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
               ) : (
-                'Sign in'
+                t('auth.signIn')
               )}
             </button>
           </div>
@@ -180,7 +182,7 @@ const LoginPage: React.FC = () => {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
+                <span className="px-2 bg-gray-50 text-gray-500">{t('auth.orContinue')}</span>
               </div>
             </div>
 
@@ -211,7 +213,7 @@ const LoginPage: React.FC = () => {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span className="ml-2">Google</span>
+                <span className="ml-2">{t('auth.google')}</span>
               </button>
 
               <button
@@ -225,7 +227,7 @@ const LoginPage: React.FC = () => {
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
-                <span className="ml-2">Facebook</span>
+                <span className="ml-2">{t('auth.facebook')}</span>
               </button>
             </div>
           </div>

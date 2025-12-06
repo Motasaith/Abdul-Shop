@@ -8,11 +8,57 @@ import {
   CameraIcon,
   UserGroupIcon,
   TrophyIcon
-} from '@heroicons/react/24/outline';
 
-import { pressReleases, mediaKit, stats, awards } from '../constants/pressData';
+} from '@heroicons/react/24/outline';
+import { useTranslation } from '../hooks/useTranslation';
 
 const PressPage: React.FC = () => {
+  const { t } = useTranslation();
+
+  const stats = [
+    { key: 'users', number: '2M+', color: 'blue' },
+    { key: 'products', number: '50K+', color: 'green' },
+    { key: 'uptime', number: '99.9%', color: 'purple' },
+    { key: 'countries', number: '150+', color: 'orange' }
+  ].map(stat => ({
+    ...stat,
+    label: t(`pressPage.stats.${stat.key}`)
+  }));
+
+  const pressReleases = [
+    { key: 'q4growth', color: 'blue' },
+    { key: 'sustainable', color: 'green' },
+    { key: 'award', color: 'purple' },
+    { key: 'expansion', color: 'orange' }
+  ].map(release => ({
+    ...release,
+    title: t(`pressPage.releases.items.${release.key}.title`),
+    date: t(`pressPage.releases.items.${release.key}.date`),
+    category: t(`pressPage.releases.items.${release.key}.category`),
+    excerpt: t(`pressPage.releases.items.${release.key}.excerpt`)
+  }));
+
+  const mediaKit = [
+    { key: 'logos', icon: CameraIcon, items: ['PNG', 'SVG', 'EPS formats', 'Light & dark versions'] },
+    { key: 'brand', icon: DocumentTextIcon, items: ['Color palette', 'Typography', 'Logo usage', 'Brand voice'] },
+    { key: 'images', icon: CameraIcon, items: ['App screenshots', 'Product photos', 'Interface mockups', 'Lifestyle images'] },
+    { key: 'team', icon: UserGroupIcon, items: ['CEO headshot', 'Leadership team', 'Board members', 'Various resolutions'] }
+  ].map(item => ({
+    ...item,
+    title: t(`pressPage.mediaKit.items.${item.key}.title`),
+    description: t(`pressPage.mediaKit.items.${item.key}.desc`)
+  }));
+
+  const awards = [
+    { key: 'ecommerce', icon: TrophyIcon },
+    { key: 'cx', icon: TrophyIcon },
+    { key: 'sustainable', icon: TrophyIcon }
+  ].map(award => ({
+    ...award,
+    title: t(`pressPage.awards.items.${award.key}.title`),
+    organization: t(`pressPage.awards.items.${award.key}.org`),
+    year: t(`pressPage.awards.items.${award.key}.year`)
+  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -33,18 +79,17 @@ const PressPage: React.FC = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Press & <span className="text-yellow-300">Media</span>
+              {t('pressPage.hero.title')}
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed">
-              Stay updated with ShopHub's latest news, announcements, and media resources. 
-              Your go-to source for company updates and press materials.
+              {t('pressPage.hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transform hover:scale-105 transition duration-300 shadow-lg">
-                Download Media Kit
+                {t('pressPage.hero.download')}
               </button>
               <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition duration-300">
-                Contact Press Team
+                {t('pressPage.hero.contact')}
               </button>
             </div>
           </div>
@@ -55,7 +100,7 @@ const PressPage: React.FC = () => {
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">ShopHub by the Numbers</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('pressPage.stats.title')}</h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto"></div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -84,11 +129,11 @@ const PressPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Latest <span className="text-blue-600">Press Releases</span>
+              {t('pressPage.releases.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Stay informed with our latest company news, product launches, and business updates.
+              {t('pressPage.releases.subtitle')}
             </p>
           </div>
           
@@ -118,7 +163,7 @@ const PressPage: React.FC = () => {
                     </h3>
                     <p className="text-gray-600 leading-relaxed mb-6">{release.excerpt}</p>
                     <button className="flex items-center text-blue-600 hover:text-blue-700 font-medium transition duration-300">
-                      Read Full Release
+                      {t('pressPage.releases.readFull')}
                       <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-2" />
                     </button>
                   </div>
@@ -134,11 +179,11 @@ const PressPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Media <span className="text-blue-600">Kit</span>
+              {t('pressPage.mediaKit.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Download our complete media kit with logos, brand guidelines, and high-resolution assets.
+              {t('pressPage.mediaKit.subtitle')}
             </p>
           </div>
           
@@ -159,7 +204,7 @@ const PressPage: React.FC = () => {
                       ))}
                     </ul>
                     <button className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition duration-300">
-                      Download
+                      {t('pressPage.mediaKit.download')}
                     </button>
                   </div>
                 </div>
@@ -174,11 +219,11 @@ const PressPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Awards & <span className="text-blue-600">Recognition</span>
+              {t('pressPage.awards.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              We're honored to be recognized by industry leaders for our innovation and excellence.
+              {t('pressPage.awards.subtitle')}
             </p>
           </div>
           
@@ -221,17 +266,17 @@ const PressPage: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
             <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-white">
-              <div className="font-semibold mb-2">Press Contact</div>
+              <div className="font-semibold mb-2">{t('pressPage.contact.pressContact')}</div>
               <div className="text-yellow-300 text-lg font-bold">press@shophub.com</div>
             </div>
             <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-white">
-              <div className="font-semibold mb-2">Media Relations</div>
+              <div className="font-semibold mb-2">{t('pressPage.contact.mediaRel')}</div>
               <div className="text-yellow-300 text-lg font-bold">1-800-PRESS-HUB</div>
             </div>
           </div>
           
           <button className="bg-white text-blue-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition duration-300 shadow-xl">
-            Contact Press Team
+            {t('pressPage.contact.cta')}
           </button>
         </div>
       </div>

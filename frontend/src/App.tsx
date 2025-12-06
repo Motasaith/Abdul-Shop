@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+// Force HMR update
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -47,6 +48,8 @@ import SizeGuidePage from './pages/SizeGuidePage';
 import PressPage from './pages/PressPage';
 import BlogPage from './pages/BlogPage';
 import CareersPage from './pages/CareersPage';
+import NewArrivalsPage from './pages/NewArrivalsPage';
+import SalesPage from './pages/SalesPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -120,6 +123,8 @@ function AppContent() {
             <Route path="press" element={<PressPage />} />
             <Route path="blog" element={<BlogPage />} />
             <Route path="careers" element={<CareersPage />} />
+            <Route path="new-arrivals" element={<NewArrivalsPage />} />
+            <Route path="sales" element={<SalesPage />} />
           </Route>
 
           {/* Protected Routes */}

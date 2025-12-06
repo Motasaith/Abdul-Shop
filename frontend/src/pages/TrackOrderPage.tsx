@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import orderService from '../services/orderService';
 import { formatPrice } from '../utils/currency';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface TrackingEvent {
   status: string;
@@ -47,6 +48,7 @@ interface TrackedOrder {
 }
 
 const TrackOrderPage: React.FC = () => {
+  const { t } = useTranslation();
   const { trackingNumber } = useParams<{ trackingNumber: string }>();
   const navigate = useNavigate();
   
@@ -67,12 +69,12 @@ const TrackOrderPage: React.FC = () => {
     e.preventDefault();
     
     if (!searchInput.trim()) {
-      toast.error('Please enter a tracking number or order ID');
+      toast.error(t('trackOrderPage.error.emptyInput'));
       return;
     }
 
     if (searchType === 'order' && !searchEmail.trim()) {
-      toast.error('Please enter your email address');
+      toast.error(t('trackOrderPage.error.emptyEmail'));
       return;
     }
 
@@ -150,10 +152,10 @@ const TrackOrderPage: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            📦 Track Your Order
+            📦 {t('trackOrderPage.title')}
           </h1>
           <p className="text-lg text-gray-600">
-            Enter your tracking number or order details to get real-time updates
+            {t('trackOrderPage.subtitle')}
           </p>
         </div>
 
@@ -170,7 +172,7 @@ const TrackOrderPage: React.FC = () => {
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                By Tracking Number
+                {t('trackOrderPage.search.byTracking')}
               </button>
               <button
                 type="button"
@@ -181,7 +183,7 @@ const TrackOrderPage: React.FC = () => {
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                By Order ID
+                {t('trackOrderPage.search.byOrder')}
               </button>
             </div>
           </div>
@@ -189,7 +191,7 @@ const TrackOrderPage: React.FC = () => {
           <form onSubmit={handleSearch} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {searchType === 'tracking' ? 'Tracking Number' : 'Order ID'}
+                {searchType === 'tracking' ? t('trackOrderPage.search.trackingLabel') : t('trackOrderPage.search.orderLabel')}
               </label>
               <input
                 type="text"
@@ -197,8 +199,8 @@ const TrackOrderPage: React.FC = () => {
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={
                   searchType === 'tracking' 
-                    ? 'Enter your tracking number (e.g., TRK123456789)'
-                    : 'Enter your order ID (e.g., 507f1f77bcf86cd799439011)'
+                    ? t('trackOrderPage.search.trackingPlaceholder')
+                    : t('trackOrderPage.search.orderPlaceholder')
                 }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
@@ -208,13 +210,13 @@ const TrackOrderPage: React.FC = () => {
             {searchType === 'order' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
+                  {t('trackOrderPage.search.emailLabel')}
                 </label>
                 <input
                   type="email"
                   value={searchEmail}
                   onChange={(e) => setSearchEmail(e.target.value)}
-                  placeholder="Enter the email used for this order"
+                  placeholder={t('trackOrderPage.search.emailPlaceholder')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
@@ -229,10 +231,10 @@ const TrackOrderPage: React.FC = () => {
               {loading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Tracking...
+                  {t('trackOrderPage.search.loading')}
                 </div>
               ) : (
-                'Track Order'
+                t('trackOrderPage.search.button')
               )}
             </button>
           </form>
@@ -259,26 +261,26 @@ const TrackOrderPage: React.FC = () => {
           <div className="space-y-8">
             {/* Order Summary */}
             <div className="bg-white rounded-xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('trackOrderPage.summary.title')}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Details</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('trackOrderPage.summary.details')}</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Order ID:</span>
+                      <span className="text-gray-600">{t('trackOrderPage.summary.orderId')}:</span>
                       <span className="font-mono text-gray-900">#{order._id.slice(-8).toUpperCase()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Order Date:</span>
+                      <span className="text-gray-600">{t('trackOrderPage.summary.date')}:</span>
                       <span className="text-gray-900">{formatDate(order.createdAt)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Total Amount:</span>
+                      <span className="text-gray-600">{t('trackOrderPage.summary.amount')}:</span>
                       <span className="font-semibold text-gray-900">{formatPrice(order.totalPrice)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Status:</span>
+                      <span className="text-gray-600">{t('trackOrderPage.summary.status')}:</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                         order.isDelivered ? 'bg-green-100 text-green-800' :
                         order.isShipped ? 'bg-blue-100 text-blue-800' :
@@ -290,7 +292,7 @@ const TrackOrderPage: React.FC = () => {
                     </div>
                     {order.trackingInfo?.trackingNumber && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Tracking Number:</span>
+                        <span className="text-gray-600">{t('trackOrderPage.summary.trackingNumber')}:</span>
                         <span className="font-mono text-gray-900">{order.trackingInfo.trackingNumber}</span>
                       </div>
                     )}
@@ -298,7 +300,7 @@ const TrackOrderPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Shipping Address</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('trackOrderPage.summary.shippingAddress')}</h3>
                   <div className="text-sm text-gray-600">
                     <div>{order.shippingAddress.address}</div>
                     <div>
@@ -311,7 +313,7 @@ const TrackOrderPage: React.FC = () => {
 
               {/* Order Items */}
               <div className="mt-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Items Ordered</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('trackOrderPage.summary.items')}</h3>
                 <div className="space-y-4">
                   {order.orderItems.map((item, index) => (
                     <div key={index} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
@@ -322,7 +324,7 @@ const TrackOrderPage: React.FC = () => {
                       />
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">{item.name}</h4>
-                        <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                        <p className="text-sm text-gray-600">{t('trackOrderPage.summary.quantity')}: {item.quantity}</p>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
@@ -336,7 +338,7 @@ const TrackOrderPage: React.FC = () => {
             {/* Tracking Timeline */}
             <div className="bg-white rounded-xl shadow-lg p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Tracking Timeline</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('trackOrderPage.timeline.title')}</h2>
                 {order.trackingInfo?.trackingUrl && (
                   <a
                     href={order.trackingInfo.trackingUrl}
@@ -347,7 +349,7 @@ const TrackOrderPage: React.FC = () => {
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    Track with {order.trackingInfo.carrier}
+                    {t('trackOrderPage.timeline.trackWith')} {order.trackingInfo.carrier}
                   </a>
                 )}
               </div>
@@ -394,7 +396,7 @@ const TrackOrderPage: React.FC = () => {
                           </span>
                           {event.estimated && (
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                              Estimated
+                              {t('trackOrderPage.timeline.estimated')}
                             </span>
                           )}
                         </div>
@@ -414,7 +416,7 @@ const TrackOrderPage: React.FC = () => {
                               rel="noopener noreferrer"
                               className="inline-flex items-center text-sm text-blue-600 hover:text-blue-500"
                             >
-                              View on carrier website
+                              {t('trackOrderPage.timeline.viewOnCarrier')}
                               <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
@@ -432,10 +434,10 @@ const TrackOrderPage: React.FC = () => {
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8">
               <div className="text-center">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Need Help with Your Order?
+                  {t('trackOrderPage.help.title')}
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  If you have any questions or concerns about your order, our customer support team is here to help.
+                  {t('trackOrderPage.help.subtitle')}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button
@@ -445,7 +447,7 @@ const TrackOrderPage: React.FC = () => {
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-2.966-.5c-.48-.15-.96-.3-1.428-.458L7.548 21l.472-1.76C6.858 18.284 6 15.222 6 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
                     </svg>
-                    Contact Support
+                    {t('trackOrderPage.help.contact')}
                   </button>
                   <button
                     onClick={() => navigate('/help')}
@@ -454,7 +456,7 @@ const TrackOrderPage: React.FC = () => {
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Help Center
+                    {t('trackOrderPage.help.center')}
                   </button>
                 </div>
               </div>

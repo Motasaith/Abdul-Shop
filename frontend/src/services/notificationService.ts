@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_URL = '/api/notifications';
+import apiService from './api';
 
 interface Notification {
   _id: string;
@@ -23,22 +21,22 @@ interface NotificationResponse {
 }
 
 const getNotifications = async (page = 1, limit = 20): Promise<NotificationResponse> => {
-  const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}`);
+  const response = await apiService.get(`/notifications?page=${page}&limit=${limit}`);
   return response.data;
 };
 
 const markAsRead = async (id: string): Promise<Notification> => {
-  const response = await axios.put(`${API_URL}/${id}/read`);
+  const response = await apiService.put(`/notifications/${id}/read`);
   return response.data;
 };
 
 const markAllAsRead = async (): Promise<{ msg: string }> => {
-  const response = await axios.put(`${API_URL}/mark-all-read`);
+  const response = await apiService.put(`/notifications/mark-all-read`);
   return response.data;
 };
 
 const deleteNotification = async (id: string): Promise<{ msg: string }> => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+  const response = await apiService.delete(`/notifications/${id}`);
   return response.data;
 };
 

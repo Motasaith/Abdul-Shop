@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Ruler, User, Shirt, ShoppingBag } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface SizeChart {
   size: string;
@@ -16,6 +17,7 @@ interface SizeChart {
 }
 
 const SizeGuidePage: React.FC = () => {
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('clothing');
 
   const clothingSizes: SizeChart[] = [
@@ -52,9 +54,9 @@ const SizeGuidePage: React.FC = () => {
   ];
 
   const categories = [
-    { id: 'clothing', name: 'Clothing', icon: Shirt },
-    { id: 'pants', name: 'Pants & Jeans', icon: User },
-    { id: 'shoes', name: 'Footwear', icon: ShoppingBag },
+    { id: 'clothing', name: t('sizeGuidePage.categories.clothing'), icon: Shirt },
+    { id: 'pants', name: t('sizeGuidePage.categories.pants'), icon: User },
+    { id: 'shoes', name: t('sizeGuidePage.categories.shoes'), icon: ShoppingBag },
   ];
 
   const renderSizeChart = () => {
@@ -65,13 +67,13 @@ const SizeGuidePage: React.FC = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Size</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Chest (cm)</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Waist (cm)</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Hips (cm)</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Length (cm)</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Shoulder (cm)</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Sleeve (cm)</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.size')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.chest')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.waist')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.hips')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.length')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.shoulder')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.sleeve')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -97,10 +99,10 @@ const SizeGuidePage: React.FC = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Size</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Waist (cm)</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Hips (cm)</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Inseam (cm)</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.size')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.waist')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.hips')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.inseam')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -123,10 +125,10 @@ const SizeGuidePage: React.FC = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Size</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">UK</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">US</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">EU</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.size')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.uk')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.us')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.eu')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -155,10 +157,10 @@ const SizeGuidePage: React.FC = () => {
         <div className="text-center mb-12">
           <div className="flex justify-center items-center mb-4">
             <Ruler className="h-12 w-12 text-blue-600 mr-3" />
-            <h1 className="text-4xl font-bold text-gray-900">Size Guide</h1>
+            <h1 className="text-4xl font-bold text-gray-900">{t('sizeGuidePage.title')}</h1>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Find your perfect fit with our comprehensive size guide. All measurements are in centimeters unless otherwise specified.
+            {t('sizeGuidePage.subtitle')}
           </p>
         </div>
 
@@ -199,24 +201,24 @@ const SizeGuidePage: React.FC = () => {
 
         {/* How to Measure */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">How to Measure</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('sizeGuidePage.measure.title')}</h2>
           
           {activeCategory === 'clothing' && (
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Body Measurements</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.body')}</h3>
                 <ul className="space-y-3 text-gray-700">
-                  <li><strong>Chest:</strong> Measure around the fullest part of your chest, keeping the tape horizontal.</li>
-                  <li><strong>Waist:</strong> Measure around your natural waistline, keeping the tape comfortably loose.</li>
-                  <li><strong>Hips:</strong> Measure around the fullest part of your hips, keeping the tape horizontal.</li>
+                  <li><strong>{t('sizeGuidePage.measure.chest')}:</strong> Measure around the fullest part of your chest, keeping the tape horizontal.</li>
+                  <li><strong>{t('sizeGuidePage.measure.waist')}:</strong> Measure around your natural waistline, keeping the tape comfortably loose.</li>
+                  <li><strong>{t('sizeGuidePage.measure.hips')}:</strong> Measure around the fullest part of your hips, keeping the tape horizontal.</li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Garment Measurements</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.garment')}</h3>
                 <ul className="space-y-3 text-gray-700">
-                  <li><strong>Length:</strong> Measured from the highest point of the shoulder to the bottom hem.</li>
-                  <li><strong>Shoulder:</strong> Measured from shoulder point to shoulder point across the back.</li>
-                  <li><strong>Sleeve:</strong> Measured from the shoulder seam to the end of the cuff.</li>
+                  <li><strong>{t('sizeGuidePage.measure.length')}:</strong> Measured from the highest point of the shoulder to the bottom hem.</li>
+                  <li><strong>{t('sizeGuidePage.measure.shoulder')}:</strong> Measured from shoulder point to shoulder point across the back.</li>
+                  <li><strong>{t('sizeGuidePage.measure.sleeve')}:</strong> Measured from the shoulder seam to the end of the cuff.</li>
                 </ul>
               </div>
             </div>
@@ -225,10 +227,10 @@ const SizeGuidePage: React.FC = () => {
           {activeCategory === 'pants' && (
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Body Measurements</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.body')}</h3>
                 <ul className="space-y-3 text-gray-700">
-                  <li><strong>Waist:</strong> Measure around your natural waistline where you normally wear your pants.</li>
-                  <li><strong>Hips:</strong> Measure around the fullest part of your hips and seat.</li>
+                  <li><strong>{t('sizeGuidePage.measure.waist')}:</strong> Measure around your natural waistline where you normally wear your pants.</li>
+                  <li><strong>{t('sizeGuidePage.measure.hips')}:</strong> Measure around the fullest part of your hips and seat.</li>
                 </ul>
               </div>
               <div>
@@ -244,10 +246,10 @@ const SizeGuidePage: React.FC = () => {
           {activeCategory === 'shoes' && (
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Foot Measurements</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.foot')}</h3>
                 <ul className="space-y-3 text-gray-700">
-                  <li><strong>Length:</strong> Measure from the back of your heel to the tip of your longest toe.</li>
-                  <li><strong>Width:</strong> Measure across the widest part of your foot.</li>
+                  <li><strong>{t('sizeGuidePage.measure.ftLength')}:</strong> Measure from the back of your heel to the tip of your longest toe.</li>
+                  <li><strong>{t('sizeGuidePage.measure.width')}:</strong> Measure across the widest part of your foot.</li>
                   <li><strong>Best Time:</strong> Measure your feet in the evening when they're at their largest.</li>
                 </ul>
               </div>
@@ -265,13 +267,11 @@ const SizeGuidePage: React.FC = () => {
 
         {/* Tips */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">Sizing Tips</h3>
+          <h3 className="text-lg font-semibold text-blue-900 mb-3">{t('sizeGuidePage.tips.title')}</h3>
           <ul className="space-y-2 text-blue-800">
-            <li>• If you're between sizes, we recommend sizing up for a more comfortable fit.</li>
-            <li>• Different brands may have slight variations in sizing - always check the specific measurements.</li>
-            <li>• For the most accurate measurements, have someone help you measure.</li>
-            <li>• Keep the measuring tape snug but not tight against your body.</li>
-            <li>• If you have any questions about sizing, don't hesitate to contact our customer service team.</li>
+            {(t('sizeGuidePage.tips.list', { returnObjects: true }) as string[]).map((tip, index) => (
+              <li key={index}>• {tip}</li>
+            ))}
           </ul>
         </div>
       </div>

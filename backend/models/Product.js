@@ -19,7 +19,17 @@ const reviewSchema = new mongoose.Schema({
   comment: {
     type: String,
     required: true
-  }
+  },
+  images: [{
+    public_id: {
+      type: String,
+      required: true
+    },
+    url: {
+      type: String,
+      required: true
+    }
+  }]
 }, {
   timestamps: true
 });
@@ -135,6 +145,14 @@ const productSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  isNewArrival: {
+    type: Boolean,
+    default: false
+  },
+  onSale: {
+    type: Boolean,
+    default: false
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

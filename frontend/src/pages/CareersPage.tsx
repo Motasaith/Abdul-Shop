@@ -14,162 +14,59 @@ import {
   StarIcon,
   AcademicCapIcon
 } from '@heroicons/react/24/outline';
+import { useTranslation } from '../hooks/useTranslation';
 
 const CareersPage: React.FC = () => {
+  const { t } = useTranslation();
+
   const jobOpenings = [
-    {
-      title: 'Senior Frontend Developer',
-      department: 'Engineering',
-      location: 'San Francisco, CA',
-      type: 'Full-time',
-      salary: '$120,000 - $160,000',
-      experience: 'Senior',
-      description: 'Join our frontend team to build the next generation of e-commerce experiences using React, TypeScript, and modern web technologies.',
-      requirements: ['5+ years React experience', 'TypeScript proficiency', 'E-commerce background preferred'],
-      color: 'blue'
-    },
-    {
-      title: 'Product Marketing Manager',
-      department: 'Marketing',
-      location: 'New York, NY',
-      type: 'Full-time',
-      salary: '$90,000 - $120,000',
-      experience: 'Mid-level',
-      description: 'Drive product marketing strategy and go-to-market initiatives for our growing e-commerce platform.',
-      requirements: ['3+ years product marketing', 'B2B SaaS experience', 'Data-driven mindset'],
-      color: 'green'
-    },
-    {
-      title: 'UX/UI Designer',
-      department: 'Design',
-      location: 'Remote',
-      type: 'Full-time',
-      salary: '$80,000 - $110,000',
-      experience: 'Mid-level',
-      description: 'Create beautiful, intuitive user experiences that delight our millions of users worldwide.',
-      requirements: ['Figma expertise', 'User research experience', 'E-commerce design portfolio'],
-      color: 'purple'
-    },
-    {
-      title: 'DevOps Engineer',
-      department: 'Engineering',
-      location: 'Austin, TX',
-      type: 'Full-time',
-      salary: '$110,000 - $140,000',
-      experience: 'Senior',
-      description: 'Scale our infrastructure to support millions of transactions and ensure 99.9% uptime.',
-      requirements: ['AWS/Azure experience', 'Kubernetes proficiency', 'CI/CD expertise'],
-      color: 'orange'
-    },
-    {
-      title: 'Customer Success Manager',
-      department: 'Customer Success',
-      location: 'Chicago, IL',
-      type: 'Full-time',
-      salary: '$70,000 - $90,000',
-      experience: 'Entry-level',
-      description: 'Help our enterprise customers succeed and grow their business using our platform.',
-      requirements: ['2+ years customer success', 'Strong communication skills', 'Problem-solving abilities'],
-      color: 'teal'
-    },
-    {
-      title: 'Data Scientist',
-      department: 'Analytics',
-      location: 'Seattle, WA',
-      type: 'Full-time',
-      salary: '$130,000 - $170,000',
-      experience: 'Senior',
-      description: 'Use machine learning and analytics to drive insights and optimize our platform performance.',
-      requirements: ['Python/R proficiency', 'ML/AI experience', 'Statistics background'],
-      color: 'indigo'
-    }
-  ];
+    { key: 'frontend', color: 'blue', location: 'San Francisco, CA', type: 'Full-time', salary: '$120,000 - $160,000', experience: 'Senior' },
+    { key: 'marketing', color: 'green', location: 'New York, NY', type: 'Full-time', salary: '$90,000 - $120,000', experience: 'Mid-level' },
+    { key: 'design', color: 'purple', location: 'Remote', type: 'Full-time', salary: '$80,000 - $110,000', experience: 'Mid-level' },
+    { key: 'devops', color: 'orange', location: 'Austin, TX', type: 'Full-time', salary: '$110,000 - $140,000', experience: 'Senior' },
+    { key: 'cs', color: 'teal', location: 'Chicago, IL', type: 'Full-time', salary: '$70,000 - $90,000', experience: 'Entry-level' },
+    { key: 'data', color: 'indigo', location: 'Seattle, WA', type: 'Full-time', salary: '$130,000 - $170,000', experience: 'Senior' }
+  ].map(job => ({
+    ...job,
+    title: t(`careersPage.jobs.${job.key}.title`),
+    department: t(`careersPage.jobs.${job.key}.dept`),
+    description: t(`careersPage.jobs.${job.key}.desc`),
+    requirements: t(`careersPage.jobs.${job.key}.reqs`, { returnObjects: true }) as string[]
+  }));
 
   const benefits = [
-    {
-      icon: HeartIcon,
-      title: 'Health & Wellness',
-      description: 'Comprehensive health, dental, and vision insurance plus wellness programs',
-      color: 'red'
-    },
-    {
-      icon: ClockIcon,
-      title: 'Flexible Schedule',
-      description: 'Work-life balance with flexible hours and unlimited PTO',
-      color: 'blue'
-    },
-    {
-      icon: AcademicCapIcon,
-      title: 'Learning & Growth',
-      description: '$2,000 annual learning budget and conference attendance',
-      color: 'green'
-    },
-    {
-      icon: GlobeAltIcon,
-      title: 'Remote-First',
-      description: 'Work from anywhere with quarterly team gatherings',
-      color: 'purple'
-    },
-    {
-      icon: CurrencyDollarIcon,
-      title: 'Competitive Pay',
-      description: 'Top-tier compensation with equity and performance bonuses',
-      color: 'yellow'
-    },
-    {
-      icon: RocketLaunchIcon,
-      title: 'Innovation Time',
-      description: '20% time for personal projects and innovation initiatives',
-      color: 'orange'
-    }
-  ];
+    { key: 'health', icon: HeartIcon, color: 'red' },
+    { key: 'schedule', icon: ClockIcon, color: 'blue' },
+    { key: 'learning', icon: AcademicCapIcon, color: 'green' },
+    { key: 'remote', icon: GlobeAltIcon, color: 'purple' },
+    { key: 'pay', icon: CurrencyDollarIcon, color: 'yellow' },
+    { key: 'innovation', icon: RocketLaunchIcon, color: 'orange' }
+  ].map(benefit => ({
+    ...benefit,
+    title: t(`careersPage.benefits.${benefit.key}.title`),
+    description: t(`careersPage.benefits.${benefit.key}.desc`)
+  }));
 
   const values = [
-    {
-      title: 'Customer Obsession',
-      description: 'We put our customers at the heart of everything we do, building products that truly solve their problems.',
-      emoji: '🎯'
-    },
-    {
-      title: 'Innovation',
-      description: 'We embrace new technologies and creative solutions to stay ahead of the curve.',
-      emoji: '💡'
-    },
-    {
-      title: 'Collaboration',
-      description: 'We believe the best work happens when diverse teams collaborate openly and respectfully.',
-      emoji: '🤝'
-    },
-    {
-      title: 'Excellence',
-      description: 'We set high standards and continuously strive to exceed expectations in all we do.',
-      emoji: '⭐'
-    }
-  ];
+    { key: 'customer', emoji: '🎯' },
+    { key: 'innovation', emoji: '💡' },
+    { key: 'collaboration', emoji: '🤝' },
+    { key: 'excellence', emoji: '⭐' }
+  ].map(value => ({
+    ...value,
+    title: t(`careersPage.values.${value.key}.title`),
+    description: t(`careersPage.values.${value.key}.desc`)
+  }));
 
   const testimonials = [
-    {
-      name: 'Sarah Chen',
-      role: 'Senior Product Manager',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80',
-      quote: 'The growth opportunities here are incredible. In just two years, I\'ve led three major product launches and grown my team from 2 to 8 people.',
-      rating: 5
-    },
-    {
-      name: 'Marcus Johnson',
-      role: 'Full Stack Developer',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80',
-      quote: 'The engineering culture is outstanding. We use cutting-edge tech, have great code review processes, and everyone is always willing to help.',
-      rating: 5
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Design Lead',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80',
-      quote: 'I love how user-centered our design process is. We regularly talk to customers and iterate based on real feedback.',
-      rating: 5
-    }
-  ];
+    { key: 'sarah', name: 'Sarah Chen', image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80', rating: 5 },
+    { key: 'marcus', name: 'Marcus Johnson', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80', rating: 5 },
+    { key: 'emily', name: 'Emily Rodriguez', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80', rating: 5 }
+  ].map(test => ({
+    ...test,
+    role: t(`careersPage.testimonials.${test.key}.role`),
+    quote: t(`careersPage.testimonials.${test.key}.quote`)
+  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -190,18 +87,17 @@ const CareersPage: React.FC = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Join Our <span className="text-yellow-300">Team</span>
+              {t('careersPage.hero.title')}
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed">
-              Help us build the future of e-commerce. Join a team of passionate individuals 
-              creating products that millions of people love.
+              {t('careersPage.hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-indigo-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transform hover:scale-105 transition duration-300 shadow-lg">
-                View Open Positions
+                {t('careersPage.hero.viewPositions')}
               </button>
               <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-indigo-600 transform hover:scale-105 transition duration-300">
-                Learn About Culture
+                {t('careersPage.hero.learnCulture')}
               </button>
             </div>
           </div>
@@ -214,19 +110,19 @@ const CareersPage: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="text-4xl font-bold text-indigo-600 mb-2">150+</div>
-              <div className="text-gray-600">Team Members</div>
+              <div className="text-gray-600">{t('careersPage.stats.members')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-green-600 mb-2">12</div>
-              <div className="text-gray-600">Open Positions</div>
+              <div className="text-gray-600">{t('careersPage.stats.positions')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-purple-600 mb-2">25+</div>
-              <div className="text-gray-600">Countries</div>
+              <div className="text-gray-600">{t('careersPage.stats.countries')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-orange-600 mb-2">4.8★</div>
-              <div className="text-gray-600">Glassdoor Rating</div>
+              <div className="text-gray-600">{t('careersPage.stats.rating')}</div>
             </div>
           </div>
         </div>
@@ -237,11 +133,11 @@ const CareersPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Our <span className="text-indigo-600">Values</span>
+              {t('careersPage.values.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              These core values guide everything we do and shape our culture.
+              {t('careersPage.values.subtitle')}
             </p>
           </div>
           
@@ -264,11 +160,11 @@ const CareersPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Why Work <span className="text-indigo-600">With Us</span>
+              {t('careersPage.benefits.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              We offer competitive benefits and a culture that supports your growth and well-being.
+              {t('careersPage.benefits.subtitle')}
             </p>
           </div>
           
@@ -304,11 +200,11 @@ const CareersPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Open <span className="text-indigo-600">Positions</span>
+              {t('careersPage.jobs.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Find your next career opportunity and join our growing team.
+              {t('careersPage.jobs.subtitle')}
             </p>
           </div>
           
@@ -355,7 +251,7 @@ const CareersPage: React.FC = () => {
                     <p className="text-gray-600 leading-relaxed mb-6">{job.description}</p>
                     
                     <div className="mb-6">
-                      <h4 className="font-semibold text-gray-900 mb-3">Key Requirements:</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('careersPage.jobs.requirements')}</h4>
                       <ul className="space-y-2">
                         {job.requirements.map((req, reqIndex) => (
                           <li key={reqIndex} className="flex items-center text-gray-600 text-sm">
@@ -368,10 +264,10 @@ const CareersPage: React.FC = () => {
                     
                     <div className="flex space-x-4">
                       <button className={`flex-1 bg-gradient-to-r ${colorClasses[job.color as keyof typeof colorClasses]} text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transform hover:scale-105 transition duration-300`}>
-                        Apply Now
+                        {t('careersPage.jobs.apply')}
                       </button>
                       <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-semibold hover:border-indigo-500 hover:text-indigo-600 transition duration-300">
-                        Learn More
+                        {t('careersPage.jobs.learnMore')}
                       </button>
                     </div>
                   </div>
@@ -387,11 +283,11 @@ const CareersPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              What Our Team <span className="text-indigo-600">Says</span>
+              {t('careersPage.testimonials.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Hear from our team members about what makes ShopHub a great place to work.
+              {t('careersPage.testimonials.subtitle')}
             </p>
           </div>
           
@@ -426,11 +322,11 @@ const CareersPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to <span className="text-yellow-300">Apply?</span>
+              {t('careersPage.process.title')}
             </h2>
             <div className="w-24 h-1 bg-yellow-300 mx-auto mb-8"></div>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed">
-              Join us in building the future of e-commerce. We can't wait to meet you!
+              {t('careersPage.process.subtitle')}
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -438,31 +334,31 @@ const CareersPage: React.FC = () => {
                 <div className="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-white">1</span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Apply Online</h3>
-                <p className="text-gray-200">Submit your application and tell us why you're excited to join ShopHub.</p>
+                <h3 className="text-xl font-bold text-white mb-2">{t('careersPage.process.step1.title')}</h3>
+                <p className="text-gray-200">{t('careersPage.process.step1.desc')}</p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-white">2</span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Interview Process</h3>
-                <p className="text-gray-200">Meet with our team through a series of interviews to discuss your experience and fit.</p>
+                <h3 className="text-xl font-bold text-white mb-2">{t('careersPage.process.step2.title')}</h3>
+                <p className="text-gray-200">{t('careersPage.process.step2.desc')}</p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-white">3</span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Join the Team</h3>
-                <p className="text-gray-200">Get your offer and start your journey with us!</p>
+                <h3 className="text-xl font-bold text-white mb-2">{t('careersPage.process.step3.title')}</h3>
+                <p className="text-gray-200">{t('careersPage.process.step3.desc')}</p>
               </div>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-indigo-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transform hover:scale-105 transition duration-300 shadow-lg">
-                Browse All Positions
+                {t('careersPage.process.browse')}
               </button>
               <button className="border-2 border-white text-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-indigo-600 transform hover:scale-105 transition duration-300">
-                Contact HR Team
+                {t('careersPage.process.contact')}
               </button>
             </div>
           </div>

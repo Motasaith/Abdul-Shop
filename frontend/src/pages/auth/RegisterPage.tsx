@@ -4,10 +4,12 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { registerUser, clearError } from '../../store/slices/authSlice';
 import PhoneInput from '../../components/common/PhoneInput';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const RegisterPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
@@ -88,7 +90,7 @@ const RegisterPage: React.FC = () => {
           }
         });
       } else {
-        toast.success('Registration successful!');
+        toast.success(t('auth.registerSuccess'));
         navigate('/');
       }
     } catch (error) {
@@ -101,12 +103,12 @@ const RegisterPage: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
+            {t('auth.registerTitle')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            {t('auth.alreadyAccount')}{' '}
             <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              sign in to your existing account
+              {t('auth.loginHere')}
             </Link>
           </p>
         </div>
@@ -115,7 +117,7 @@ const RegisterPage: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Full Name
+                  {t('auth.name')}
                 </label>
                 <input
                   id="name"
@@ -124,7 +126,7 @@ const RegisterPage: React.FC = () => {
                   autoComplete="name"
                   required
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your full name"
+                  placeholder={t('auth.name')}
                   value={formData.name}
                   onChange={handleChange}
                 />
@@ -133,15 +135,15 @@ const RegisterPage: React.FC = () => {
               <PhoneInput
                 value={formData.phone}
                 onChange={handlePhoneChange}
-                placeholder="Enter your phone number"
+                placeholder={t('auth.phone')}
                 required
-                label="Phone Number"
+                label={t('auth.phone')}
                 className=""
               />
               
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email address
+                  {t('auth.email')}
                 </label>
                 <input
                   id="email"
@@ -150,7 +152,7 @@ const RegisterPage: React.FC = () => {
                   autoComplete="email"
                   required
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your email"
+                  placeholder={t('auth.email')}
                   value={formData.email}
                   onChange={handleChange}
                 />
@@ -158,7 +160,7 @@ const RegisterPage: React.FC = () => {
               
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
+                  {t('auth.password')}
                 </label>
                 <input
                   id="password"
@@ -167,7 +169,7 @@ const RegisterPage: React.FC = () => {
                   autoComplete="new-password"
                   required
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your password"
+                  placeholder={t('auth.password')}
                   value={formData.password}
                   onChange={handleChange}
                 />
@@ -175,7 +177,7 @@ const RegisterPage: React.FC = () => {
               
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                  Confirm Password
+                  {t('auth.confirmPassword')}
                 </label>
                 <input
                   id="confirmPassword"
@@ -184,7 +186,7 @@ const RegisterPage: React.FC = () => {
                   autoComplete="new-password"
                   required
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Confirm your password"
+                  placeholder={t('auth.confirmPassword')}
                   value={formData.confirmPassword}
                   onChange={handleChange}
                 />
@@ -200,7 +202,7 @@ const RegisterPage: React.FC = () => {
                 {loading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 ) : (
-                  'Create Account'
+                  t('auth.registerTitle')
                 )}
               </button>
             </div>

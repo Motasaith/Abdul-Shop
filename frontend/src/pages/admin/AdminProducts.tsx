@@ -15,6 +15,8 @@ interface Product {
   numReviews: number;
   images: Array<{ url: string }>;
   isActive: boolean;
+  isNewArrival: boolean;
+  onSale: boolean;
   createdAt: string;
 }
 
@@ -78,6 +80,26 @@ const AdminProducts: React.FC = () => {
         toast.success('Product status updated');
         fetchProducts();
       }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update product');
+    }
+  };
+
+  const handleToggleNewArrival = async (id: string, currentValue: boolean) => {
+    try {
+      await adminService.updateProduct(id, { isNewArrival: !currentValue });
+      toast.success('Product new arrival status updated');
+      fetchProducts();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update product');
+    }
+  };
+
+  const handleToggleOnSale = async (id: string, currentValue: boolean) => {
+    try {
+      await adminService.updateProduct(id, { onSale: !currentValue });
+      toast.success('Product sale status updated');
+      fetchProducts();
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to update product');
     }
@@ -185,6 +207,9 @@ const AdminProducts: React.FC = () => {
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Curation
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -252,6 +277,30 @@ const AdminProducts: React.FC = () => {
                     }`}>
                       {product.isActive ? 'Active' : 'Inactive'}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                    <button
+                      onClick={() => handleToggleNewArrival(product._id, product.isNewArrival)}
+                      className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
+                        product.isNewArrival 
+                          ? 'bg-teal-600 text-white hover:bg-teal-700 shadow-sm' 
+                          : 'bg-gray-100 text-gray-400 border border-gray-200 hover:bg-gray-200'
+                      }`}
+                      title="Toggle Manual New Arrival"
+                    >
+                      {product.isNewArrival ? 'NEW: ON' : 'NEW'}
+                    </button>
+                    <button
+                      onClick={() => handleToggleOnSale(product._id, product.onSale)}
+                      className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
+                        product.onSale 
+                          ? 'bg-pink-600 text-white hover:bg-pink-700 shadow-sm' 
+                          : 'bg-gray-100 text-gray-400 border border-gray-200 hover:bg-gray-200'
+                      }`}
+                      title="Toggle Manual On Sale"
+                    >
+                      {product.onSale ? 'SALE: ON' : 'SALE'}
+                    </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <button

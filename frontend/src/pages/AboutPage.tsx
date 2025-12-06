@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import { 
   ShoppingBagIcon, 
   HeartIcon, 
@@ -11,62 +12,63 @@ import {
 } from '@heroicons/react/24/outline';
 
 const AboutPage: React.FC = () => {
+  const { t } = useTranslation();
   const features = [
     {
       icon: ShoppingBagIcon,
-      title: 'Wide Product Selection',
-      description: 'Thousands of products across multiple categories to meet all your needs'
+      title: t('about.features.wideSelection.title'),
+      description: t('about.features.wideSelection.desc')
     },
     {
       icon: TruckIcon,
-      title: 'Fast Shipping',
-      description: 'Quick and reliable delivery right to your doorstep'
+      title: t('about.features.fastShipping.title'),
+      description: t('about.features.fastShipping.desc')
     },
     {
       icon: ChatBubbleLeftRightIcon,
-      title: '24/7 Support',
-      description: 'Round-the-clock customer service to assist you anytime'
+      title: t('about.features.support247.title'),
+      description: t('about.features.support247.desc')
     },
     {
       icon: CreditCardIcon,
-      title: 'Secure Payments',
-      description: 'Safe and encrypted payment processing for your peace of mind'
+      title: t('about.features.securePayment.title'),
+      description: t('about.features.securePayment.desc')
     },
     {
       icon: HeartIcon,
-      title: 'Quality Guarantee',
-      description: 'Every product is carefully selected to meet our high standards'
+      title: t('about.features.qualityGuarantee.title'),
+      description: t('about.features.qualityGuarantee.desc')
     },
     {
       icon: ShieldCheckIcon,
-      title: 'Trusted Platform',
-      description: 'Built on trust, reliability, and customer satisfaction'
+      title: t('about.features.trustedPlatform.title'),
+      description: t('about.features.trustedPlatform.desc')
     }
   ];
 
   const stats = [
-    { number: '50K+', label: 'Happy Customers' },
-    { number: '10K+', label: 'Products Available' },
-    { number: '99.9%', label: 'Uptime Guarantee' },
-    { number: '24/7', label: 'Customer Support' }
+    { number: '50K+', label: t('about.stats.customers') },
+    { number: '10K+', label: t('about.stats.products') },
+    { number: '99.9%', label: t('about.stats.uptime') },
+    { number: '24/7', label: t('about.stats.support') }
   ];
 
   const values = [
     {
-      title: 'Quality First',
-      description: 'We carefully curate our products to ensure they meet the highest quality standards.',
+      title: t('about.values.quality.title'),
+      description: t('about.values.quality.desc'),
       color: 'blue',
       icon: CheckCircleIcon
     },
     {
-      title: 'Customer Trust',
-      description: 'Building long-term relationships with our customers based on trust and reliability.',
+      title: t('about.values.trust.title'),
+      description: t('about.values.trust.desc'),
       color: 'green',
       icon: ShieldCheckIcon
     },
     {
-      title: 'Innovation',
-      description: 'Constantly improving our platform to provide the best shopping experience.',
+      title: t('about.values.innovation.title'),
+      description: t('about.values.innovation.desc'),
       color: 'purple',
       icon: StarIcon
     }
@@ -86,18 +88,17 @@ const AboutPage: React.FC = () => {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Welcome to <span className="text-yellow-300">ShopHub</span>
+              {t('about.hero.title')}
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed">
-              Your premier destination for quality products and exceptional shopping experiences. 
-              Discover, shop, and enjoy with confidence.
+              {t('about.hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transform hover:scale-105 transition duration-300 shadow-lg">
-                Start Shopping
+                {t('about.hero.ctaStart')}
               </button>
               <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition duration-300">
-                Learn More
+                {t('about.hero.ctaLearn')}
               </button>
             </div>
           </div>
@@ -125,13 +126,11 @@ const AboutPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Our <span className="text-blue-600">Mission</span>
+              {t('about.mission.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-              At ShopHub, our mission is to revolutionize online shopping by providing a seamless, 
-              secure, and enjoyable experience for every customer. We believe that shopping should be 
-              convenient, affordable, and accessible to everyone, everywhere.
+              {t('about.mission.description')}
             </p>
           </div>
         </div>
@@ -142,11 +141,11 @@ const AboutPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Why Choose <span className="text-blue-600">ShopHub?</span>
+              {t('about.features.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              We're committed to providing you with the best online shopping experience possible.
+              {t('about.features.subtitle')}
             </p>
           </div>
           
@@ -174,11 +173,11 @@ const AboutPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Our Core <span className="text-blue-600">Values</span>
+              {t('about.values.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              These values guide everything we do and shape our commitment to excellence.
+              {t('about.values.subtitle')}
             </p>
           </div>
           
@@ -211,32 +210,31 @@ const AboutPage: React.FC = () => {
       <div className="py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Get in <span className="text-yellow-300">Touch</span>
+            {t('about.contact.title')}
           </h2>
           <div className="w-24 h-1 bg-yellow-300 mx-auto mb-8"></div>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed">
-            Have questions or need assistance? Our friendly customer service team is here to help. 
-            We're available 24/7 to ensure you have the best shopping experience.
+            {t('about.contact.subtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-white">
-              <div className="font-semibold mb-2">Call Us</div>
+              <div className="font-semibold mb-2">{t('about.contact.call')}</div>
               <div className="text-yellow-300 text-lg font-bold">1-800-SHOPHUB</div>
             </div>
             <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-white">
-              <div className="font-semibold mb-2">Email Us</div>
+              <div className="font-semibold mb-2">{t('about.contact.email')}</div>
               <div className="text-yellow-300 text-lg font-bold">support@shophub.com</div>
             </div>
             <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-white">
-              <div className="font-semibold mb-2">Live Chat</div>
-              <div className="text-yellow-300 text-lg font-bold">Available 24/7</div>
+              <div className="font-semibold mb-2">{t('about.contact.chat')}</div>
+              <div className="text-yellow-300 text-lg font-bold">{t('about.contact.chatAvail')}</div>
             </div>
           </div>
           
           <div className="mt-12">
             <button className="bg-white text-blue-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition duration-300 shadow-xl">
-              Contact Support
+              {t('about.contact.cta')}
             </button>
           </div>
         </div>

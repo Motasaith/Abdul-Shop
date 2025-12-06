@@ -15,9 +15,11 @@ import {
 } from '@heroicons/react/24/outline';
 
 import { usePrice } from '../hooks/usePrice';
+import { useTranslation } from '../hooks/useTranslation';
 
 const HomePage: React.FC = () => {
   const { formatPrice } = usePrice();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { products, loading } = useAppSelector((state) => state.products);
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -72,23 +74,23 @@ const HomePage: React.FC = () => {
   const features = [
     {
       icon: TruckIcon,
-      title: 'Free Shipping',
-      description: `Free shipping on orders over ${formatPrice(50)}`
+      title: t('home.features.freeShipping'),
+      description: `${t('common.freeShipping')} ${formatPrice(50)}`
     },
     {
       icon: ShieldCheckIcon,
-      title: 'Secure Payment',
-      description: '100% secure payment processing'
+      title: t('home.features.securePayment'),
+      description: t('home.features.securePaymentDesc')
     },
     {
       icon: CurrencyDollarIcon,
-      title: 'Money Back',
-      description: '30-day money back guarantee'
+      title: t('home.features.moneyBack'),
+      description: t('home.features.moneyBackDesc')
     },
     {
       icon: PhoneIcon,
-      title: '24/7 Support',
-      description: 'Round-the-clock customer support'
+      title: t('home.features.support'),
+      description: t('home.features.supportDesc')
     }
   ];
 
@@ -99,25 +101,24 @@ const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Welcome to ShopHub
+              {t('home.welcomeTitle')}
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
-              Your one-stop destination for all your shopping needs. 
-              Discover millions of products at unbeatable prices.
+              {t('home.welcomeSubtitle')}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link
                 to="/products"
                 className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
               >
-                Shop Now
+                {t('home.shopNow')}
                 <ArrowRightIcon className="ml-2 h-5 w-5" />
               </Link>
               <Link
                 to="/deals"
                 className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-flex items-center justify-center"
               >
-                Today's Deals
+                {t('common.todaysDeals')}
               </Link>
             </div>
           </div>
@@ -145,9 +146,9 @@ const HomePage: React.FC = () => {
       <div className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('home.shopCategory')}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Explore our wide range of categories to find exactly what you're looking for.
+              {t('home.exploreCategories')}
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
@@ -159,7 +160,7 @@ const HomePage: React.FC = () => {
               >
                 <div className={`${category.color} rounded-lg p-6 text-center hover:shadow-lg transition-shadow group-hover:scale-105 transform transition-transform`}>
                   <div className="text-4xl mb-3">{category.icon}</div>
-                  <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                  <h3 className="font-semibold text-gray-900">{t(`categories.${category.name}`)}</h3>
                 </div>
               </Link>
             ))}
@@ -171,9 +172,9 @@ const HomePage: React.FC = () => {
       <div className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Products</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('home.featuredProducts')}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Discover our handpicked selection of trending products.
+              {t('home.discoverFeatured')}
             </p>
           </div>
           
@@ -232,7 +233,7 @@ const HomePage: React.FC = () => {
                   to="/products"
                   className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
                 >
-                  View All Products
+                  {t('home.viewAllProducts')}
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
                 </Link>
               </div>
@@ -244,14 +245,14 @@ const HomePage: React.FC = () => {
       {/* Newsletter Section */}
       <div className="bg-blue-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
+          <h2 className="text-3xl font-bold mb-4">{t('home.stayUpdated')}</h2>
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-            Subscribe to our newsletter and get exclusive deals, new arrivals, and special offers.
+            {t('home.subscribeText')}
           </p>
           <form onSubmit={handleNewsletterSubscribe} className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('home.enterEmail')}
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               disabled={newsletterLoading}
@@ -262,7 +263,7 @@ const HomePage: React.FC = () => {
               disabled={newsletterLoading}
               className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {newsletterLoading ? 'Subscribing...' : 'Subscribe'}
+              {newsletterLoading ? t('home.subscribing') : t('home.subscribe')}
             </button>
           </form>
         </div>
@@ -270,5 +271,6 @@ const HomePage: React.FC = () => {
     </div>
   );
 };
+
 
 export default HomePage;

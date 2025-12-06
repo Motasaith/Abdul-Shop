@@ -26,8 +26,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
     sku: '',
     weight: '',
     featured: false,
+    isNewArrival: false,
+    onSale: false,
     images: [] as Media[],
-    videos: [] as Media[]
+    videos: [] as Media[],
+    specifications: [] as { name: string; value: string }[],
+    whatsInBox: [] as { item: string; quantity: number }[]
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
@@ -55,6 +59,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       formDataToSend.append('brand', formData.brand);
       formDataToSend.append('countInStock', formData.countInStock);
       formDataToSend.append('featured', formData.featured.toString());
+      formDataToSend.append('isNewArrival', formData.isNewArrival.toString());
+      formDataToSend.append('onSale', formData.onSale.toString());
       
       if (formData.comparePrice) {
         formDataToSend.append('comparePrice', formData.comparePrice);
@@ -86,6 +92,22 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       formData.videos.forEach((video, index) => {
         formDataToSend.append(`videoUrls[${index}][url]`, video.url);
         formDataToSend.append(`videoUrls[${index}][public_id]`, video.public_id);
+      });
+
+      // Add specifications
+      formData.specifications.forEach((spec, index) => {
+        if (spec.name && spec.value) {
+          formDataToSend.append(`specifications[${index}][name]`, spec.name);
+          formDataToSend.append(`specifications[${index}][value]`, spec.value);
+        }
+      });
+
+      // Add whatsInBox
+      formData.whatsInBox.forEach((item, index) => {
+        if (item.item) {
+          formDataToSend.append(`whatsInBox[${index}][item]`, item.item);
+          formDataToSend.append(`whatsInBox[${index}][quantity]`, item.quantity.toString());
+        }
       });
 
       // For now, let's use the simple approach to test
@@ -128,8 +150,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       sku: '',
       weight: '',
       featured: false,
+      isNewArrival: false,
+      onSale: false,
       images: [] as Media[],
-      videos: [] as Media[]
+      videos: [] as Media[],
+      specifications: [] as { name: string; value: string }[],
+      whatsInBox: [] as { item: string; quantity: number }[]
     });
     setImageFiles([]);
     setVideoFiles([]);
@@ -195,6 +221,52 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
         videos: prev.videos.filter((_, i) => i !== index)
       }));
     }
+  };
+
+  const addSpecification = () => {
+    setFormData(prev => ({
+      ...prev,
+      specifications: [...prev.specifications, { name: '', value: '' }]
+    }));
+  };
+
+  const removeSpecification = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      specifications: prev.specifications.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateSpecification = (index: number, field: 'name' | 'value', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      specifications: prev.specifications.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const addWhatsInBox = () => {
+    setFormData(prev => ({
+      ...prev,
+      whatsInBox: [...prev.whatsInBox, { item: '', quantity: 1 }]
+    }));
+  };
+
+  const removeWhatsInBox = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      whatsInBox: prev.whatsInBox.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateWhatsInBox = (index: number, field: 'item' | 'quantity', value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      whatsInBox: prev.whatsInBox.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }));
   };
 
   if (!isOpen) return null;
@@ -536,17 +608,120 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
               )}
             </div>
 
+            {/* Specifications Section */}
+            <div className="border-t pt-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">Specifications (Optional)</h3>
+                <button
+                  type="button"
+                  onClick={addSpecification}
+                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                >
+                  + Add Spec
+                </button>
+              </div>
+              {formData.specifications.map((spec, index) => (
+                <div key={index} className="flex gap-2 mb-2 items-start">
+                  <input
+                    type="text"
+                    placeholder="Name (e.g., Color)"
+                    value={spec.name}
+                    onChange={(e) => updateSpecification(index, 'name', e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Value (e.g., Red)"
+                    value={spec.value}
+                    onChange={(e) => updateSpecification(index, 'value', e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeSpecification(index)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* What's in the Box Section */}
+            <div className="border-t pt-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">What's in the Box (Optional)</h3>
+                <button
+                  type="button"
+                  onClick={addWhatsInBox}
+                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                >
+                  + Add Item
+                </button>
+              </div>
+              {formData.whatsInBox.map((item, index) => (
+                <div key={index} className="flex gap-2 mb-2 items-start">
+                  <input
+                    type="text"
+                    placeholder="Item Name"
+                    value={item.item}
+                    onChange={(e) => updateWhatsInBox(index, 'item', e.target.value)}
+                    className="flex-[2] px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Qty"
+                    value={item.quantity}
+                    onChange={(e) => updateWhatsInBox(index, 'quantity', parseInt(e.target.value) || 1)}
+                    min="1"
+                    className="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeWhatsInBox(index)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+
             <div>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="featured"
-                  checked={formData.featured}
-                  onChange={handleInputChange}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium text-gray-700">Featured Product</span>
-              </label>
+              <div className="flex space-x-6">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="featured"
+                    checked={formData.featured}
+                    onChange={handleInputChange}
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">Featured Product</span>
+                </label>
+                
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="isNewArrival"
+                    checked={formData.isNewArrival}
+                    onChange={handleInputChange}
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">Manual New Arrival</span>
+                </label>
+                
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="onSale"
+                    checked={formData.onSale}
+                    onChange={handleInputChange}
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">Manual On Sale</span>
+                </label>
+              </div>
             </div>
 
             <div className="flex justify-end space-x-3 pt-4">

@@ -25,9 +25,14 @@ import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import WishlistButton from '../components/common/WishlistButton';
 import toast from 'react-hot-toast';
 import { usePrice } from '../hooks/usePrice';
+// Service import
+import productService from '../services/productService';
+
+import { useTranslation } from '../hooks/useTranslation';
 
 const ProductDetailPage: React.FC = () => {
   const { formatPrice } = usePrice();
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -42,6 +47,18 @@ const ProductDetailPage: React.FC = () => {
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewImages, setReviewImages] = useState<File[]>([]);
+  // Admin answer state
+  const [answers, setAnswers] = useState<{ [key: string]: string }>({});
+  const [answeringId, setAnsweringId] = useState<string | null>(null);
+
+  const handleReviewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      // Optional: Add validation for size/type here
+      setReviewImages(prev => [...prev, ...filesArray]);
+    }
+  };
 
   useEffect(() => {
     if (id) {
@@ -80,7 +97,7 @@ const ProductDetailPage: React.FC = () => {
     toast.success(`${product.name} added to cart!`);
   };
 
-  const handleSubmitQuestion = () => {
+  const handleSubmitQuestion = async () => {
     if (!newQuestion.trim()) {
       toast.error('Please enter a question');
       return;
@@ -91,12 +108,22 @@ const ProductDetailPage: React.FC = () => {
       return;
     }
     
-    // TODO: Implement question submission API
-    toast.success('Question submitted successfully!');
-    setNewQuestion('');
+    try {
+      await productService.addProductQuestion(id!, { question: newQuestion });
+      toast.success('Question submitted successfully!');
+      setNewQuestion('');
+      
+      // Refresh product data
+      if (id) {
+        dispatch(fetchProduct(id));
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.msg || 'Failed to submit question';
+      toast.error(errorMessage);
+    }
   };
 
-  const handleSubmitReview = () => {
+  const handleSubmitReview = async () => {
     if (!newReview.comment.trim()) {
       toast.error('Please enter a review comment');
       return;
@@ -107,10 +134,50 @@ const ProductDetailPage: React.FC = () => {
       return;
     }
     
-    // TODO: Implement review submission API
-    toast.success('Review submitted successfully!');
-    setNewReview({ rating: 5, comment: '' });
-    setShowReviewForm(false);
+    try {
+      // Use FormData for image upload
+      const formData = new FormData();
+      formData.append('rating', newReview.rating.toString());
+      formData.append('comment', newReview.comment);
+      
+      // Append images
+      reviewImages.forEach((file) => {
+        formData.append('images', file);
+      });
+
+      await productService.addProductReview(id!, formData);
+      toast.success('Review submitted successfully!');
+      
+      // Reset form
+      setNewReview({ rating: 5, comment: '' });
+      setNewReview({ rating: 5, comment: '' });
+      setReviewImages([]);
+      setShowReviewForm(false);
+      
+      // Refresh product data
+      if (id) {
+        dispatch(fetchProduct(id));
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.msg || 'Failed to submit review';
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleAnswerSubmit = async (questionId: string) => {
+    const answerText = answers[questionId];
+    if (!answerText?.trim()) return;
+
+    try {
+      await productService.answerProductQuestion(id!, questionId, { answer: answerText });
+      toast.success('Answer submitted successfully');
+      setAnsweringId(null);
+      // Refresh
+      if (id) dispatch(fetchProduct(id)); // Re-fetch product to update Q&A
+    } catch (err: any) {
+      const msg = err.response?.data?.msg || 'Failed to submit answer';
+      toast.error(msg);
+    }
   };
 
   const handleBuyNow = () => {
@@ -241,7 +308,7 @@ const ProductDetailPage: React.FC = () => {
                     )
                   ))}
                 </div>
-                <span className="text-sm text-gray-600">({product.numReviews} reviews)</span>
+                <span className="text-sm text-gray-600">({product.numReviews} {t('product.reviews')})</span>
               </div>
 
               {/* Price */}
@@ -263,7 +330,7 @@ const ProductDetailPage: React.FC = () => {
                 <span className={`text-sm font-medium ${
                   product.countInStock > 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
-                  {product.countInStock > 0 ? `${product.countInStock} in stock` : 'Out of stock'}
+                  {product.countInStock > 0 ? `${product.countInStock} ${t('product.inStock')}` : t('product.outOfStock')}
                 </span>
               </div>
 
@@ -285,7 +352,7 @@ const ProductDetailPage: React.FC = () => {
                       +
                     </button>
                   </div>
-                  <span className="text-sm text-gray-600">Only {product.countInStock} left in stock</span>
+                  <span className="text-sm text-gray-600">{t('product.onlyLeft', { count: product.countInStock })}</span>
                 </div>
                 
                 <div className="flex space-x-3">
@@ -300,14 +367,14 @@ const ProductDetailPage: React.FC = () => {
                     className="flex-1 bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
                   >
                     <ShoppingCartIcon className="h-5 w-5" />
-                    <span>Add to Cart</span>
+                    <span>{t('product.addToCart')}</span>
                   </button>
                   <button 
                     onClick={handleBuyNow}
                     disabled={product.countInStock === 0}
                     className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
-                    Buy Now
+                    {t('product.buyNow')}
                   </button>
                 </div>
               </div>
@@ -319,7 +386,7 @@ const ProductDetailPage: React.FC = () => {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
                   <TruckIcon className="h-5 w-5 mr-2" />
-                  Delivery Options
+                  {t('product.deliveryOptions')}
                 </h3>
                 
                 <div className="space-y-3">
@@ -337,7 +404,7 @@ const ProductDetailPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <TruckIcon className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm text-gray-700">Standard Delivery</span>
+                        <span className="text-sm text-gray-700">{t('product.standardDelivery')}</span>
                       </div>
                       <div className="text-right">
                         <div className="text-sm font-medium text-gray-900">{formatPrice(product.deliveryInfo.standardDelivery.cost || 135)}</div>
@@ -349,7 +416,7 @@ const ProductDetailPage: React.FC = () => {
                   {product.deliveryInfo?.cashOnDelivery?.available && (
                     <div className="flex items-center space-x-2">
                       <CurrencyDollarIcon className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-green-600 font-medium">Cash on Delivery Available</span>
+                      <span className="text-sm text-green-600 font-medium">{t('product.codAvailable')}</span>
                     </div>
                   )}
                 </div>
@@ -359,7 +426,7 @@ const ProductDetailPage: React.FC = () => {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
                   <ShieldCheckIcon className="h-5 w-5 mr-2" />
-                  Return & Warranty
+                  {t('product.returnWarranty')}
                 </h3>
                 
                 <div className="space-y-3">
@@ -367,7 +434,7 @@ const ProductDetailPage: React.FC = () => {
                     <div className="flex items-center space-x-2">
                       <ArrowPathIcon className="h-4 w-4 text-green-600" />
                       <span className="text-sm text-gray-700">
-                        {product.returnPolicy.days} days easy return
+                        {product.returnPolicy.days} {t('product.easyReturn')}
                       </span>
                     </div>
                   )}
@@ -376,14 +443,14 @@ const ProductDetailPage: React.FC = () => {
                     <div className="flex items-center space-x-2">
                       <CheckBadgeIcon className="h-4 w-4 text-blue-600" />
                       <span className="text-sm text-gray-700">
-                        {product.warranty.duration} {product.warranty.type} warranty
+                        {product.warranty.duration} {product.warranty.type} {t('product.warranty')}
                       </span>
                     </div>
                   ) : (
                     <div className="flex items-center space-x-2">
                       <ExclamationTriangleIcon className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-500">
-                        Warranty not available
+                        {t('product.warrantyNotAvailable')}
                       </span>
                     </div>
                   )}
@@ -408,11 +475,11 @@ const ProductDetailPage: React.FC = () => {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  {tab === 'description' && 'Product Description'}
-                  {tab === 'specifications' && 'Specifications'}
-                  {tab === 'whatsInBox' && "What's in the Box"}
-                  {tab === 'reviews' && `Reviews (${product.numReviews})`}
-                  {tab === 'questions' && 'Questions & Answers'}
+                  {tab === 'description' && t('product.description')}
+                  {tab === 'specifications' && t('product.specifications')}
+                  {tab === 'whatsInBox' && t('product.whatsInBox')}
+                  {tab === 'reviews' && `${t('product.reviews')} (${product.numReviews})`}
+                  {tab === 'questions' && t('product.questions')}
                 </button>
               ))}
             </nav>
@@ -422,7 +489,7 @@ const ProductDetailPage: React.FC = () => {
           <div className="p-6">
             {activeTab === 'description' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Description</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('product.description')}</h3>
                 <div className="prose max-w-none">
                   <p className="text-gray-700 leading-relaxed">{product.description}</p>
                   {product.tags && product.tags.length > 0 && (
@@ -443,7 +510,7 @@ const ProductDetailPage: React.FC = () => {
 
             {activeTab === 'specifications' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Specifications</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('product.specifications')}</h3>
                 {product.specifications && product.specifications.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {product.specifications.map((spec, index) => (
@@ -455,7 +522,7 @@ const ProductDetailPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500">No specifications available for this product.</p>
+                    <p className="text-gray-500">{t('product.noSpecs')}</p>
                   </div>
                 )}
               </div>
@@ -463,7 +530,7 @@ const ProductDetailPage: React.FC = () => {
 
             {activeTab === 'whatsInBox' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">What's in the Box</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('product.whatsInBox')}</h3>
                 {product.whatsInBox && product.whatsInBox.length > 0 ? (
                   <ul className="space-y-2">
                     {product.whatsInBox.map((item, index) => (
@@ -475,7 +542,7 @@ const ProductDetailPage: React.FC = () => {
                   </ul>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500">No box contents information available.</p>
+                    <p className="text-gray-500">{t('product.noBoxContent')}</p>
                   </div>
                 )}
               </div>
@@ -484,13 +551,13 @@ const ProductDetailPage: React.FC = () => {
             {activeTab === 'reviews' && (
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">Customer Reviews</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{t('product.reviews')}</h3>
                   {user && (
                     <button
                       onClick={() => setShowReviewForm(!showReviewForm)}
                       className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
                     >
-                      Write a Review
+                      {t('product.writeReview')}
                     </button>
                   )}
                 </div>
@@ -498,10 +565,10 @@ const ProductDetailPage: React.FC = () => {
                 {/* Review Form */}
                 {showReviewForm && user && (
                   <div className="bg-gray-50 p-6 rounded-lg mb-6">
-                    <h4 className="text-md font-semibold text-gray-900 mb-4">Write Your Review</h4>
+                    <h4 className="text-md font-semibold text-gray-900 mb-4">{t('product.writeYourReview')}</h4>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('product.rating')}</label>
                         <div className="flex items-center space-x-1">
                           {[1, 2, 3, 4, 5].map((rating) => (
                             <button
@@ -525,21 +592,71 @@ const ProductDetailPage: React.FC = () => {
                           onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
                           rows={4}
                           className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                          placeholder="Write your review here..."
+                          placeholder={t('product.review') + "..."}
                         />
                       </div>
-                      <div className="flex space-x-3">
+                      
+                      {/* Image Upload Section */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('product.addPhotos')}</label>
+                        <div className="flex items-center space-x-4">
+                          <label className="cursor-pointer bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors flex items-center space-x-2">
+                            <ArrowPathIcon className="h-5 w-5 text-gray-500" />
+                            <span className="text-sm text-gray-700">{t('product.chooseFiles')}</span>
+                            <input
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              className="hidden"
+                              onChange={handleReviewImageChange}
+                            />
+                          </label>
+                          <span className="text-sm text-gray-500">
+                            {reviewImages.length} file(s) selected
+                          </span>
+                        </div>
+                        
+                        {/* Image Previews */}
+                        {reviewImages.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            {reviewImages.map((file, index) => (
+                              <div key={index} className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                                <img
+                                  src={URL.createObjectURL(file)}
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
+                                />
+                                <button
+                                  onClick={() => {
+                                    setReviewImages(prev => prev.filter((_, i) => i !== index));
+                                  }}
+                                  className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl opacity-75 hover:opacity-100"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                  </svg>
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex space-x-3 pt-2">
                         <button
                           onClick={handleSubmitReview}
                           className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors"
                         >
-                          Submit Review
+                          {t('product.submitReview')}
                         </button>
                         <button
-                          onClick={() => setShowReviewForm(false)}
+                          onClick={() => {
+                            setShowReviewForm(false);
+                            setReviewImages([]);
+                          }}
                           className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors"
                         >
-                          Cancel
+                          {t('product.cancel')}
                         </button>
                       </div>
                     </div>
@@ -593,7 +710,7 @@ const ProductDetailPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500">No reviews yet. Be the first to review this product!</p>
+                    <p className="text-gray-500">{t('product.noReviews')}</p>
                   </div>
                 )}
               </div>
@@ -602,27 +719,27 @@ const ProductDetailPage: React.FC = () => {
             {activeTab === 'questions' && (
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">Questions & Answers</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{t('product.questions')}</h3>
                 </div>
 
                 {/* Ask Question Form */}
                 {user && (
                   <div className="bg-gray-50 p-6 rounded-lg mb-6">
-                    <h4 className="text-md font-semibold text-gray-900 mb-4">Ask a Question</h4>
+                    <h4 className="text-md font-semibold text-gray-900 mb-4">{t('product.askQuestion')}</h4>
                     <div className="space-y-4">
                       <textarea
                         value={newQuestion}
                         onChange={(e) => setNewQuestion(e.target.value)}
                         rows={3}
                         className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                        placeholder="Ask your question about this product..."
+                        placeholder={t('product.askPlaceholder')}
                       />
                       <div className="flex space-x-3">
                         <button
                           onClick={handleSubmitQuestion}
                           className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors"
                         >
-                          Submit Question
+                          {t('product.submitQuestion')}
                         </button>
                       </div>
                     </div>
@@ -642,21 +759,54 @@ const ProductDetailPage: React.FC = () => {
                           <p className="text-sm text-gray-500 ml-7">
                             Asked by {qna.userName} on {new Date(qna.createdAt).toLocaleDateString()}
                           </p>
-                        </div>
-                        
-                        {qna.answer && qna.answer.text && (
-                          <div className="ml-7 bg-blue-50 p-3 rounded-lg">
-                            <div className="flex items-start space-x-2">
-                              <span className="font-medium text-blue-900">A:</span>
-                              <div>
-                                <p className="text-blue-900">{qna.answer.text}</p>
-                                <p className="text-sm text-blue-700 mt-1">
-                                  Answered by {qna.answer.answeredByName} on {new Date(qna.answer.answeredAt).toLocaleDateString()}
-                                </p>
-                              </div>
+                          
+                          {/* Answer Section */}
+                          {qna.answer ? (
+                            <div className="mt-4 pl-4 border-l-2 border-orange-200">
+                              <p className="text-gray-800 font-medium">A: {qna.answer.text}</p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Answered by {qna.answer.answeredByName} on {new Date(qna.answer.answeredAt).toLocaleDateString()}
+                              </p>
                             </div>
-                          </div>
-                        )}
+                          ) : (
+                            user && (user as any).role === 'admin' && (
+                              <div className="mt-3">
+                                {answeringId === qna._id ? (
+                                  <div className="space-y-2">
+                                    <textarea
+                                      className="w-full p-2 border rounded-md"
+                                      rows={2}
+                                      placeholder="Write an answer..."
+                                      value={answers[qna._id] || ''}
+                                      onChange={(e) => setAnswers({...answers, [qna._id]: e.target.value})}
+                                    />
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => handleAnswerSubmit(qna._id)}
+                                        className="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600"
+                                      >
+                                        {t('product.submitAnswer')}
+                                      </button>
+                                      <button
+                                        onClick={() => setAnsweringId(null)}
+                                        className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400"
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <button
+                                    onClick={() => setAnsweringId(qna._id)}
+                                    className="text-orange-600 text-sm hover:text-orange-700 font-medium"
+                                  >
+                                    {t('product.answerQ')}
+                                  </button>
+                                )}
+                              </div>
+                            )
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>

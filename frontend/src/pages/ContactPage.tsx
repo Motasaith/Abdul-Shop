@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import contactService, { ContactFormData } from '../services/contactService';
+import { useTranslation } from '../hooks/useTranslation';
 
 const ContactPage: React.FC = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -83,17 +85,17 @@ const ContactPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Message Sent Successfully!</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('contactPage.success.title')}</h2>
             <p className="text-lg text-gray-600 mb-6">
-              Thank you for contacting us. We've received your message and will get back to you soon.
+              {t('contactPage.success.message')}
             </p>
             <div className="bg-white rounded-lg p-6 shadow-lg">
-              <p className="text-sm text-gray-600 mb-2">Your ticket ID:</p>
+              <p className="text-sm text-gray-600 mb-2">{t('contactPage.success.ticketId')}</p>
               <p className="text-lg font-mono font-semibold text-gray-900 bg-gray-100 px-3 py-2 rounded">
                 #{ticketId.slice(-8).toUpperCase()}
               </p>
               <p className="text-xs text-gray-500 mt-3">
-                Save this ID for reference when following up on your inquiry.
+                {t('contactPage.success.saveId')}
               </p>
             </div>
             <button
@@ -103,7 +105,7 @@ const ContactPage: React.FC = () => {
               }}
               className="mt-6 w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Send Another Message
+              {t('contactPage.success.sendAnother')}
             </button>
           </div>
         </div>
@@ -118,10 +120,10 @@ const ContactPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              💬 Get in Touch
+              💬 {t('contactPage.hero.title')}
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-              We're here to help! Send us a message and we'll respond as soon as possible.
+              {t('contactPage.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -132,7 +134,7 @@ const ContactPage: React.FC = () => {
           {/* Contact Information */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">Contact Information</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-8">{t('contactPage.info.title')}</h2>
               
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
@@ -143,7 +145,7 @@ const ContactPage: React.FC = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Address</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.address')}</h3>
                     <p className="text-gray-600">123 Shopping Street<br />Commerce City, CC 12345</p>
                   </div>
                 </div>
@@ -155,7 +157,7 @@ const ContactPage: React.FC = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Phone</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.phone')}</h3>
                     <p className="text-gray-600">1-800-SHOPHUB<br />(1-800-746-7482)</p>
                   </div>
                 </div>
@@ -167,7 +169,7 @@ const ContactPage: React.FC = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Email</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.email')}</h3>
                     <p className="text-gray-600">support@shophub.com<br />info@shophub.com</p>
                   </div>
                 </div>
@@ -179,30 +181,30 @@ const ContactPage: React.FC = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Business Hours</h3>
-                    <p className="text-gray-600">Mon - Fri: 9:00 AM - 6:00 PM<br />Sat - Sun: 10:00 AM - 4:00 PM</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.hours')}</h3>
+                    <p className="text-gray-600">{t('contactPage.info.days.monFri')}: 9:00 AM - 6:00 PM<br />{t('contactPage.info.days.satSun')}: 10:00 AM - 4:00 PM</p>
                   </div>
                 </div>
               </div>
 
               {/* Response Times */}
               <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">⏰ Response Times</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">⏰ {t('contactPage.responseTimes.title')}</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">General Inquiries:</span>
+                    <span className="text-gray-600">{t('contactPage.responseTimes.general')}:</span>
                     <span className="font-medium text-gray-900">24-48 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Support Issues:</span>
+                    <span className="text-gray-600">{t('contactPage.responseTimes.support')}:</span>
                     <span className="font-medium text-gray-900">12-24 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Order Issues:</span>
+                    <span className="text-gray-600">{t('contactPage.responseTimes.order')}:</span>
                     <span className="font-medium text-gray-900">4-8 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Urgent Matters:</span>
+                    <span className="text-gray-600">{t('contactPage.responseTimes.urgent')}:</span>
                     <span className="font-medium text-gray-900">2-4 hours</span>
                   </div>
                 </div>
@@ -213,12 +215,12 @@ const ContactPage: React.FC = () => {
           {/* Contact Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">Send Us a Message</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-8">{t('contactPage.form.title')}</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.name')} *</label>
                     <input
                       type="text"
                       name="name"
@@ -226,12 +228,12 @@ const ContactPage: React.FC = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      placeholder="Your full name"
+                      placeholder={t('contactPage.form.namePlaceholder')}
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.email')} *</label>
                     <input
                       type="email"
                       name="email"
@@ -239,26 +241,26 @@ const ContactPage: React.FC = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      placeholder="your.email@example.com"
+                      placeholder={t('contactPage.form.emailPlaceholder')}
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.phone')} (Optional)</label>
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      placeholder="Your phone number"
+                      placeholder={t('contactPage.form.phonePlaceholder')}
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Subject *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.subject')} *</label>
                     <select
                       name="subject"
                       value={formData.subject}
@@ -266,35 +268,35 @@ const ContactPage: React.FC = () => {
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     >
-                      <option value="general">General Inquiry</option>
-                      <option value="support">Customer Support</option>
-                      <option value="order">Order Issue</option>
-                      <option value="return">Return/Refund</option>
-                      <option value="feedback">Feedback</option>
-                      <option value="other">Other</option>
+                      <option value="general">{t('contactPage.form.subjects.general')}</option>
+                      <option value="support">{t('contactPage.form.subjects.support')}</option>
+                      <option value="order">{t('contactPage.form.subjects.order')}</option>
+                      <option value="return">{t('contactPage.form.subjects.return')}</option>
+                      <option value="feedback">{t('contactPage.form.subjects.feedback')}</option>
+                      <option value="other">{t('contactPage.form.subjects.other')}</option>
                     </select>
                   </div>
                 </div>
 
                 {(formData.subject === 'order' || formData.subject === 'return') && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Order Number (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.orderNumber')} (Optional)</label>
                     <input
                       type="text"
                       name="orderNumber"
                       value={formData.orderNumber}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      placeholder="Enter your order ID for faster support"
+                      placeholder={t('contactPage.form.orderPlaceholder')}
                     />
                     <p className="mt-1 text-xs text-gray-500">
-                      💡 Including your order number helps us assist you faster
+                      💡 {t('contactPage.form.orderHint')}
                     </p>
                   </div>
                 )}
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Message *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.message')} *</label>
                   <textarea
                     name="message"
                     value={formData.message}
@@ -302,7 +304,7 @@ const ContactPage: React.FC = () => {
                     required
                     rows={6}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-                    placeholder="Please describe your inquiry in detail. The more information you provide, the better we can assist you."
+                    placeholder={t('contactPage.form.messagePlaceholder')}
                     maxLength={1000}
                   />
                   <div className="mt-1 text-right">
@@ -320,14 +322,14 @@ const ContactPage: React.FC = () => {
                   {loading ? (
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Sending Message...
+                      {t('contactPage.form.sending')}
                     </div>
                   ) : (
                     <div className="flex items-center justify-center">
                       <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                       </svg>
-                      Send Message
+                      {t('contactPage.form.send')}
                     </div>
                   )}
                 </button>
@@ -347,8 +349,8 @@ const ContactPage: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Track Your Order</h4>
-                      <p className="text-sm text-gray-600">Get real-time updates</p>
+                      <h4 className="font-semibold text-gray-900">{t('footer.track')}</h4>
+                      <p className="text-sm text-gray-600">{t('footer.track')} updates</p>
                     </div>
                   </a>
                   
@@ -362,8 +364,8 @@ const ContactPage: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Help Center</h4>
-                      <p className="text-sm text-gray-600">Find quick answers</p>
+                      <h4 className="font-semibold text-gray-900">{t('footer.help')}</h4>
+                      <p className="text-sm text-gray-600">{t('footer.help')} answers</p>
                     </div>
                   </a>
                 </div>

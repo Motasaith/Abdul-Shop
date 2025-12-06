@@ -10,15 +10,17 @@ import {
   EyeIcon,
   ClockIcon
 } from '@heroicons/react/24/outline';
+import { useTranslation } from '../hooks/useTranslation';
 
 const BlogPage: React.FC = () => {
+  const { t } = useTranslation();
   const featuredPost = {
-    title: 'The Future of E-commerce: Trends Shaping 2024',
+    title: t('blogPage.featured.title'),
     author: 'Sarah Johnson',
-    date: 'December 20, 2023',
-    readTime: '8 min read',
-    category: 'Industry Insights',
-    excerpt: 'Discover the emerging trends that are revolutionizing online shopping and how ShopHub is leading the charge in creating the next generation of e-commerce experiences.',
+    date: t('blogPage.featured.date'),
+    readTime: t('blogPage.common.readTime', { minutes: 8 }),
+    category: t('blogPage.featured.category'),
+    excerpt: t('blogPage.featured.excerpt'),
     image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80',
     views: '2.5K',
     likes: '145',
@@ -26,88 +28,32 @@ const BlogPage: React.FC = () => {
   };
 
   const blogPosts = [
-    {
-      title: '10 Essential Tips for Holiday Shopping Success',
-      author: 'Mike Chen',
-      date: 'December 15, 2023',
-      readTime: '5 min read',
-      category: 'Shopping Tips',
-      excerpt: 'Make your holiday shopping stress-free with these expert tips for finding the best deals and perfect gifts.',
-      image: 'https://images.unsplash.com/photo-1607344645866-009c7d0f2e8d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      views: '1.8K',
-      likes: '89',
-      color: 'green'
-    },
-    {
-      title: 'Sustainable Shopping: How to Make Eco-Friendly Choices',
-      author: 'Emma Rodriguez',
-      date: 'December 10, 2023',
-      readTime: '6 min read',
-      category: 'Sustainability',
-      excerpt: 'Learn how to shop responsibly and reduce your environmental impact while still getting the products you love.',
-      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      views: '1.2K',
-      likes: '156',
-      color: 'emerald'
-    },
-    {
-      title: 'Product Review: Top 5 Tech Gadgets of 2023',
-      author: 'David Kim',
-      date: 'December 5, 2023',
-      readTime: '7 min read',
-      category: 'Product Reviews',
-      excerpt: 'Our comprehensive review of the year\'s most innovative tech gadgets that are worth your investment.',
-      image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      views: '3.1K',
-      likes: '201',
-      color: 'purple'
-    },
-    {
-      title: 'Behind the Scenes: ShopHub\'s Customer Service Excellence',
-      author: 'Lisa Thompson',
-      date: 'November 30, 2023',
-      readTime: '4 min read',
-      category: 'Company Culture',
-      excerpt: 'Take a peek behind the curtain to see how our customer service team delivers exceptional support.',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      views: '956',
-      likes: '67',
-      color: 'orange'
-    },
-    {
-      title: 'Mobile Shopping: Optimizing Your Experience',
-      author: 'Alex Park',
-      date: 'November 25, 2023',
-      readTime: '5 min read',
-      category: 'Mobile Tips',
-      excerpt: 'Maximize your mobile shopping experience with these tips and tricks for shopping on the go.',
-      image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      views: '1.4K',
-      likes: '92',
-      color: 'blue'
-    },
-    {
-      title: 'Gift Guide: Perfect Presents for Every Budget',
-      author: 'Rachel Green',
-      date: 'November 20, 2023',
-      readTime: '6 min read',
-      category: 'Gift Guides',
-      excerpt: 'Find the perfect gift for everyone on your list, no matter what your budget looks like.',
-      image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      views: '2.3K',
-      likes: '178',
-      color: 'pink'
-    }
-  ];
+    { key: 'post1', author: 'Mike Chen', minutes: 5, image: 'https://images.unsplash.com/photo-1607344645866-009c7d0f2e8d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', views: '1.8K', likes: '89', color: 'green' },
+    { key: 'post2', author: 'Emma Rodriguez', minutes: 6, image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', views: '1.2K', likes: '156', color: 'emerald' },
+    { key: 'post3', author: 'David Kim', minutes: 7, image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', views: '3.1K', likes: '201', color: 'purple' },
+    { key: 'post4', author: 'Lisa Thompson', minutes: 4, image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', views: '956', likes: '67', color: 'orange' },
+    { key: 'post5', author: 'Alex Park', minutes: 5, image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', views: '1.4K', likes: '92', color: 'blue' },
+    { key: 'post6', author: 'Rachel Green', minutes: 6, image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', views: '2.3K', likes: '178', color: 'pink' }
+  ].map(post => ({
+    ...post,
+    title: t(`blogPage.posts.${post.key}.title`),
+    category: t(`blogPage.posts.${post.key}.category`),
+    excerpt: t(`blogPage.posts.${post.key}.excerpt`),
+    date: t(`blogPage.posts.${post.key}.date`),
+    readTime: t('blogPage.common.readTime', { minutes: post.minutes })
+  }));
 
   const categories = [
-    { name: 'All Posts', count: 24, active: true },
-    { name: 'Shopping Tips', count: 8, active: false },
-    { name: 'Product Reviews', count: 6, active: false },
-    { name: 'Industry Insights', count: 4, active: false },
-    { name: 'Company Culture', count: 3, active: false },
-    { name: 'Sustainability', count: 3, active: false }
-  ];
+    { key: 'all', count: 24, active: true },
+    { key: 'shoppingTips', count: 8, active: false },
+    { key: 'productReviews', count: 6, active: false },
+    { key: 'industryInsights', count: 4, active: false },
+    { key: 'companyCulture', count: 3, active: false },
+    { key: 'sustainability', count: 3, active: false }
+  ].map(cat => ({
+    ...cat,
+    name: t(`blogPage.categories.${cat.key}`)
+  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,18 +74,17 @@ const BlogPage: React.FC = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              ShopHub <span className="text-yellow-300">Blog</span>
+              {t('blogPage.hero.title')}
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed">
-              Discover insights, tips, and stories from the world of e-commerce. 
-              Stay informed with the latest trends and expert advice.
+              {t('blogPage.hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-indigo-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transform hover:scale-105 transition duration-300 shadow-lg">
-                Subscribe to Blog
+                {t('blogPage.hero.subscribe')}
               </button>
               <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-indigo-600 transform hover:scale-105 transition duration-300">
-                View All Categories
+                {t('blogPage.hero.viewCategories')}
               </button>
             </div>
           </div>
@@ -170,7 +115,7 @@ const BlogPage: React.FC = () => {
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Article</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('blogPage.common.featured')}</h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto"></div>
           </div>
           
@@ -224,11 +169,11 @@ const BlogPage: React.FC = () => {
                     </div>
                     <div className="flex items-center">
                       <ShareIcon className="w-5 h-5 mr-2" />
-                      <span>Share</span>
+                      <span>{t('blogPage.common.share')}</span>
                     </div>
                   </div>
                   <button className="flex items-center text-indigo-600 hover:text-indigo-700 font-medium group">
-                    Read More
+                    {t('blogPage.common.readMore')}
                     <ArrowRightIcon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition duration-300" />
                   </button>
                 </div>
@@ -243,11 +188,11 @@ const BlogPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Latest <span className="text-indigo-600">Articles</span>
+              {t('blogPage.hero.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Explore our collection of insightful articles covering everything from shopping tips to industry trends.
+              {t('blogPage.hero.subtitle')}
             </p>
           </div>
           
@@ -310,7 +255,7 @@ const BlogPage: React.FC = () => {
                           </div>
                         </div>
                         <button className="flex items-center text-indigo-600 hover:text-indigo-700 font-medium text-sm group">
-                          Read More
+                          {t('blogPage.common.readMore')}
                           <ArrowRightIcon className="w-3 h-3 ml-1 group-hover:translate-x-1 transition duration-300" />
                         </button>
                       </div>
@@ -324,7 +269,7 @@ const BlogPage: React.FC = () => {
           {/* Load More Button */}
           <div className="text-center mt-12">
             <button className="bg-indigo-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-indigo-700 transform hover:scale-105 transition duration-300 shadow-lg">
-              Load More Articles
+              {t('blogPage.common.loadMore')}
             </button>
           </div>
         </div>
@@ -339,26 +284,26 @@ const BlogPage: React.FC = () => {
             </div>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Never Miss <span className="text-yellow-300">an Update</span>
+            {t('blogPage.newsletter.title')}
           </h2>
           <div className="w-24 h-1 bg-yellow-300 mx-auto mb-8"></div>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed">
-            Subscribe to our newsletter and get the latest articles, tips, and insights delivered directly to your inbox.
+            {t('blogPage.newsletter.subtitle')}
           </p>
           
           <div className="max-w-md mx-auto">
             <div className="flex">
               <input 
                 type="email" 
-                placeholder="Enter your email address"
+                placeholder={t('blogPage.newsletter.placeholder') || ''}
                 className="flex-1 px-6 py-4 rounded-l-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-300"
               />
               <button className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-r-full font-bold hover:bg-yellow-300 transition duration-300">
-                Subscribe
+                {t('blogPage.newsletter.subscribe')}
               </button>
             </div>
             <p className="text-gray-300 text-sm mt-4">
-              Join 10,000+ subscribers. No spam, unsubscribe anytime.
+              {t('blogPage.newsletter.note')}
             </p>
           </div>
         </div>

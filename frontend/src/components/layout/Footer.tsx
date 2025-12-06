@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import newsletterService from '../../services/newsletterService';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const Footer: React.FC = () => {
+  const { t } = useTranslation();
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
 
@@ -45,7 +47,7 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">ShopHub</h3>
             <p className="text-gray-400 mb-4">
-              Your one-stop destination for all your shopping needs. Quality products at affordable prices.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -68,38 +70,38 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h4>
             <ul className="space-y-2">
-              <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
-              <li><Link to="/careers" className="text-gray-400 hover:text-white transition-colors">Careers</Link></li>
-              <li><Link to="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
-              <li><Link to="/press" className="text-gray-400 hover:text-white transition-colors">Press</Link></li>
+              <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">{t('footer.about')}</Link></li>
+              <li><Link to="/contact" className="text-gray-400 hover:text-white transition-colors">{t('footer.contact')}</Link></li>
+              <li><Link to="/careers" className="text-gray-400 hover:text-white transition-colors">{t('footer.careers')}</Link></li>
+              <li><Link to="/blog" className="text-gray-400 hover:text-white transition-colors">{t('footer.blog')}</Link></li>
+              <li><Link to="/press" className="text-gray-400 hover:text-white transition-colors">{t('footer.press')}</Link></li>
             </ul>
           </div>
 
           {/* Customer Service */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Customer Service</h4>
+            <h4 className="text-lg font-semibold mb-4">{t('footer.customerService')}</h4>
             <ul className="space-y-2">
-              <li><Link to="/help" className="text-gray-400 hover:text-white transition-colors">Help Center</Link></li>
-              <li><Link to="/track" className="text-gray-400 hover:text-white transition-colors">Track Your Order</Link></li>
-              <li><Link to="/returns" className="text-gray-400 hover:text-white transition-colors">Returns & Refunds</Link></li>
-              <li><Link to="/shipping" className="text-gray-400 hover:text-white transition-colors">Shipping Info</Link></li>
-              <li><Link to="/size-guide" className="text-gray-400 hover:text-white transition-colors">Size Guide</Link></li>
+              <li><Link to="/help" className="text-gray-400 hover:text-white transition-colors">{t('footer.help')}</Link></li>
+              <li><Link to="/track" className="text-gray-400 hover:text-white transition-colors">{t('footer.track')}</Link></li>
+              <li><Link to="/returns" className="text-gray-400 hover:text-white transition-colors">{t('footer.returns')}</Link></li>
+              <li><Link to="/shipping" className="text-gray-400 hover:text-white transition-colors">{t('footer.shipping')}</Link></li>
+              <li><Link to="/size-guide" className="text-gray-400 hover:text-white transition-colors">{t('footer.sizeGuide')}</Link></li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Newsletter</h4>
+            <h4 className="text-lg font-semibold mb-4">{t('footer.newsletter')}</h4>
             <p className="text-gray-400 mb-4">
-              Subscribe to get special offers, free giveaways, and updates.
+              {t('footer.subscribeText')}
             </p>
             <form onSubmit={handleNewsletterSubscribe} className="flex">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t('home.enterEmail')}
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 disabled={newsletterLoading}
@@ -110,7 +112,7 @@ const Footer: React.FC = () => {
                 disabled={newsletterLoading}
                 className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {newsletterLoading ? 'Subscribing...' : 'Subscribe'}
+                {newsletterLoading ? t('home.subscribing') : t('home.subscribe')}
               </button>
             </form>
           </div>
@@ -118,17 +120,17 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 ShopHub. All rights reserved.
+            © {new Date().getFullYear()} ShopHub. {t('footer.rights')}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Privacy Policy
+              {t('footer.privacy')}
             </Link>
             <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Terms of Service
+              {t('footer.terms')}
             </Link>
             <Link to="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Cookie Policy
+              {t('footer.cookies')}
             </Link>
           </div>
         </div>

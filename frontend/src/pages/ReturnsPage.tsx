@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   ArrowPathIcon,
   ClockIcon,
@@ -24,16 +25,17 @@ import {
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 
 const ReturnsPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('policy');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [trackingNumber, setTrackingNumber] = useState('');
 
   const tabs = [
-    { id: 'policy', label: 'Return Policy', icon: ArrowPathIcon },
-    { id: 'process', label: 'Return Process', icon: ClockIcon },
-    { id: 'tracking', label: 'Track Return', icon: MagnifyingGlassIcon },
-    { id: 'faq', label: 'FAQ', icon: QuestionMarkCircleIcon }
+    { id: 'policy', label: t('returnsPage.tabs.policy'), icon: ArrowPathIcon },
+    { id: 'process', label: t('returnsPage.tabs.process'), icon: ClockIcon },
+    { id: 'tracking', label: t('returnsPage.tabs.tracking'), icon: MagnifyingGlassIcon },
+    { id: 'faq', label: t('returnsPage.tabs.faq'), icon: QuestionMarkCircleIcon }
   ];
 
   const returnReasons = [
@@ -46,29 +48,29 @@ const ReturnsPage: React.FC = () => {
   const processSteps = [
     {
       step: 1,
-      title: 'Initiate Return',
-      description: 'Start your return request online or contact customer service',
+      title: t('returnsPage.process.steps.initiate.title'),
+      description: t('returnsPage.process.steps.initiate.desc'),
       icon: DocumentTextIcon,
       status: 'complete'
     },
     {
       step: 2,
-      title: 'Pack & Ship',
-      description: 'Pack your items securely and ship with provided label',
+      title: t('returnsPage.process.steps.pack.title'),
+      description: t('returnsPage.process.steps.pack.desc'),
       icon: CubeIcon,
       status: 'active'
     },
     {
       step: 3,
-      title: 'Processing',
-      description: 'We inspect your return and process the refund',
+      title: t('returnsPage.process.steps.processing.title'),
+      description: t('returnsPage.process.steps.processing.desc'),
       icon: ClockIcon,
       status: 'pending'
     },
     {
       step: 4,
-      title: 'Refund Issued',
-      description: 'Refund is issued to your original payment method',
+      title: t('returnsPage.process.steps.refund.title'),
+      description: t('returnsPage.process.steps.refund.desc'),
       icon: CreditCardIcon,
       status: 'pending'
     }
@@ -76,28 +78,28 @@ const ReturnsPage: React.FC = () => {
 
   const faqs = [
     {
-      question: 'How long do I have to return an item?',
-      answer: 'You have 30 days from the delivery date to return most items. Some categories like electronics may have different return windows.'
+      question: t('returnsPage.faq.q1.q'),
+      answer: t('returnsPage.faq.q1.a')
     },
     {
-      question: 'Who pays for return shipping?',
-      answer: 'Return shipping is free for defective or incorrect items. For other returns, a small return shipping fee may apply, which will be deducted from your refund.'
+      question: t('returnsPage.faq.q2.q'),
+      answer: t('returnsPage.faq.q2.a')
     },
     {
-      question: 'How long does it take to get my refund?',
-      answer: 'Once we receive your return, refunds are typically processed within 3-5 business days. It may take additional time to appear on your statement depending on your bank.'
+      question: t('returnsPage.faq.q3.q'),
+      answer: t('returnsPage.faq.q3.a')
     },
     {
-      question: 'Can I return items without the original packaging?',
-      answer: 'Items should be returned in their original packaging when possible. Items without original packaging may be subject to a restocking fee.'
+      question: t('returnsPage.faq.q4.q'),
+      answer: t('returnsPage.faq.q4.a')
     },
     {
-      question: 'What items cannot be returned?',
-      answer: 'Personalized items, digital downloads, perishable goods, and items damaged by misuse cannot be returned. Health and beauty items must be unopened.'
+      question: t('returnsPage.faq.q5.q'),
+      answer: t('returnsPage.faq.q5.a')
     },
     {
-      question: 'Can I exchange an item instead of returning it?',
-      answer: 'Yes! You can exchange items for a different size, color, or style. Exchanges are processed as a return and new order to ensure faster delivery.'
+      question: t('returnsPage.faq.q6.q'),
+      answer: t('returnsPage.faq.q6.a')
     }
   ];
 
@@ -114,23 +116,20 @@ const ReturnsPage: React.FC = () => {
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 text-center">
         <div className="max-w-2xl mx-auto">
           <ArrowPathIcon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Hassle-Free Returns</h2>
-          <p className="text-lg text-gray-600 mb-6">
-            We want you to love your purchase! If you're not completely satisfied, 
-            return it within 30 days for a full refund or exchange.
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('returnsPage.hero.title')}</h2>
+          <p className="text-lg text-gray-600 mb-6">{t('returnsPage.hero.subtitle')}</p>
           <div className="flex flex-wrap justify-center gap-4">
             <div className="flex items-center text-green-600">
               <CheckCircleIconSolid className="h-5 w-5 mr-2" />
-              <span className="font-medium">30-Day Returns</span>
+              <span className="font-medium">{t('returnsPage.hero.badges.thirtyDay')}</span>
             </div>
             <div className="flex items-center text-green-600">
               <CheckCircleIconSolid className="h-5 w-5 mr-2" />
-              <span className="font-medium">Free Return Shipping*</span>
+              <span className="font-medium">{t('returnsPage.hero.badges.freeShipping')}</span>
             </div>
             <div className="flex items-center text-green-600">
               <CheckCircleIconSolid className="h-5 w-5 mr-2" />
-              <span className="font-medium">Fast Refunds</span>
+              <span className="font-medium">{t('returnsPage.hero.badges.fastRefunds')}</span>
             </div>
           </div>
         </div>
@@ -141,50 +140,30 @@ const ReturnsPage: React.FC = () => {
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
           <div className="flex items-center mb-4">
             <CheckCircleIcon className="h-8 w-8 text-green-500 mr-3" />
-            <h3 className="text-xl font-semibold text-gray-900">What You Can Return</h3>
+            <h3 className="text-xl font-semibold text-gray-900">{t('returnsPage.policy.canReturn')}</h3>
           </div>
           <ul className="space-y-3">
-            <li className="flex items-start">
-              <CheckCircleIconSolid className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Items in original, unused condition</span>
-            </li>
-            <li className="flex items-start">
-              <CheckCircleIconSolid className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Items with original packaging and tags</span>
-            </li>
-            <li className="flex items-start">
-              <CheckCircleIconSolid className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Items returned within 30 days of delivery</span>
-            </li>
-            <li className="flex items-start">
-              <CheckCircleIconSolid className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Items with proof of purchase</span>
-            </li>
+            {(t('returnsPage.policy.canReturnList', { returnObjects: true }) as string[]).map((item, index) => (
+              <li key={index} className="flex items-start">
+                <CheckCircleIconSolid className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">{item}</span>
+              </li>
+            ))}
           </ul>
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
           <div className="flex items-center mb-4">
             <XCircleIcon className="h-8 w-8 text-red-500 mr-3" />
-            <h3 className="text-xl font-semibold text-gray-900">What You Cannot Return</h3>
+            <h3 className="text-xl font-semibold text-gray-900">{t('returnsPage.policy.cannotReturn')}</h3>
           </div>
           <ul className="space-y-3">
-            <li className="flex items-start">
-              <XCircleIcon className="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Personalized or customized items</span>
-            </li>
-            <li className="flex items-start">
-              <XCircleIcon className="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Digital downloads and software</span>
-            </li>
-            <li className="flex items-start">
-              <XCircleIcon className="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Perishable goods and food items</span>
-            </li>
-            <li className="flex items-start">
-              <XCircleIcon className="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">Items damaged by misuse</span>
-            </li>
+             {(t('returnsPage.policy.cannotReturnList', { returnObjects: true }) as string[]).map((item, index) => (
+              <li key={index} className="flex items-start">
+                <XCircleIcon className="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">{item}</span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -193,20 +172,20 @@ const ReturnsPage: React.FC = () => {
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
           <CalendarDaysIcon className="h-6 w-6 text-blue-600 mr-2" />
-          Return Timeframes by Category
+          {t('returnsPage.policy.timeframes.title')}
         </h3>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="p-4 bg-green-50 rounded-lg">
-            <h4 className="font-semibold text-green-900 mb-2">Most Items</h4>
-            <p className="text-green-700 text-sm">30 days from delivery</p>
+            <h4 className="font-semibold text-green-900 mb-2">{t('returnsPage.policy.timeframes.most')}</h4>
+            <p className="text-green-700 text-sm">{t('returnsPage.faq.q1.a')}</p>
           </div>
           <div className="p-4 bg-yellow-50 rounded-lg">
-            <h4 className="font-semibold text-yellow-900 mb-2">Electronics</h4>
-            <p className="text-yellow-700 text-sm">15 days from delivery</p>
+            <h4 className="font-semibold text-yellow-900 mb-2">{t('returnsPage.policy.timeframes.electronics')}</h4>
+            <p className="text-yellow-700 text-sm">15 days</p>
           </div>
           <div className="p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-semibold text-blue-900 mb-2">Health & Beauty</h4>
-            <p className="text-blue-700 text-sm">30 days, unopened only</p>
+            <h4 className="font-semibold text-blue-900 mb-2">{t('returnsPage.policy.timeframes.beauty')}</h4>
+            <p className="text-blue-700 text-sm">30 days, unopened</p>
           </div>
         </div>
       </div>
@@ -217,7 +196,7 @@ const ReturnsPage: React.FC = () => {
     <div className="space-y-8">
       {/* Process Timeline */}
       <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
-        <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">Return Process Timeline</h3>
+        <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">{t('returnsPage.process.title')}</h3>
         <div className="relative">
           {processSteps.map((step, index) => (
             <div key={step.step} className="flex items-center mb-8 last:mb-0">
@@ -229,15 +208,7 @@ const ReturnsPage: React.FC = () => {
               )}
               <div className="ml-6 flex-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-lg font-semibold text-gray-900">Step {step.step}: {step.title}</h4>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    step.status === 'complete' ? 'bg-green-100 text-green-800' :
-                    step.status === 'active' ? 'bg-blue-100 text-blue-800' :
-                    'bg-gray-100 text-gray-600'
-                  }`}>
-                    {step.status === 'complete' ? 'Complete' :
-                     step.status === 'active' ? 'In Progress' : 'Pending'}
-                  </span>
+                  <h4 className="text-lg font-semibold text-gray-900">{t('about.mission.title')}: {step.title}</h4>
                 </div>
                 <p className="text-gray-600 mt-1">{step.description}</p>
               </div>
@@ -249,26 +220,26 @@ const ReturnsPage: React.FC = () => {
       {/* Quick Actions */}
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-blue-900 mb-4">Start a Return</h3>
-          <p className="text-blue-700 mb-6">Have an order you need to return? Start the process now.</p>
+          <h3 className="text-xl font-semibold text-blue-900 mb-4">{t('returnsPage.process.startReturn')}</h3>
+          <p className="text-blue-700 mb-6">{t('returnsPage.process.startDesc')}</p>
           <Link
             to="/orders"
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <DocumentTextIcon className="h-5 w-5 mr-2" />
-            View My Orders
+            {t('returnsPage.process.viewOrders')}
           </Link>
         </div>
 
         <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-green-900 mb-4">Need Help?</h3>
-          <p className="text-green-700 mb-6">Our customer service team is here to assist you.</p>
+          <h3 className="text-xl font-semibold text-green-900 mb-4">{t('returnsPage.process.needHelp')}</h3>
+          <p className="text-green-700 mb-6">{t('helpPage.stillNeedHelp.desc')}</p>
           <Link
             to="/contact"
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
             <ChatBubbleLeftEllipsisIcon className="h-5 w-5 mr-2" />
-            Contact Support
+            {t('returnsPage.process.contactSupport')}
           </Link>
         </div>
       </div>
@@ -303,9 +274,9 @@ const ReturnsPage: React.FC = () => {
       <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
         <div className="text-center mb-8">
           <TruckIcon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-          <h3 className="text-2xl font-semibold text-gray-900 mb-4">Track Your Return</h3>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-4">{t('returnsPage.tracking.title')}</h3>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Enter your return tracking number to see the current status of your return shipment.
+            {t('returnsPage.tracking.desc')}
           </p>
         </div>
 
@@ -315,7 +286,7 @@ const ReturnsPage: React.FC = () => {
               type="text"
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
-              placeholder="Enter tracking number"
+              placeholder={t('returnsPage.tracking.placeholder')}
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <button
@@ -323,46 +294,46 @@ const ReturnsPage: React.FC = () => {
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
             >
               <MagnifyingGlassIcon className="h-5 w-5 mr-2" />
-              Track
+              {t('returnsPage.tracking.track')}
             </button>
           </div>
         </div>
 
         <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-4">Return Tracking Tips:</h4>
-          <ul className="space-y-2 text-gray-600">
-            <li>• Tracking numbers are provided via email once your return is processed</li>
-            <li>• It may take 24-48 hours for tracking information to appear</li>
-            <li>• Contact customer service if you can't locate your tracking number</li>
+          <h4 className="font-semibold text-gray-900 mb-4">{t('returnsPage.tracking.tips')}:</h4>
+           <ul className="space-y-2 text-gray-600">
+             {(t('returnsPage.tracking.tipsList', { returnObjects: true }) as string[]).map((item, index) => (
+              <li key={index}>• {item}</li>
+            ))}
           </ul>
         </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">Alternative Tracking Methods</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-6">{t('shippingPage.domestic.options.standard.name')}</h3>
         <div className="grid md:grid-cols-3 gap-4">
           <Link
             to="/orders"
             className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-center"
           >
             <DocumentTextIcon className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900">My Orders</h4>
-            <p className="text-sm text-gray-600">View all your orders and returns</p>
+            <h4 className="font-semibold text-gray-900">{t('returnsPage.process.viewOrders')}</h4>
+            <p className="text-sm text-gray-600">{t('returnsPage.process.startDesc')}</p>
           </Link>
           <Link
             to="/contact"
             className="p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors text-center"
           >
             <ChatBubbleLeftEllipsisIcon className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900">Live Chat</h4>
-            <p className="text-sm text-gray-600">Chat with customer service</p>
+            <h4 className="font-semibold text-gray-900">{t('returnsPage.process.contactSupport')}</h4>
+            <p className="text-sm text-gray-600">{t('helpPage.stillNeedHelp.desc')}</p>
           </Link>
           <a
             href="tel:1-800-746-7482"
             className="p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors text-center"
           >
             <PhoneIcon className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900">Call Us</h4>
+            <h4 className="font-semibold text-gray-900">{t('returnsPage.footer.phone')}</h4>
             <p className="text-sm text-gray-600">1-800-SHOPHUB</p>
           </a>
         </div>
@@ -374,8 +345,8 @@ const ReturnsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="text-center mb-8">
         <QuestionMarkCircleIcon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-        <h3 className="text-2xl font-semibold text-gray-900 mb-4">Frequently Asked Questions</h3>
-        <p className="text-gray-600">Find quick answers to common questions about returns and refunds.</p>
+        <h3 className="text-2xl font-semibold text-gray-900 mb-4">{t('returnsPage.faq.title')}</h3>
+        <p className="text-gray-600">{t('helpPage.subtitle')}</p>
       </div>
 
       <div className="space-y-4">
@@ -402,15 +373,15 @@ const ReturnsPage: React.FC = () => {
       </div>
 
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
-        <h4 className="text-xl font-semibold text-gray-900 mb-4">Still Have Questions?</h4>
-        <p className="text-gray-600 mb-6">Can't find what you're looking for? Our customer service team is here to help!</p>
+        <h4 className="text-xl font-semibold text-gray-900 mb-4">{t('helpPage.stillNeedHelp.title')}</h4>
+        <p className="text-gray-600 mb-6">{t('helpPage.stillNeedHelp.desc')}</p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             to="/contact"
             className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <EnvelopeIcon className="h-5 w-5 mr-2" />
-            Contact Support
+            {t('returnsPage.process.contactSupport')}
           </Link>
           <a
             href="tel:1-800-746-7482"
@@ -432,7 +403,7 @@ const ReturnsPage: React.FC = () => {
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Returns & Refunds</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Easy returns, fast refunds, and excellent customer service. We're here to make your shopping experience worry-free.
+              {t('returnsPage.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -471,25 +442,24 @@ const ReturnsPage: React.FC = () => {
         <div className="mt-12 bg-gradient-to-r from-gray-900 to-blue-900 rounded-2xl p-8 text-white">
           <div className="max-w-4xl mx-auto text-center">
             <ShieldCheckIcon className="h-16 w-16 text-blue-300 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold mb-4">100% Satisfaction Guarantee</h2>
+            <h2 className="text-3xl font-bold mb-4">{t('returnsPage.footer.guarantee')}</h2>
             <p className="text-xl text-blue-100 mb-8">
-              We stand behind every product we sell. If you're not completely satisfied, 
-              we'll make it right with our hassle-free return policy.
+              {t('returnsPage.footer.desc')}
             </p>
             <div className="grid md:grid-cols-3 gap-6 text-center">
               <div>
                 <EnvelopeIcon className="h-8 w-8 text-blue-300 mx-auto mb-2" />
-                <h3 className="font-semibold mb-1">Email Support</h3>
+                <h3 className="font-semibold mb-1">{t('returnsPage.footer.email')}</h3>
                 <p className="text-blue-200 text-sm">returns@shophub.com</p>
               </div>
               <div>
                 <PhoneIcon className="h-8 w-8 text-blue-300 mx-auto mb-2" />
-                <h3 className="font-semibold mb-1">Phone Support</h3>
+                <h3 className="font-semibold mb-1">{t('returnsPage.footer.phone')}</h3>
                 <p className="text-blue-200 text-sm">1-800-SHOPHUB</p>
               </div>
               <div>
                 <ClockIcon className="h-8 w-8 text-blue-300 mx-auto mb-2" />
-                <h3 className="font-semibold mb-1">Business Hours</h3>
+                <h3 className="font-semibold mb-1">{t('returnsPage.footer.hours')}</h3>
                 <p className="text-blue-200 text-sm">Mon-Fri 9AM-6PM EST</p>
               </div>
             </div>

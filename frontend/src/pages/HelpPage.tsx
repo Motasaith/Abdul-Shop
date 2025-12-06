@@ -1,33 +1,35 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 
 const HelpPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   
   const faqs = [
     {
-      question: "How do I place an order?",
-      answer: "To place an order, browse our products, add items to your cart, and proceed to checkout. You'll need to provide shipping information and payment details."
+      question: t('helpPage.faq.q1.q'),
+      answer: t('helpPage.faq.q1.a')
     },
     {
-      question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and Apple Pay."
+      question: t('helpPage.faq.q2.q'),
+      answer: t('helpPage.faq.q2.a')
     },
     {
-      question: "How long does shipping take?",
-      answer: "Standard shipping takes 3-5 business days. Express shipping takes 1-2 business days. Free shipping is available on orders over $50."
+      question: t('helpPage.faq.q3.q'),
+      answer: t('helpPage.faq.q3.a')
     },
     {
-      question: "How can I track my order?",
-      answer: "Once your order ships, you'll receive a tracking number via email. You can also track your order by logging into your account."
+      question: t('helpPage.faq.q4.q'),
+      answer: t('helpPage.faq.q4.a')
     },
     {
-      question: "What is your return policy?",
-      answer: "We offer a 30-day return policy for most items. Items must be unused and in original packaging. Some restrictions apply."
+      question: t('helpPage.faq.q5.q'),
+      answer: t('helpPage.faq.q5.a')
     },
     {
-      question: "How do I contact customer service?",
-      answer: "You can contact us through our contact form, email us at support@shophub.com, or call 1-800-SHOPHUB."
+      question: t('helpPage.faq.q6.q'),
+      answer: t('helpPage.faq.q6.a')
     }
   ];
 
@@ -36,14 +38,14 @@ const HelpPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="p-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-8">Help Center</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-8">{t('helpPage.title')}</h1>
             
             <div className="mb-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">How can we help you?</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('helpPage.subtitle')}</h2>
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search for help..."
+                  placeholder={t('helpPage.searchPlaceholder')}
                   className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <svg className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,8 +61,8 @@ const HelpPage: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Orders & Shipping</h3>
-                <p className="text-gray-600">Track orders, shipping info, and delivery updates</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('helpPage.categories.orders.title')}</h3>
+                <p className="text-gray-600">{t('helpPage.categories.orders.desc')}</p>
               </div>
               
               <div className="bg-green-50 p-6 rounded-lg text-center">
@@ -69,8 +71,8 @@ const HelpPage: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Returns & Refunds</h3>
-                <p className="text-gray-600">Return policy, refund process, and exchanges</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('helpPage.categories.returns.title')}</h3>
+                <p className="text-gray-600">{t('helpPage.categories.returns.desc')}</p>
               </div>
               
               <div className="bg-purple-50 p-6 rounded-lg text-center">
@@ -79,13 +81,13 @@ const HelpPage: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Account & Payment</h3>
-                <p className="text-gray-600">Account settings, payment methods, and billing</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('helpPage.categories.account.title')}</h3>
+                <p className="text-gray-600">{t('helpPage.categories.account.desc')}</p>
               </div>
             </div>
             
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Frequently Asked Questions</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('helpPage.faq.title')}</h2>
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg">
@@ -106,13 +108,13 @@ const HelpPage: React.FC = () => {
             </div>
             
             <div className="mt-12 bg-blue-50 p-6 rounded-lg text-center">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Still need help?</h3>
-              <p className="text-gray-600 mb-4">Our customer service team is here to help you 24/7</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('helpPage.stillNeedHelp.title')}</h3>
+              <p className="text-gray-600 mb-4">{t('helpPage.stillNeedHelp.desc')}</p>
               <button 
                 onClick={() => navigate('/contact')}
                 className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
               >
-                Contact Support
+                {t('helpPage.stillNeedHelp.cta')}
               </button>
             </div>
           </div>

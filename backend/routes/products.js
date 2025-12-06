@@ -4,6 +4,9 @@ const Product = require('../models/Product');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
+const uploadMiddleware = require('../middleware/upload');
+const { uploadToCloudinary } = require('../utils/cloudinary');
+const { createNotification } = require('../services/notificationService');
 const router = express.Router();
 
 // @route    GET api/products
@@ -49,28 +52,37 @@ router.get('/', async (req, res) => {
       ];
     }
 
+    // On Sale filter
+    // On Sale filter
+    // On Sale filter (STRICT MANUAL)
+    if (req.query.onSale === 'true') {
+      filter.onSale = true;
+    }
+    
+    // New Arrivals filter (STRICT MANUAL)
+    if (req.query.newArrivals === 'true') {
+       filter.isNewArrival = true;
+    }
+
     // Sort options
     let sortOption = { createdAt: -1 }; // Default: newest first
+    
+    // Sort logic
     if (req.query.sort) {
-      switch (req.query.sort) {
-        case 'oldest':
-          sortOption = { createdAt: 1 };
-          break;
-        case 'price-low':
-          sortOption = { price: 1 };
-          break;
-        case 'price-high':
-          sortOption = { price: -1 };
-          break;
-        case 'rating':
-          sortOption = { rating: -1 };
-          break;
-        case 'name':
-          sortOption = { name: 1 };
-          break;
-        default:
-          sortOption = { createdAt: -1 };
+      const sortBy = req.query.sort;
+      if (sortBy === 'newest') {
+        // Prioritize manually flagged new arrivals, then date
+        sortOption = { isNewArrival: -1, createdAt: -1 };
       }
+      else if (sortBy === 'oldest') sortOption = { createdAt: 1 };
+      else if (sortBy === 'price-low') sortOption = { price: 1 };
+      else if (sortBy === 'price-high') sortOption = { price: -1 };
+      else if (sortBy === 'rating') sortOption = { rating: -1 };
+      else if (sortBy === 'name') sortOption = { name: 1 };
+    } else {
+      // Default sort also prioritizes new arrivals if no sort specified?
+      // Or just stick to default creation date. Let's keep it consistent with 'newest'
+      sortOption = { isNewArrival: -1, createdAt: -1 };
     }
 
     console.log('Filter:', filter);
@@ -159,6 +171,180 @@ router.get('/:id', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// @route    POST api/products/:id/reviews
+// @desc     Create new review
+// @access   Private
+router.post(
+  '/:id/reviews',
+  [
+    auth,
+    uploadMiddleware,
+    [
+      check('rating', 'Rating is required').not().isEmpty(),
+      check('comment', 'Comment is required').not().isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { rating, comment } = req.body;
+
+    try {
+      const product = await Product.findById(req.params.id);
+
+      if (!product) {
+        return res.status(404).json({ msg: 'Product not found' });
+      }
+
+      const alreadyReviewed = product.reviews.find(
+        r => r.user.toString() === req.user.id
+      );
+
+      if (alreadyReviewed) {
+        return res.status(400).json({ msg: 'Product already reviewed' });
+      }
+
+      // Handle image uploads
+      let reviewImages = [];
+      if (req.files && req.files.images) {
+        const uploadPromises = req.files.images.map(file => 
+          uploadToCloudinary(file.buffer)
+        );
+        const results = await Promise.all(uploadPromises);
+        reviewImages = results.map(result => ({
+          public_id: result.public_id,
+          url: result.secure_url
+        }));
+      }
+
+      const review = {
+        name: req.user.name || 'User',
+        rating: Number(rating),
+        comment,
+        user: req.user.id,
+        images: reviewImages
+      };
+
+      product.reviews.push(review);
+
+      product.numReviews = product.reviews.length;
+
+      product.rating =
+        product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+        product.reviews.length;
+
+      await product.save();
+
+      res.status(201).json({ msg: 'Review added' });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route    POST api/products/:id/questions
+// @desc     Ask a question about a product
+// @access   Private
+router.post(
+  '/:id/questions',
+  [
+    auth,
+    [
+      check('question', 'Question is required').not().isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const product = await Product.findById(req.params.id);
+
+      if (!product) {
+        return res.status(404).json({ msg: 'Product not found' });
+      }
+
+      const newQuestion = {
+        user: req.user.id,
+        userName: req.user.name || 'User',
+        question: req.body.question
+      };
+
+      product.qnaQuestions.unshift(newQuestion);
+
+      await product.save();
+
+      // Create notification for admin
+      await createNotification(
+        'system',
+        `New question asked on product: ${product.name}`,
+        {
+          productId: product._id,
+          questionId: product.qnaQuestions[0]._id,
+          userId: req.user.id
+        }
+      );
+
+      res.status(201).json(product.qnaQuestions);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route    PUT api/products/:id/questions/:qId/answer
+// @desc     Answer a question (Admin only)
+// @access   Private/Admin
+router.put(
+  '/:id/questions/:qId/answer',
+  [
+    auth,
+    admin,
+    [check('answer', 'Answer is required').not().isEmpty()]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const product = await Product.findById(req.params.id);
+
+      if (!product) {
+        return res.status(404).json({ msg: 'Product not found' });
+      }
+
+      const question = product.qnaQuestions.id(req.params.qId);
+
+      if (!question) {
+        return res.status(404).json({ msg: 'Question not found' });
+      }
+
+      question.answer = {
+        text: req.body.answer,
+        answeredBy: req.user.id,
+        answeredByName: req.user.name || 'Admin',
+        answeredAt: Date.now()
+      };
+
+      await product.save();
+
+      res.json(product.qnaQuestions);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
 
 // @route    POST api/products
 // @desc     Create a product

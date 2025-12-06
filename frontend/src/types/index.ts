@@ -97,6 +97,7 @@ export interface Product {
   }[];
   // Questions and Answers
   qnaQuestions?: {
+    _id: string;
     user: string;
     userName: string;
     question: string;
@@ -229,6 +230,8 @@ export interface FilterOptions {
   rating?: number;
   sort?: string;
   search?: string;
+  onSale?: boolean;
+  newArrivals?: boolean;
 }
 
 export interface CategoryStats {

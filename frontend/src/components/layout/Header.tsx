@@ -14,9 +14,11 @@ import {
 import CurrencySelector from '../common/CurrencySelector';
 import LanguageSelector from '../common/LanguageSelector';
 import { usePrice } from '../../hooks/usePrice';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const Header: React.FC = () => {
   const { formatPrice } = usePrice();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
@@ -66,12 +68,12 @@ const Header: React.FC = () => {
       <div className="bg-blue-600 text-white py-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center text-sm">
-            <span className="hidden sm:block">Free shipping on orders over {formatPrice(50)}</span>
-            <span className="sm:hidden">Free shipping {formatPrice(50)}+</span>
+            <span className="hidden sm:block">{t('common.freeShipping')} {formatPrice(50)}</span>
+            <span className="sm:hidden">{t('common.freeShipping')} {formatPrice(50)}+</span>
             <div className="flex space-x-2 sm:space-x-4">
-              <Link to="/help" className="hover:text-blue-200">Help</Link>
-              <Link to="/track" className="hover:text-blue-200 hidden sm:inline">Track Order</Link>
-              <Link to="/track" className="hover:text-blue-200 sm:hidden">Track</Link>
+              <Link to="/help" className="hover:text-blue-200">{t('common.help')}</Link>
+              <Link to="/track" className="hover:text-blue-200 hidden sm:inline">{t('common.trackOrder')}</Link>
+              <Link to="/track" className="hover:text-blue-200 sm:hidden">{t('common.trackOrder')}</Link>
               <div className="flex items-center border-l border-blue-400 pl-4 ml-2 space-x-2">
                 <CurrencySelector />
                 <LanguageSelector />
@@ -98,7 +100,7 @@ const Header: React.FC = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
+                placeholder={t('common.searchPlaceholder')}
                 className="w-full px-4 py-2 pl-10 pr-16 text-gray-900 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -106,7 +108,7 @@ const Header: React.FC = () => {
                 type="submit"
                 className="absolute right-2 top-1.5 bg-blue-600 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-700 transition-colors"
               >
-                Search
+                {t('common.search')}
               </button>
             </form>
           </div>
@@ -114,7 +116,7 @@ const Header: React.FC = () => {
           {/* Right side icons */}
           <div className="flex items-center space-x-4">
             {/* Wishlist - Hidden on mobile */}
-            <Link to="/wishlist" className="hidden sm:flex p-2 text-gray-700 hover:text-blue-600 transition-colors relative">
+            <Link to="/wishlist" className="hidden sm:flex p-2 text-gray-700 hover:text-blue-600 transition-colors relative" title={t('common.wishlist')}>
               <HeartIcon className="h-6 w-6" />
               {isAuthenticated && wishlistItemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -124,7 +126,7 @@ const Header: React.FC = () => {
             </Link>
 
             {/* Cart */}
-            <Link to="/cart" className="p-2 text-gray-700 hover:text-blue-600 transition-colors relative">
+            <Link to="/cart" className="p-2 text-gray-700 hover:text-blue-600 transition-colors relative" title={t('common.cart')}>
               <ShoppingCartIcon className="h-6 w-6" />
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -153,21 +155,21 @@ const Header: React.FC = () => {
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsProfileMenuOpen(false)}
                       >
-                        Profile
+                        {t('common.profile')}
                       </Link>
                       <Link
                         to="/orders"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsProfileMenuOpen(false)}
                       >
-                        My Orders
+                        {t('common.myOrders')}
                       </Link>
                       <Link
                         to="/reviews"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsProfileMenuOpen(false)}
                       >
-                        My Reviews
+                        {t('common.myReviews')}
                       </Link>
                       {user?.role === 'admin' && (
                         <Link
@@ -175,7 +177,7 @@ const Header: React.FC = () => {
                           className="block px-4 py-2 text-sm text-purple-600 hover:bg-gray-100"
                           onClick={() => setIsProfileMenuOpen(false)}
                         >
-                          Admin Dashboard
+                          {t('common.adminDashboard')}
                         </Link>
                       )}
                       <button
@@ -185,7 +187,7 @@ const Header: React.FC = () => {
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        Logout
+                        {t('common.logout')}
                       </button>
                     </div>
                   )}
@@ -193,11 +195,11 @@ const Header: React.FC = () => {
               ) : (
                 <div className="flex items-center space-x-2">
                   <Link to="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
-                    Login
+                    {t('common.login')}
                   </Link>
                   <span className="text-gray-300">|</span>
                   <Link to="/register" className="text-gray-700 hover:text-blue-600 transition-colors">
-                    Register
+                    {t('common.register')}
                   </Link>
                 </div>
               )}
@@ -242,16 +244,16 @@ const Header: React.FC = () => {
                   to={`/products?category=${category}`}
                   className="text-gray-700 hover:text-blue-600 transition-colors text-sm"
                 >
-                  {category}
+                  {t(`categories.${category}`)}
                 </Link>
               ))}
             </nav>
             <div className="flex items-center space-x-4 text-sm">
-              <Link to="/deals" className="text-red-600 font-medium hover:text-red-700">
-                Today's Deals
+              <Link to="/sales" className="text-red-600 font-medium hover:text-red-700">
+                {t('common.todaysDeals')}
               </Link>
               <Link to="/new-arrivals" className="text-green-600 font-medium hover:text-green-700">
-                New Arrivals
+                {t('common.newArrivals')}
               </Link>
             </div>
           </div>
@@ -268,7 +270,7 @@ const Header: React.FC = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
+                placeholder={t('common.searchPlaceholder')}
                 className="w-full px-4 py-2 pl-10 pr-16 text-gray-900 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -276,7 +278,7 @@ const Header: React.FC = () => {
                 type="submit"
                 className="absolute right-2 top-1.5 bg-blue-600 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-700 transition-colors"
               >
-                Search
+                {t('common.search')}
               </button>
             </form>
           </div>
@@ -294,28 +296,28 @@ const Header: React.FC = () => {
                   className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Profile
+                  {t('common.profile')}
                 </Link>
                 <Link
                   to="/orders"
                   className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  My Orders
+                  {t('common.myOrders')}
                 </Link>
                 <Link
                   to="/wishlist"
                   className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Wishlist
+                  {t('common.wishlist')}
                 </Link>
                 <Link
                   to="/reviews"
                   className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  My Reviews
+                  {t('common.myReviews')}
                 </Link>
                 {user?.role === 'admin' && (
                   <Link
@@ -323,7 +325,7 @@ const Header: React.FC = () => {
                     className="block py-1 text-sm text-purple-600 hover:text-purple-700 transition-colors font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Admin Dashboard
+                    {t('common.adminDashboard')}
                   </Link>
                 )}
                 <button
@@ -333,7 +335,7 @@ const Header: React.FC = () => {
                   }}
                   className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
                 >
-                  Logout
+                  {t('common.logout')}
                 </button>
               </div>
             </div>
@@ -348,14 +350,14 @@ const Header: React.FC = () => {
                   className="block py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Login
+                  {t('common.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="block py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Register
+                  {t('common.register')}
                 </Link>
               </div>
             </div>
@@ -363,7 +365,7 @@ const Header: React.FC = () => {
           
           {/* Mobile categories */}
           <div className="px-4 py-2 space-y-2">
-            <div className="text-sm font-medium text-gray-900 mb-2">Categories</div>
+            <div className="text-sm font-medium text-gray-900 mb-2">{t('common.categories')}</div>
             {categories.map((category) => (
               <Link
                 key={category}
@@ -371,7 +373,7 @@ const Header: React.FC = () => {
                 className="block py-2 text-gray-700 hover:text-blue-600 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {category}
+                {t(`categories.${category}`)}
               </Link>
             ))}
           </div>

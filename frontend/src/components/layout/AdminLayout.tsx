@@ -133,6 +133,13 @@ const AdminLayout: React.FC = () => {
       iconSolid: CogIconSolid,
       description: 'System config'
     },
+    { 
+      name: 'Payment Config', 
+      href: '/admin/settings/payments', 
+      icon: CogIcon, 
+      iconSolid: CogIconSolid,
+      description: 'Payment Gateways'
+    },
   ];
 
   const isCurrentPath = (path: string) => {

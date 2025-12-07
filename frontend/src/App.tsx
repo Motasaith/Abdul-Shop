@@ -60,6 +60,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminSettings from './pages/admin/AdminSettings';
+import PaymentSettings from './pages/admin/PaymentSettings';
 import AdminNotifications from './pages/admin/AdminNotifications';
 import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminSupportDetailPage from './pages/admin/AdminSupportDetailPage';
@@ -69,6 +70,7 @@ import AdminVendorRequests from './pages/admin/AdminVendorRequests';
 import SupportTicketListPage from './pages/profile/SupportTicketListPage';
 import SupportTicketDetailPage from './pages/profile/SupportTicketDetailPage';
 import VendorDashboard from './pages/vendor/VendorDashboard';
+import VendorProductForm from './pages/vendor/VendorProductForm';
 
 // Loading component
 const LoadingSpinner = () => (
@@ -155,6 +157,9 @@ function AppContent() {
             <Route path="profile/tickets" element={<SupportTicketListPage />} />
             <Route path="profile/tickets/:id" element={<SupportTicketDetailPage />} />
             <Route path="vendor/dashboard" element={<VendorDashboard />} />
+            <Route path="vendor/dashboard" element={<VendorDashboard />} />
+            <Route path="products/new" element={<VendorProductForm />} />
+            <Route path="products/edit/:id" element={<VendorProductForm />} />
           </Route>
 
           {/* Admin Routes */}
@@ -174,6 +179,7 @@ function AppContent() {
             <Route path="newsletter" element={<AdminNewsletter />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="settings/payments" element={<PaymentSettings />} />
             <Route path="notifications" element={<AdminNotifications />} />
             <Route path="support" element={<AdminSupportPage />} />
             <Route path="support/:id" element={<AdminSupportDetailPage />} />

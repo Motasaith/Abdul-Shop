@@ -13,6 +13,13 @@ import {
   PhoneIcon,
   UserIcon
 } from '@heroicons/react/24/outline';
+import { apiService } from '../services/api';
+
+interface PaymentMethod {
+  id: string;
+  name: string;
+  details?: any;
+}
 
 interface CheckoutFormData {
   fullName: string;
@@ -20,7 +27,7 @@ interface CheckoutFormData {
   city: string;
   postalCode: string;
   phone: string;
-  paymentMethod: 'cod' | 'card';
+  paymentMethod: string;
 }
 
 const CheckoutPage: React.FC = () => {
@@ -38,6 +45,26 @@ const CheckoutPage: React.FC = () => {
     paymentMethod: 'cod'
   });
   const [errors, setErrors] = useState<Partial<CheckoutFormData>>({});
+  const [availableMethods, setAvailableMethods] = useState<PaymentMethod[]>([]);
+
+  React.useEffect(() => {
+    const fetchMethods = async () => {
+      try {
+        const response = await apiService.get<PaymentMethod[]>('/payments/methods');
+        const methods = response.data;
+        setAvailableMethods(methods);
+        // Set default method if current is not available or empty
+        if (methods.length > 0 && !methods.find((m: any) => m.id === formData.paymentMethod)) {
+            setFormData(prev => ({ ...prev, paymentMethod: methods[0].id }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch payment methods');
+        // Fallback or leave empty? Better to have at least COD if fail?
+        // Let's assume backend always returns something or empty array
+      }
+    };
+    fetchMethods();
+  }, []);
 
   const location = useLocation();
   const buyNowItem = location.state?.buyNowItem;
@@ -286,9 +313,30 @@ const CheckoutPage: React.FC = () => {
                     value={formData.paymentMethod}
                     className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   >
-                    <option value="cod">Cash on Delivery</option>
-                    <option value="card">Credit/Debit Card</option>
+                    {availableMethods.map((method) => (
+                      <option key={method.id} value={method.id}>
+                        {method.name}
+                      </option>
+                    ))}
+                    {availableMethods.length === 0 && <option disabled>Loading methods...</option>}
                   </select>
+                  
+                  {/* Show Bank Details if selected */}
+                  {formData.paymentMethod === 'bank' && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-md text-sm text-blue-800">
+                       {availableMethods.find(m => m.id === 'bank')?.details && (
+                         <>
+                            <p className="font-semibold">Bank Instructions:</p>
+                            <div className="mt-2 space-y-1">
+                               <p><span className="font-medium">Bank Name:</span> {availableMethods.find(m => m.id === 'bank')?.details.bankName}</p>
+                               <p><span className="font-medium">Account Name:</span> {availableMethods.find(m => m.id === 'bank')?.details.accountName}</p>
+                               <p><span className="font-medium">Account No:</span> {availableMethods.find(m => m.id === 'bank')?.details.accountNumber}</p>
+                               <p className="mt-2">{availableMethods.find(m => m.id === 'bank')?.details.instructions}</p>
+                            </div>
+                         </>
+                       )}
+                    </div>
+                  )}
                 </div>
 
                 <button

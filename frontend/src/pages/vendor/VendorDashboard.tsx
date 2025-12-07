@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import vendorService, { VendorStats } from '../../services/vendorService';
+import productService from '../../services/productService';
+import { Product } from '../../types';
 import { toast } from 'react-hot-toast';
 import { formatPrice } from '../../utils/currency';
 import { Link } from 'react-router-dom';
+import Modal from '../../components/common/Modal';
 
 const VendorDashboard: React.FC = () => {
   const [stats, setStats] = useState<VendorStats | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [withdrawing, setWithdrawing] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    const fetchDashboardStats = async () => {
+    const fetchData = async () => {
       try {
-        const data = await vendorService.getVendorStats();
-        setStats(data);
+        const [statsData, productsResponse] = await Promise.all([
+          vendorService.getVendorStats(),
+          productService.getVendorProducts()
+        ]);
+        
+        setStats(statsData);
+        setProducts(productsResponse.data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
+        console.error('Error fetching dashboard data:', error);
         toast.error('Failed to load dashboard data');
         setLoading(false);
       }
     };
 
-    fetchDashboardStats();
+    fetchData();
   }, []);
 
   const handleWithdraw = async () => {
@@ -61,6 +72,32 @@ const VendorDashboard: React.FC = () => {
       case 'Delivered': return 'bg-green-100 text-green-800';
       case 'Cancelled': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleDeleteClick = (id: string) => {
+    setProductToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (productToDelete) {
+      try {
+        await productService.deleteProduct(productToDelete);
+        toast.success('Product deleted successfully');
+        // Refresh list
+        const productsResponse = await productService.getVendorProducts();
+        setProducts(productsResponse.data);
+         // Refresh stats as well to update counts
+        const statsData = await vendorService.getVendorStats();
+        setStats(statsData);
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        toast.error('Failed to delete product');
+      } finally {
+        setIsDeleteModalOpen(false);
+        setProductToDelete(null);
+      }
     }
   };
 
@@ -224,6 +261,77 @@ const VendorDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* My Listed Products */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-gray-900">My Listed Products</h3>
+          <Link to="/products/new" className="text-sm text-blue-600 hover:text-blue-800">
+            View All / Manage
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {products.length > 0 ? (
+                products.slice(0, 5).map((product) => (
+                  <tr key={product._id}>
+                     <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <img className="h-10 w-10 rounded-full object-cover" src={product.images[0]?.url || 'https://via.placeholder.com/40'} alt="" />
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900 truncate max-w-[200px]">{product.name}</div>
+                          <div className="text-sm text-gray-500">{product.category}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {formatPrice(product.price)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {product.countInStock}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        product.countInStock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
+                        {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <Link to={`/products/edit/${product._id}`} className="text-indigo-600 hover:text-indigo-900 mr-4">Edit</Link>
+                      <button 
+                        onClick={() => handleDeleteClick(product._id)}
+                        className="text-red-600 hover:text-red-900 mr-4"
+                      >
+                        Delete
+                      </button>
+                      <Link to={`/products/${product._id}`} className="text-gray-600 hover:text-gray-900">View</Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                    No products found. Start selling by adding a product!
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Recent Orders */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
@@ -257,6 +365,26 @@ const VendorDashboard: React.FC = () => {
           )}
         </div>
       </div>
+      
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Delete Product"
+        actionButton={
+          <button
+            onClick={confirmDelete}
+            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+          >
+            Delete
+          </button>
+        }
+      >
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">
+            Are you sure you want to delete this product? This action cannot be undone.
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 };

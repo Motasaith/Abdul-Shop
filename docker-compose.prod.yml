@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    restart: always
+    ports:
+      - "80:5000"
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017/ecommerce
+      JWT_SECRET: ${JWT_SECRET:-secret}
+      # Add other env vars as needed
+    depends_on:
+      - mongo
+    networks:
+      - mern-network
+
+  mongo:
+    image: mongo:6.0
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mern-network
+
+volumes:
+  mongo_data:
+
+networks:
+  mern-network:
+    driver: bridge

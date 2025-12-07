@@ -88,9 +88,14 @@ class ProductService {
     return apiService.put(`/products/${productId}/questions/${questionId}/answer`, answer);
   }
 
-  // Create product (admin only)
+  // Create product (admin/vendor)
   async createProduct(productData: Partial<Product>) {
     return apiService.post('/products', productData);
+  }
+
+  // Create product with files (admin/vendor)
+  async createProductWithFiles(formData: FormData) {
+    return apiService.uploadFile('/products', formData);
   }
 
   // Update product (admin only)
@@ -130,6 +135,11 @@ class ProductService {
   // Get product stats (admin only)
   async getProductStats() {
     return apiService.get('/products/stats');
+  }
+
+  // Get vendor's own products
+  async getVendorProducts() {
+    return apiService.get('/products/vendor/my');
   }
 }
 

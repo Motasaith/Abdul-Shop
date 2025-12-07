@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const Setting = require('../models/Setting');
+const { encrypt, decrypt } = require('../utils/encryption');
 
 // @route    GET api/settings
 // @desc     Get all settings (Admin only)
@@ -10,7 +11,16 @@ const Setting = require('../models/Setting');
 router.get('/', [auth, admin], async (req, res) => {
   try {
     const settings = await Setting.getSettings();
-    res.json(settings);
+    // Decrypt keys for admin view (or keep masked and only show if they want to reveal - but for now we mask)
+    // Actually, we should send them back masked or encrypted, or just let them overwrite.
+    // Let's send back empty string for secret key to security, or a mask.
+    const settingsObj = settings.toObject();
+    if (settingsObj.payment && settingsObj.payment.stripe) {
+      if (settingsObj.payment.stripe.secretKey) {
+        settingsObj.payment.stripe.secretKey = '********'; // Mask for security
+      }
+    }
+    res.json(settingsObj);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -31,7 +41,27 @@ router.put('/', [auth, admin], async (req, res) => {
       if (general) settings.general = { ...settings.general, ...general };
       if (notifications) settings.notifications = { ...settings.notifications, ...notifications };
       if (security) settings.security = { ...settings.security, ...security };
-      if (payment) settings.payment = { ...settings.payment, ...payment };
+      if (payment) {
+        // Handle secret key encryption
+        if (payment.stripe && payment.stripe.secretKey) {
+           // If it's the mask '********', don't update it, keep existing
+           if (payment.stripe.secretKey === '********') {
+              if (settings.payment.stripe && settings.payment.stripe.secretKey) {
+                 payment.stripe.secretKey = settings.payment.stripe.secretKey;
+              } else {
+                 payment.stripe.secretKey = '';
+              }
+           } else {
+              // It's a new key, encrypt it
+              payment.stripe.secretKey = encrypt(payment.stripe.secretKey);
+           }
+        } else if (settings.payment.stripe && settings.payment.stripe.secretKey) {
+           // Key not provided in update, keep existing
+           payment.stripe = { ...payment.stripe, secretKey: settings.payment.stripe.secretKey };
+        }
+        
+        settings.payment = { ...settings.payment, ...payment };
+      }
       if (email) settings.email = { ...settings.email, ...email };
       if (appearance) settings.appearance = { ...settings.appearance, ...appearance };
     }
@@ -58,9 +88,21 @@ router.get('/public', async (req, res) => {
       language: settings.general.language,
       appearance: settings.appearance,
       payment: {
-        stripeEnabled: settings.payment.stripeEnabled,
-        paypalEnabled: settings.payment.paypalEnabled,
-        codEnabled: settings.payment.codEnabled,
+        stripeEnabled: settings.payment.stripe.isEnabled, // Legacy support mapping
+        stripe: {
+           isEnabled: settings.payment.stripe.isEnabled,
+           publishableKey: settings.payment.stripe.publishableKey
+        },
+        bankTransfer: {
+           isEnabled: settings.payment.bankTransfer.isEnabled,
+           accountName: settings.payment.bankTransfer.accountName,
+           accountNumber: settings.payment.bankTransfer.accountNumber,
+           bankName: settings.payment.bankTransfer.bankName,
+           instructions: settings.payment.bankTransfer.instructions
+        },
+        cod: settings.payment.cod,
+        paypalEnabled: false, // Deprecated for now
+        codEnabled: settings.payment.cod.isEnabled, // Legacy support
         testMode: settings.payment.testMode
       }
     };

@@ -15,8 +15,8 @@ RUN npm run build
 # Backend stage
 FROM node:18-alpine AS backend
 
-# Set working directory for backend
-WORKDIR /app
+# Set working directory to /app/backend to match ../frontend/build relative path in server.js
+WORKDIR /app/backend
 
 # Copy backend package files
 COPY backend/package*.json ./
@@ -25,8 +25,9 @@ RUN npm install --only=production
 # Copy backend source
 COPY backend/ ./
 
-# Copy built frontend files
-COPY --from=frontend-build /app/frontend/build ./frontend/build
+# Copy built frontend files to /app/frontend/build
+# This places it at ../frontend/build relative to /app/backend
+COPY --from=frontend-build /app/frontend/build /app/frontend/build
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs

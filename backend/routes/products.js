@@ -157,6 +157,25 @@ router.get('/reviews/my', auth, async (req, res) => {
   }
 });
 
+// @route    GET api/products/vendor/my
+// @desc     Get logged-in vendor's products
+// @access   Private/Vendor
+router.get('/vendor/my', auth, async (req, res) => {
+  try {
+    const products = await Product.find({ 
+      $or: [
+        { owner: req.user.id },
+        { createdBy: req.user.id }
+      ]
+    }).sort({ createdAt: -1 });
+
+    res.json(products);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route    GET api/products/:id
 // @desc     Get product by ID
 // @access   Public
@@ -428,11 +447,13 @@ router.put(
 // @access   Private/Admin/Vendor
 router.post('/', [
   auth,
+  uploadMiddleware,
   [
     check('name', 'Name is required').not().isEmpty(),
-    check('price', 'Price is required and must be a number').isNumeric(),
+    check('price', 'Price is required').not().isEmpty(),
     check('category', 'Category is required').not().isEmpty(),
-    check('description', 'Description is required').not().isEmpty()
+    check('description', 'Description is required').not().isEmpty(),
+    check('countInStock', 'Stock is required').not().isEmpty()
   ]
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -446,16 +467,187 @@ router.post('/', [
       return res.status(403).json({ msg: 'Not authorized to create products' });
     }
 
+    const {
+      name,
+      description,
+      price,
+      comparePrice,
+      category,
+      brand,
+      countInStock,
+      featured,
+      isNewArrival,
+      onSale,
+      sku,
+      weight,
+      dimensions,
+      tags,
+      seoTitle,
+      seoDescription,
+      images, // JSON images (if any)
+      videos  // JSON videos (if any)
+    } = req.body;
+
+    // Check if product with same name exists
+    const existingProduct = await Product.findOne({ name });
+    if (existingProduct) {
+      return res.status(400).json({ msg: 'Product with this name already exists' });
+    }
+
+    // Process uploaded image files
+    const processedImages = [];
+    if (req.files && req.files.images) {
+      // Handle single file or array
+      const imageFiles = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
+      
+      for (const file of imageFiles) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, 'image');
+          processedImages.push({
+            url: result.secure_url,
+            public_id: result.public_id
+          });
+        } catch (uploadError) {
+          console.error('Image upload error:', uploadError);
+          return res.status(500).json({ msg: 'Failed to upload image' });
+        }
+      }
+    }
+
+    // Process uploaded video files
+    const processedVideos = [];
+    if (req.files && req.files.videos) {
+      const videoFiles = Array.isArray(req.files.videos) ? req.files.videos : [req.files.videos];
+      
+      for (const file of videoFiles) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, 'video');
+          processedVideos.push({
+            url: result.secure_url,
+            public_id: result.public_id
+          });
+        } catch (uploadError) {
+          console.error('Video upload error:', uploadError);
+          return res.status(500).json({ msg: 'Failed to upload video' });
+        }
+      }
+    }
+
+    // Process image URLs from form data (complex nested fields from FormData)
+    const imageUrls = [];
+    let index = 0;
+    while (req.body[`imageUrls[${index}][url]`]) {
+      if (req.body[`imageUrls[${index}][url]`] && req.body[`imageUrls[${index}][public_id]`]) {
+        imageUrls.push({
+          url: req.body[`imageUrls[${index}][url]`],
+          public_id: req.body[`imageUrls[${index}][public_id]`]
+        });
+      }
+      index++;
+    }
+
+    // Process video URLs from form data
+    const videoUrls = [];
+    index = 0;
+    while (req.body[`videoUrls[${index}][url]`]) {
+      if (req.body[`videoUrls[${index}][url]`] && req.body[`videoUrls[${index}][public_id]`]) {
+        videoUrls.push({
+          url: req.body[`videoUrls[${index}][url]`],
+          public_id: req.body[`videoUrls[${index}][public_id]`]
+        });
+      }
+      index++;
+    }
+
+    // Combine uploaded files and URLs
+    const allImages = [...processedImages, ...imageUrls];
+    const allVideos = [...processedVideos, ...videoUrls];
+
+    // Handle JSON-based images and videos (if sent as JSON body)
+    if (images && Array.isArray(images)) {
+      allImages.push(...images);
+    }
+    if (videos && Array.isArray(videos)) {
+      allVideos.push(...videos);
+    }
+
+    // Parse specifications if sent as individual fields
+    const specifications = [];
+    index = 0;
+    while (req.body[`specifications[${index}][name]`]) {
+       specifications.push({
+         name: req.body[`specifications[${index}][name]`],
+         value: req.body[`specifications[${index}][value]`]
+       });
+       index++;
+    }
+    // Or if JSON
+    if (req.body.specifications && Array.isArray(req.body.specifications)) {
+       specifications.push(...req.body.specifications);
+    }
+
+    // Parse whatsInBox
+    const whatsInBox = [];
+    index = 0;
+    while (req.body[`whatsInBox[${index}][item]`]) {
+       whatsInBox.push({
+         item: req.body[`whatsInBox[${index}][item]`],
+         quantity: parseInt(req.body[`whatsInBox[${index}][quantity]`]) || 1
+       });
+       index++;
+    }
+    // Or if JSON
+    if (req.body.whatsInBox && Array.isArray(req.body.whatsInBox)) {
+       whatsInBox.push(...req.body.whatsInBox);
+    }
+
     const newProduct = new Product({
-      ...req.body,
+      name,
+      description,
+      price: typeof price === 'string' ? parseFloat(price) : price,
+      comparePrice: comparePrice ? (typeof comparePrice === 'string' ? parseFloat(comparePrice) : comparePrice) : undefined,
+      category,
+      brand,
+      countInStock: typeof countInStock === 'string' ? parseInt(countInStock) : countInStock,
+      images: allImages,
+      videos: allVideos,
+      featured: featured === 'true' || featured === true,
+      isNewArrival: isNewArrival === 'true' || isNewArrival === true,
+      onSale: onSale === 'true' || onSale === true,
+      sku,
+      weight: weight ? (typeof weight === 'string' ? parseFloat(weight) : weight) : undefined,
+      dimensions,
+      specifications,
+      whatsInBox,
+      tags: tags ? (Array.isArray(tags) ? tags : [tags]) : [],
+      seoTitle,
+      seoDescription,
       createdBy: req.user.id,
       owner: req.user.id
     });
 
     const product = await newProduct.save();
+
+    // Notify admin if vendor created product
+    if (req.user.role === 'vendor') {
+      await createNotification(
+        'system',
+        `New Vendor Product: ${product.name}`,
+        {
+          vendorName: req.user.name,
+          productId: product._id,
+          vendorId: req.user.id,
+          link: `/admin/products`
+        }
+      );
+    }
+
     res.json(product);
   } catch (err) {
     console.error(err.message);
+    if (err.code === 11000) {
+      return res.status(400).json({ msg: 'Product with this name or SKU already exists' });
+    }
     res.status(500).send('Server Error');
   }
 });
@@ -487,6 +679,19 @@ router.put('/:id', auth, async (req, res) => {
     );
 
     res.json(product);
+
+    // Notify admin if vendor updated product
+    if (req.user.role === 'vendor') {
+      await createNotification(
+        'system',
+        `Vendor Product Updated: ${product.name}`,
+        {
+          vendorName: req.user.name,
+          productId: product._id,
+          vendorId: req.user.id
+        }
+      );
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -513,6 +718,20 @@ router.delete('/:id', auth, async (req, res) => {
     }
 
     await Product.findByIdAndDelete(req.params.id);
+    
+    // Notify admin if vendor deleted product
+    if (req.user.role === 'vendor') {
+      await createNotification(
+        'system',
+        `Vendor Product Deleted: ${product.name}`,
+        {
+          vendorName: req.user.name,
+          productId: product._id,
+          vendorId: req.user.id
+        }
+      );
+    }
+
     res.json({ msg: 'Product removed' });
   } catch (err) {
     console.error(err.message);

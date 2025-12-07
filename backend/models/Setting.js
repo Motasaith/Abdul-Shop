@@ -23,9 +23,21 @@ const settingSchema = new mongoose.Schema({
     ipWhitelist: [{ type: String }]
   },
   payment: {
-    stripeEnabled: { type: Boolean, default: true },
-    paypalEnabled: { type: Boolean, default: false },
-    codEnabled: { type: Boolean, default: true },
+    stripe: {
+      isEnabled: { type: Boolean, default: false },
+      publishableKey: { type: String, default: '' },
+      secretKey: { type: String, default: '' }
+    },
+    bankTransfer: {
+      isEnabled: { type: Boolean, default: true },
+      accountName: { type: String, default: '' },
+      accountNumber: { type: String, default: '' },
+      bankName: { type: String, default: '' },
+      instructions: { type: String, default: '' }
+    },
+    cod: {
+      isEnabled: { type: Boolean, default: true }
+    },
     testMode: { type: Boolean, default: true }
   },
   email: {

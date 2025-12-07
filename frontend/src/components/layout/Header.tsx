@@ -193,6 +193,15 @@ const Header: React.FC = () => {
                       >
                         {t('common.myReviews')}
                       </Link>
+                      {user?.role === 'vendor' && (
+                        <Link
+                          to="/vendor/dashboard"
+                          className="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 hover:text-blue-700 transition-colors"
+                          onClick={() => setIsProfileMenuOpen(false)}
+                        >
+                          Vendor Dashboard
+                        </Link>
+                      )}
                       {user?.role === 'admin' && (
                         <Link
                           to="/admin"
@@ -367,6 +376,15 @@ const Header: React.FC = () => {
                 >
                   {t('common.myReviews')}
                 </Link>
+                {user?.role === 'vendor' && (
+                  <Link
+                    to="/vendor/dashboard"
+                    className="block py-1 text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Vendor Dashboard
+                  </Link>
+                )}
                 {user?.role === 'admin' && (
                   <Link
                     to="/admin"

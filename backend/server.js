@@ -56,6 +56,8 @@ const corsOptions = {
       'https://mern-ecommerce-frontend.onrender.com',
       'https://abdul-shop.onrender.com',
       'https://www.abdul-shop.onrender.com',
+      'https://abdul-shop-seven.vercel.app',
+      'https://www.abdul-shop-seven.vercel.app',
       process.env.CORS_ORIGIN,
       process.env.CORS_ORIGIN?.replace(/\/$/, ''), // Remove trailing slash
       process.env.CORS_ORIGIN?.replace(/\/$/, '') + '/', // Add trailing slash

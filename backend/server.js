@@ -54,6 +54,8 @@ const corsOptions = {
       'http://localhost:3002',
       'http://localhost:3003',
       'https://mern-ecommerce-frontend.onrender.com',
+      'https://abdul-shop.onrender.com',
+      'https://www.abdul-shop.onrender.com',
       process.env.CORS_ORIGIN,
       process.env.CORS_ORIGIN?.replace(/\/$/, ''), // Remove trailing slash
       process.env.CORS_ORIGIN?.replace(/\/$/, '') + '/', // Add trailing slash
@@ -65,7 +67,9 @@ const corsOptions = {
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('Blocked by CORS. Origin:', origin);
+      console.log('Allowed Origins:', allowedOrigins);
+      callback(new Error(`Not allowed by CORS: ${origin}`));
     }
   },
   credentials: true,

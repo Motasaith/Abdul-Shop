@@ -43,8 +43,11 @@ const getDashboardStats = async (req, res) => {
     const totalProducts = await Product.countDocuments();
     const totalOrders = await Order.countDocuments();
     
-    const orders = await Order.find({});
+    const orders = await Order.find({ orderStatus: { $ne: 'Cancelled' } });
     const totalRevenue = orders.reduce((sum, order) => sum + order.totalPrice, 0);
+
+    const cancelledOrders = await Order.find({ orderStatus: 'Cancelled' });
+    const lostRevenue = cancelledOrders.reduce((sum, order) => sum + order.totalPrice, 0);
     
     const recentOrders = await Order.find({})
       .populate('user', 'name email')
@@ -60,6 +63,7 @@ const getDashboardStats = async (req, res) => {
       totalProducts,
       totalOrders,
       totalRevenue,
+      lostRevenue,
       recentOrders,
       topProducts
     });
@@ -410,11 +414,94 @@ const getAdminOrders = async (req, res) => {
 
     const total = await Order.countDocuments(query);
 
+    // Calculate stats for the full result set (ignoring pagination)
+    // We need to be careful not to override the status filter if it exists
+    
+    // Revenue: Matches query AND is NOT Cancelled
+    let revenueQuery = { ...query };
+    if (revenueQuery.orderStatus) {
+      if (revenueQuery.orderStatus === 'Cancelled') {
+        // If sorting only by Cancelled, Revenue is 0
+        // We handle this logic by checking if the existing filter conflicts
+         // Implicitly handled: if status=Cancelled, $ne: Cancelled will match nothing.
+         revenueQuery = { ...query, orderStatus: { $ne: 'Cancelled' } }; // This would override 'Cancelled'. 
+         // Wait, if query is {orderStatus: 'Cancelled'}, then adding {orderStatus: {$ne: 'Cancelled'} } creates a conflict or overrides.
+         // Actually, if user selected 'Cancelled', revenue SHOULD be 0.
+         // If user selected 'Processing', revenue is sum of Processing.
+      }
+    } 
+    // The logic is:
+    // 1. Base Revenue Query: Matches current filters (search, etc)
+    // 2. EXCLUDE Cancelled (Unless the filter specifically asks for only Cancelled, in which case empty)
+    
+    // Let's use aggregation or separate finds.
+    // Simplifying: If the user filters by a status, we respect it.
+    // Standard Revenue = Sum of (Query Matches AND Status != Cancelled)
+    // Lost Revenue = Sum of (Query Matches AND Status == Cancelled)
+
+    // Note: If query.orderStatus is 'Cancelled', 'Revenue' calc query becomes { orderStatus: 'Cancelled', orderStatus: {$ne: 'Cancelled'} } -> Empty/Conflict.
+    // MongoDB doesn't support duplicate keys in object.
+    
+    // Constructing queries properly:
+    const revenueQueryObject = { ...query };
+    if (revenueQueryObject.orderStatus === 'Cancelled') {
+       // Impossible to have revenue if we only want cancelled orders
+       // So we can skip or force 0. 
+       // Effectively, we can't add $ne: Cancelled if it's already == Cancelled.
+    } else {
+       // Add exclusion if not already specified
+       // But if query.orderStatus is 'Processing', we don't need $ne: Cancelled explicitly, but adding it is safe?
+       // No, { orderStatus: 'Processing' } is sufficient.
+       
+       // Basically: If query.orderStatus is SET, follow it.
+       // If query.orderStatus is NOT SET (All), calculate (All - Cancelled) and (Cancelled).
+       
+       // BUT, what if I search for "John"?
+       // Query: { user: ..., $or: ... }
+       // I want Revenue for "John" (excl cancelled) and Lost for "John" (only cancelled).
+    }
+
+    // approach: manually sum based on status in a loop? No, too slow for all docs.
+    // Database aggregation is best.
+    
+    /* 
+       If I filter by "All":
+       - Revenue: Sum where orderStatus != Cancelled
+       - Lost: Sum where orderStatus == Cancelled
+       
+       If I filter by "Processing":
+       - Revenue: Sum where orderStatus == Processing
+       - Lost: Sum where orderStatus == Processing AND orderStatus == Cancelled (0)
+       
+       If I filter by "Cancelled":
+       - Revenue: Sum where orderStatus == Cancelled AND orderStatus != Cancelled (0)
+       - Lost: Sum where orderStatus == Cancelled
+    */
+    
+    // Implementation:
+    // 1. Find all docs matching 'query' (without limit/skip).
+    // 2. Reduce them. 
+    // Since we don't expect millions of orders yet, this is okay. 
+    // For scale, use aggregate pipeline. Let's use find to be consistent with current codebase style usually.
+    
+    const allMatchingOrders = await Order.find(query).select('totalPrice orderStatus');
+    
+    const totalRevenue = allMatchingOrders.reduce((sum, order) => {
+      return order.orderStatus !== 'Cancelled' ? sum + order.totalPrice : sum;
+    }, 0);
+
+    const lostRevenue = allMatchingOrders.reduce((sum, order) => {
+      return order.orderStatus === 'Cancelled' ? sum + order.totalPrice : sum;
+    }, 0);
+
+
     res.json({
       orders,
       currentPage: page,
       totalPages: Math.ceil(total / limit),
-      totalOrders: total
+      totalOrders: total,
+      totalRevenue,
+      lostRevenue
     });
   } catch (error) {
     console.error('Get admin orders error:', error);

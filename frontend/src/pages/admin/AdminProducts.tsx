@@ -3,31 +3,19 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import adminService from '../../services/adminService';
 import { toast } from 'react-hot-toast';
 import AddProductModal from '../../components/admin/AddProductModal';
-import { formatPrice } from '../../utils/currency';
-
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  category: string;
-  countInStock: number;
-  rating: number;
-  numReviews: number;
-  images: Array<{ url: string }>;
-  isActive: boolean;
-  isNewArrival: boolean;
-  onSale: boolean;
-  createdAt: string;
-}
+import { usePrice } from '../../hooks/usePrice';
+import { Product } from '../../types';
 
 const AdminProducts: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { formatPrice } = usePrice();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const categories = [
     'all', 'Electronics', 'Clothing', 'Books', 'Home & Garden', 
@@ -105,6 +93,11 @@ const AdminProducts: React.FC = () => {
     }
   };
 
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setShowAddModal(true);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -127,7 +120,10 @@ const AdminProducts: React.FC = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Products</h1>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => {
+            setEditingProduct(null);
+            setShowAddModal(true);
+          }}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +276,7 @@ const AdminProducts: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <button
-                      onClick={() => handleToggleNewArrival(product._id, product.isNewArrival)}
+                      onClick={() => handleToggleNewArrival(product._id, product.isNewArrival || false)}
                       className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
                         product.isNewArrival 
                           ? 'bg-teal-600 text-white hover:bg-teal-700 shadow-sm' 
@@ -291,7 +287,7 @@ const AdminProducts: React.FC = () => {
                       {product.isNewArrival ? 'NEW: ON' : 'NEW'}
                     </button>
                     <button
-                      onClick={() => handleToggleOnSale(product._id, product.onSale)}
+                      onClick={() => handleToggleOnSale(product._id, product.onSale || false)}
                       className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${
                         product.onSale 
                           ? 'bg-pink-600 text-white hover:bg-pink-700 shadow-sm' 
@@ -312,6 +308,12 @@ const AdminProducts: React.FC = () => {
                       }`}
                     >
                       {product.isActive ? 'Deactivate' : 'Activate'}
+                    </button>
+                    <button
+                      onClick={() => handleEditProduct(product)}
+                      className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                    >
+                      Edit
                     </button>
                     <button
                       onClick={() => handleDeleteProduct(product._id)}
@@ -341,8 +343,12 @@ const AdminProducts: React.FC = () => {
       {/* Add Product Modal */}
       <AddProductModal
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        onClose={() => {
+          setShowAddModal(false);
+          setEditingProduct(null);
+        }}
         onProductAdded={fetchProducts}
+        product={editingProduct}
       />
     </div>
   );

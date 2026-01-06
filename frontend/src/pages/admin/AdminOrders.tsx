@@ -1,39 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import adminService from '../../services/adminService';
+import orderService from '../../services/orderService';
 import { toast } from 'react-hot-toast';
-import { formatPrice } from '../../utils/currency';
-
-interface Order {
-  _id: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  orderItems: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-    image: string;
-  }>;
-  totalPrice: number;
-  isPaid: boolean;
-  isDelivered: boolean;
-  orderStatus: string;
-  createdAt: string;
-  paidAt?: string;
-  deliveredAt?: string;
-}
+import { usePrice } from '../../hooks/usePrice';
+import { Order } from '../../types';
+import OrderDetailsModal from '../../components/admin/OrderDetailsModal';
 
 const AdminOrders: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { formatPrice } = usePrice();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [limitStats, setLimitStats] = useState({ totalRevenue: 0, lostRevenue: 0 });
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Modal State
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const statusOptions = ['all', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
@@ -46,23 +32,27 @@ const AdminOrders: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const data = await adminService.getOrders({
-          status: selectedStatus === 'all' ? '' : selectedStatus,
-          search: debouncedSearchTerm
-        });
-        setOrders(data.orders || []);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-        toast.error('Failed to load orders');
-        setLoading(false);
-      }
-    };
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const data = await adminService.getOrders({
+        status: selectedStatus === 'all' ? '' : selectedStatus,
+        search: debouncedSearchTerm
+      });
+      setOrders(data.orders || []);
+      setLimitStats({
+        totalRevenue: data.totalRevenue || 0,
+        lostRevenue: data.lostRevenue || 0
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast.error('Failed to load orders');
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchOrders();
   }, [selectedStatus, debouncedSearchTerm]);
 
@@ -76,7 +66,7 @@ const AdminOrders: React.FC = () => {
         order._id === orderId 
           ? { 
               ...order, 
-              orderStatus: newStatus,
+              orderStatus: newStatus as any, // Cast to any to avoid strict union type mismatch with string
               isDelivered: newStatus === 'Delivered' ? true : order.isDelivered,
               deliveredAt: newStatus === 'Delivered' ? new Date().toISOString() : order.deliveredAt
             }
@@ -86,6 +76,24 @@ const AdminOrders: React.FC = () => {
     } catch (error) {
       console.error('Error updating order status:', error);
       toast.error('Failed to update order status');
+    }
+  };
+
+  const handleViewOrder = async (orderId: string) => {
+    try {
+      // Use orderService to fetch single order details which might include more info or just use existing logic
+      // Since we need to ensure we have the full object for the modal (populated fields etc), fetching fresh is safer
+      // However, orderService.getOrder checks for user ownership or generic admin rights. 
+      // adminService doesn't have a getOrder(id) method yet.
+      // But the backend route /api/orders/:id allows admin access. 
+      // So custom fetch using apiService or using orderService.getOrder is fine if token is admin.
+      
+      const response = await orderService.getOrder(orderId);
+      setSelectedOrder(response.data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      toast.error('Failed to load order details');
     }
   };
 
@@ -220,10 +228,10 @@ const AdminOrders: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {order.user ? order.user.name : 'Unknown User'}
+                        {(order.user as any)?.name || 'Unknown User'}
                       </div>
                       <div className="text-sm text-gray-500">
-                        {order.user ? order.user.email : 'N/A'}
+                        {(order.user as any)?.email || 'N/A'}
                       </div>
                     </div>
                   </td>
@@ -288,10 +296,16 @@ const AdminOrders: React.FC = () => {
                     {formatDate(order.createdAt)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">
+                    <button 
+                      onClick={() => handleViewOrder(order._id)}
+                      className="text-blue-600 hover:text-blue-900 mr-3"
+                    >
                       View
                     </button>
-                    <button className="text-green-600 hover:text-green-900">
+                    <button 
+                      onClick={() => handleViewOrder(order._id)}
+                      className="text-green-600 hover:text-green-900"
+                    >
                       Edit
                     </button>
                   </td>
@@ -314,32 +328,56 @@ const AdminOrders: React.FC = () => {
       )}
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Note: These status counts are currently based on the fetched page of orders only. 
+            To match the revenue stats (which are global/filtered), we would need backend counts. 
+            For now, keeping them as-is per current scope, or maybe valid to show current page stats? 
+            But revenue is now global. Mixed metaphors? 
+            The user only complained about revenue. Let's fix revenue. 
+        */}
         <div className="bg-white rounded-lg shadow-md p-4">
           <div className="text-2xl font-bold text-gray-900">
             {orders.filter(o => o.orderStatus === 'Processing').length}
           </div>
-          <div className="text-sm text-gray-600">Processing</div>
+          <div className="text-sm text-gray-600">Processing (Page)</div>
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <div className="text-2xl font-bold text-gray-900">
             {orders.filter(o => o.orderStatus === 'Shipped').length}
           </div>
-          <div className="text-sm text-gray-600">Shipped</div>
+          <div className="text-sm text-gray-600">Shipped (Page)</div>
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <div className="text-2xl font-bold text-gray-900">
             {orders.filter(o => o.orderStatus === 'Delivered').length}
           </div>
-          <div className="text-sm text-gray-600">Delivered</div>
+          <div className="text-sm text-gray-600">Delivered (Page)</div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <div className="text-2xl font-bold text-gray-900">
-            {formatPrice(orders.reduce((acc, order) => acc + order.totalPrice, 0))}
+        
+        {/* Revenue Stats */}
+        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
+          <div className="text-2xl font-bold text-green-700">
+            {formatPrice(limitStats.totalRevenue)}
           </div>
           <div className="text-sm text-gray-600">Total Revenue</div>
         </div>
+
+        {/* Lost Revenue Stats */}
+        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-red-500">
+          <div className="text-2xl font-bold text-red-700">
+            {formatPrice(limitStats.lostRevenue)}
+          </div>
+          <div className="text-sm text-gray-600">Lost Revenue</div>
+        </div>
       </div>
+
+      {/* Order Details Modal */}
+      <OrderDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        order={selectedOrder}
+        onUpdate={fetchOrders}
+      />
     </div>
   );
 };

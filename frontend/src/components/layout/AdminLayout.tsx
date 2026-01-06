@@ -32,6 +32,7 @@ import {
 } from '@heroicons/react/24/solid';
 
 import notificationService from '../../services/notificationService';
+import CurrencySelector from '../common/CurrencySelector';
 
 const AdminLayout: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -206,6 +207,11 @@ const AdminLayout: React.FC = () => {
               })}
             </nav>
 
+            {/* Currency Selector (Mobile) */}
+            <div className="border-t border-gray-200 p-4">
+              <CurrencySelector />
+            </div>
+
             {/* Back to Website (Mobile) */}
             <div className="border-t border-gray-200 p-4 pb-0">
               <Link
@@ -293,8 +299,13 @@ const AdminLayout: React.FC = () => {
           
           {/* Footer - Fixed at bottom */}
           <div className="bg-white z-10">
-            {/* Back to Website */}
+            {/* Currency Selector */}
             <div className="border-t border-gray-200 p-4">
+              <CurrencySelector />
+            </div>
+
+            {/* Back to Website */}
+            <div className="border-t border-gray-200 p-4 pt-0">
               <Link
                 to="/"
                 className="flex w-full items-center justify-center rounded-lg bg-white border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"

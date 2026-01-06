@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { orderService } from '../../services/orderService';
-import { formatPrice } from '../../utils/currency';
+import { usePrice } from '../../hooks/usePrice';
 import {
   ChartBarIcon,
   ArrowUpIcon,
@@ -43,6 +43,7 @@ interface AnalyticsData {
 }
 
 const AdminAnalytics: React.FC = () => {
+    const { formatPrice } = usePrice();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('7days');

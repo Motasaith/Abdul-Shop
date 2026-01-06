@@ -6,7 +6,7 @@ const settingSchema = new mongoose.Schema({
     siteUrl: { type: String, default: 'https://shophub.com' },
     adminEmail: { type: String, default: 'admin@shophub.com' },
     timezone: { type: String, default: 'UTC' },
-    currency: { type: String, default: 'PKR' },
+    currency: { type: String, default: 'USD' },
     language: { type: String, default: 'en' }
   },
   notifications: {

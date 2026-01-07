@@ -10,6 +10,7 @@ import { getCurrentUser, logout } from './store/slices/authSlice';
 import { getPublicSettings } from './store/slices/settingSlice';
 import { fetchRates } from './store/slices/preferenceSlice';
 import { apiService } from './services/api';
+import { ThemeProvider } from './context/ThemeProvider';
 
 // Layout Components
 import Layout from './components/layout/Layout';
@@ -210,7 +211,9 @@ function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={<LoadingSpinner />} persistor={persistor}>
-        <AppContent />
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   );

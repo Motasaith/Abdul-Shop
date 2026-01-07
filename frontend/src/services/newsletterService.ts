@@ -80,6 +80,19 @@ class NewsletterService {
     }
   }
 
+  // Admin API - Send newsletter to subscribers
+  async sendNewsletter(data: { subject: string; content: string; filter: string }): Promise<{ success: boolean; message: string; stats: any }> {
+    try {
+      const response = await apiService.post('/newsletter/admin/send', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || 
+        'Failed to send newsletter'
+      );
+    }
+  }
+
   // Public API - Unsubscribe from newsletter
   async unsubscribe(token: string): Promise<NewsletterResponse> {
     try {

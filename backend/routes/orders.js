@@ -186,57 +186,97 @@ router.get('/', auth, async (req, res) => {
 // @route    GET api/orders/stats
 // @desc     Get order statistics for analytics
 // @access   Private/Admin
+// @route    GET api/orders/stats
+// @desc     Get order statistics for analytics
+// @access   Private/Admin
 router.get('/stats', [auth, admin], async (req, res) => {
   try {
+    const { timeRange = '7days' } = req.query;
+    
     const now = new Date();
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    let startDate = new Date();
+    let previousStartDate = new Date();
+    
+    // Calculate date ranges based on filter
+    switch (timeRange) {
+      case '7days':
+        startDate.setDate(now.getDate() - 7);
+        previousStartDate.setDate(now.getDate() - 14);
+        break;
+      case '30days':
+        startDate.setDate(now.getDate() - 30);
+        previousStartDate.setDate(now.getDate() - 60);
+        break;
+      case '90days':
+        startDate.setDate(now.getDate() - 90);
+        previousStartDate.setDate(now.getDate() - 180);
+        break;
+      case '1year':
+        startDate.setFullYear(now.getFullYear() - 1);
+        previousStartDate.setFullYear(now.getFullYear() - 2);
+        break;
+      default:
+        startDate.setDate(now.getDate() - 7);
+        previousStartDate.setDate(now.getDate() - 14);
+    }
 
-    // Get total statistics
-    const totalOrders = await Order.countDocuments();
-    const totalRevenue = await Order.aggregate([
-      { $match: { isPaid: true } },
-      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
-    ]);
+    // Helper to get stats for a period
+    // Note: We're calculating "Total" as "Total during this period" to make the time filter meaningful
+    const getPeriodStats = async (start, end) => {
+      const orders = await Order.countDocuments({
+        createdAt: { $gte: start, $lt: end },
+        orderStatus: { $ne: 'Cancelled' }
+      });
+      
+      const revenue = await Order.aggregate([
+        { 
+          $match: { 
+            createdAt: { $gte: start, $lt: end },
+            orderStatus: { $ne: 'Cancelled' }
+          } 
+        },
+        { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+      ]);
 
-    // Get recent statistics (last 30 days)
-    const recentOrders = await Order.countDocuments({
-      createdAt: { $gte: thirtyDaysAgo }
-    });
-    const recentRevenue = await Order.aggregate([
-      { $match: { isPaid: true, createdAt: { $gte: thirtyDaysAgo } } },
-      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
-    ]);
+      const User = require('../models/User');
+      const users = await User.countDocuments({
+        createdAt: { $gte: start, $lt: end }
+      });
 
-    // Get previous period for comparison (30-60 days ago)
-    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
-    const previousOrders = await Order.countDocuments({
-      createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo }
-    });
-    const previousRevenue = await Order.aggregate([
-      { $match: { isPaid: true, createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } } },
-      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
-    ]);
+      return {
+        orders,
+        revenue: revenue[0]?.total || 0,
+        users
+      };
+    };
+
+    const currentStats = await getPeriodStats(startDate, now);
+    const previousStats = await getPeriodStats(previousStartDate, startDate);
 
     // Calculate growth percentages
-    const orderGrowth = previousOrders > 0 
-      ? ((recentOrders - previousOrders) / previousOrders * 100)
-      : recentOrders > 0 ? 100 : 0;
-    
-    const revenueGrowth = previousRevenue.length > 0 && previousRevenue[0].total > 0
-      ? ((recentRevenue[0]?.total || 0) - previousRevenue[0].total) / previousRevenue[0].total * 100
-      : (recentRevenue[0]?.total || 0) > 0 ? 100 : 0;
+    const calculateGrowth = (current, previous) => {
+      if (previous === 0) return current > 0 ? 100 : 0;
+      return ((current - previous) / previous) * 100;
+    };
 
-    // Get average order value
-    const avgOrderValue = totalOrders > 0 ? (totalRevenue[0]?.total || 0) / totalOrders : 0;
+    const revenueGrowth = calculateGrowth(currentStats.revenue, previousStats.revenue);
+    const orderGrowth = calculateGrowth(currentStats.orders, previousStats.orders);
+    const userGrowth = calculateGrowth(currentStats.users, previousStats.users);
 
-    // Get daily sales data for the last 7 days
-    const dailySales = await Order.aggregate([
+    // Avg Order Value (for current period)
+    const avgOrderValue = currentStats.orders > 0 
+      ? currentStats.revenue / currentStats.orders 
+      : 0;
+
+    // Get daily sales data for the selected chart period
+    // For 1 year, we might want to group by month, but for simplicity let's do days or auto-granularity
+    // If range > 90 days, maybe group by week or month? 
+    // For now, let's stick to simple day grouping to keep it consistent with the frontend chart expectance
+    const salesData = await Order.aggregate([
       {
         $match: {
-          isPaid: true,
-          createdAt: { $gte: sevenDaysAgo }
+          createdAt: { $gte: startDate },
+          orderStatus: { $ne: 'Cancelled' }
         }
       },
       {
@@ -255,72 +295,112 @@ router.get('/stats', [auth, admin], async (req, res) => {
       }
     ]);
 
-    // Get top products from recent orders
+    // Format sales data
+    const formattedSalesData = salesData.map(item => {
+      const date = new Date(item._id.year, item._id.month - 1, item._id.day);
+      return {
+        date: date.toISOString().split('T')[0], // YYYY-MM-DD
+        revenue: item.revenue,
+        orders: item.orders
+      };
+    });
+
+    // Fill in missing days with 0 (optional but looks better on chart)
+    // skipping for brevity, Recharts handles gaps okay or we can just show data points
+
+    // Get top products for the period
     const topProducts = await Order.aggregate([
-      { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+      { $match: { createdAt: { $gte: startDate } } },
       { $unwind: '$orderItems' },
       {
         $group: {
           _id: '$orderItems.product',
           name: { $first: '$orderItems.name' },
-          totalQuantity: { $sum: '$orderItems.qty' },
-          totalRevenue: { $sum: { $multiply: ['$orderItems.qty', '$orderItems.price'] } }
+          image: { $first: '$orderItems.image' },
+          totalQuantity: { $sum: '$orderItems.quantity' }, 
+          totalRevenue: { $sum: { $multiply: ['$orderItems.quantity', '$orderItems.price'] } }
         }
       },
       { $sort: { totalQuantity: -1 } },
       { $limit: 5 }
     ]);
 
-    // Get recent activity (last 10 orders)
-    const recentActivity = await Order.find({})
-      .populate('user', 'name')
+    // Get recent activity (last 10 interactions)
+    // We can include new users + new orders using $unionWith or separate queries
+    // For simplicity, just recent orders for now, as that's what the UI showed mostly
+    const recentActivityOrders = await Order.find({})
       .sort({ createdAt: -1 })
-      .limit(10)
-      .select('_id totalPrice createdAt user isPaid isShipped isDelivered');
+      .limit(5)
+      .populate('user', 'name')
+      .select('_id totalPrice createdAt user isPaid');
 
-    // Get user count
     const User = require('../models/User');
-    const totalUsers = await User.countDocuments();
-    const recentUsers = await User.countDocuments({
-      createdAt: { $gte: thirtyDaysAgo }
-    });
-    const previousUsers = await User.countDocuments({
-      createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo }
-    });
-    const userGrowth = previousUsers > 0 
-      ? ((recentUsers - previousUsers) / previousUsers * 100)
-      : recentUsers > 0 ? 100 : 0;
+    const recentActivityUsers = await User.find({})
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('_id name createdAt');
+    
+    // Combine and sort
+    let combinedActivity = [
+      ...recentActivityOrders.map(order => ({
+        id: order._id,
+        type: 'order',
+        message: `New order #${order._id.toString().slice(-6)} by ${order.user?.name || 'Guest'} (${order.isPaid ? 'Paid' : 'Unpaid'})`,
+        timestamp: order.createdAt,
+        amount: order.totalPrice
+      })),
+      ...recentActivityUsers.map(user => ({
+        id: user._id,
+        type: 'user',
+        message: `New user registered: ${user.name}`,
+        timestamp: user.createdAt
+      }))
+    ];
+
+    combinedActivity.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    combinedActivity = combinedActivity.slice(0, 10); // keep top 10
+
+    // Format timestamp for frontend
+    const formatTimeAgo = (date) => {
+      const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+      let interval = seconds / 31536000;
+      if (interval > 1) return Math.floor(interval) + " years ago";
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + " months ago";
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + " days ago";
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + " hours ago";
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + " minutes ago";
+      return Math.floor(seconds) + " seconds ago";
+    };
 
     res.json({
-      totalRevenue: totalRevenue[0]?.total || 0,
-      totalOrders,
-      totalUsers,
-      avgOrderValue,
+      totalRevenue: currentStats.revenue,
+      totalOrders: currentStats.orders,
+      totalUsers: currentStats.users,
+      avgOrderValue: Math.round(avgOrderValue * 100) / 100,
       revenueGrowth: Math.round(revenueGrowth * 100) / 100,
-      orderGrowth: Math.round(orderGrowth * 100) / 100,
-      userGrowth: Math.round(userGrowth * 100) / 100,
-      dailySales: dailySales.map(day => ({
-        date: `${day._id.year}-${String(day._id.month).padStart(2, '0')}-${String(day._id.day).padStart(2, '0')}`,
-        revenue: day.revenue,
-        orders: day.orders
-      })),
+      ordersGrowth: Math.round(orderGrowth * 100) / 100,
+      usersGrowth: Math.round(userGrowth * 100) / 100,
+      conversionRate: 0, // Placeholder as we don't track visits yet
+      salesTrend: formattedSalesData,
       topProducts: topProducts.map(product => ({
         id: product._id,
         name: product.name,
-        quantity: product.totalQuantity,
+        image: product.image,
+        sales: product.totalQuantity,
         revenue: product.totalRevenue
       })),
-      recentActivity: recentActivity.map(order => ({
-        id: order._id,
-        type: 'order',
-        description: `Order #${order._id.toString().slice(-6)} by ${order.user?.name || 'Unknown'}`,
-        amount: order.totalPrice,
-        status: order.isDelivered ? 'delivered' : order.isShipped ? 'shipped' : order.isPaid ? 'paid' : 'pending',
-        createdAt: order.createdAt
+      recentActivity: combinedActivity.map(act => ({
+        ...act,
+        timestamp: formatTimeAgo(act.timestamp)
       }))
     });
+
   } catch (err) {
-    console.error(err.message);
+    console.error('Stats Error:', err.message);
     res.status(500).send('Server Error');
   }
 });

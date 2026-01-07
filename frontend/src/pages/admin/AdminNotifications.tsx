@@ -112,8 +112,8 @@ const AdminNotifications: React.FC = () => {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
+          <p className="text-gray-600 dark:text-gray-400">
             You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
           </p>
         </div>
@@ -128,27 +128,27 @@ const AdminNotifications: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <ul className="divide-y divide-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden transition-colors duration-200">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {notifications.length === 0 ? (
-            <li className="p-6 text-center text-gray-500">
+            <li className="p-6 text-center text-gray-500 dark:text-gray-400">
               No notifications found
             </li>
           ) : (
             notifications.map((notification) => (
               <li 
                 key={notification._id} 
-                className={`p-4 hover:bg-gray-50 transition-colors ${!notification.read ? 'bg-blue-50' : ''}`}
+                className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${!notification.read ? 'bg-blue-50 dark:bg-blue-900/10' : 'bg-white dark:bg-gray-800'}`}
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 mt-1">
                     {getIcon(notification.type)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium text-gray-900 ${!notification.read ? 'font-bold' : ''}`}>
+                    <p className={`text-sm font-medium text-gray-900 dark:text-white ${!notification.read ? 'font-bold' : ''}`}>
                       {notification.message}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {formatDate(notification.createdAt)}
                     </p>
                   </div>
@@ -156,7 +156,7 @@ const AdminNotifications: React.FC = () => {
                     {!notification.read && (
                       <button
                         onClick={() => handleMarkAsRead(notification._id)}
-                        className="p-1 text-blue-600 hover:bg-blue-100 rounded-full"
+                        className="p-1 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-full"
                         title="Mark as read"
                       >
                         <CheckIcon className="h-5 w-5" />
@@ -164,7 +164,7 @@ const AdminNotifications: React.FC = () => {
                     )}
                     <button
                       onClick={() => handleDelete(notification._id)}
-                      className="p-1 text-red-600 hover:bg-red-100 rounded-full"
+                      className="p-1 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full"
                       title="Delete"
                     >
                       <TrashIcon className="h-5 w-5" />
@@ -183,17 +183,17 @@ const AdminNotifications: React.FC = () => {
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1 border rounded disabled:opacity-50"
+            className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 hover:bg-gray-50"
           >
             Previous
           </button>
-          <span className="px-3 py-1">
+          <span className="px-3 py-1 dark:text-gray-300">
             Page {page} of {totalPages}
           </span>
           <button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1 border rounded disabled:opacity-50"
+            className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 hover:bg-gray-50"
           >
             Next
           </button>

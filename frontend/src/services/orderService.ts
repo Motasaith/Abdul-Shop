@@ -53,8 +53,8 @@ class OrderService {
   }
 
   // Get order statistics (admin only)
-  async getOrderStats() {
-    return apiService.get('/orders/stats');
+  async getOrderStats(timeRange: string = '7days') {
+    return apiService.get(`/orders/stats?timeRange=${timeRange}`);
   }
 }
 

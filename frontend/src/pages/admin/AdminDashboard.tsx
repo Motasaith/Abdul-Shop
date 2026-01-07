@@ -94,8 +94,8 @@ const AdminDashboard: React.FC = () => {
     <div className="p-4 sm:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
             Welcome back! Here's what's happening with your store.
           </p>
         </div>
@@ -103,7 +103,7 @@ const AdminDashboard: React.FC = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 transition-colors duration-200">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center">
@@ -113,13 +113,13 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-3 sm:ml-4">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.totalUsers.toLocaleString()}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{stats.totalUsers.toLocaleString()}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 transition-colors duration-200">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-full flex items-center justify-center">
@@ -129,13 +129,13 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-3 sm:ml-4">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Total Products</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.totalProducts}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Products</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{stats.totalProducts}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 transition-colors duration-200">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-full flex items-center justify-center">
@@ -145,13 +145,13 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-3 sm:ml-4">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Total Orders</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{stats.totalOrders}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-green-500">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-green-500 transition-colors duration-200">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -161,13 +161,13 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-3 sm:ml-4">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Revenue</p>
-              <p className="text-xl sm:text-2xl font-bold text-green-700">{formatPrice(stats.totalRevenue)}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Revenue</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-500">{formatPrice(stats.totalRevenue)}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-red-500">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-red-500 transition-colors duration-200">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -177,8 +177,8 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-3 sm:ml-4">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Lost Revenue</p>
-              <p className="text-xl sm:text-2xl font-bold text-red-700">{formatPrice(stats.lostRevenue)}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Lost Revenue</p>
+              <p className="text-xl sm:text-2xl font-bold text-red-700 dark:text-red-500">{formatPrice(stats.lostRevenue)}</p>
             </div>
           </div>
         </div>
@@ -187,22 +187,22 @@ const AdminDashboard: React.FC = () => {
       {/* Recent Orders & Top Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Orders</h3>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {stats.recentOrders.map((order) => (
-              <div key={order._id} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
+              <div key={order._id} className="px-4 sm:px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{order.user?.name || 'Unknown User'}</p>
-                    <p className="text-xs text-gray-500">#{order._id.slice(-8)}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{order.user?.name || 'Unknown User'}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">#{order._id.slice(-8)}</p>
                   </div>
                   <div className="flex items-center justify-between sm:justify-end sm:text-right gap-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{formatPrice(order.totalPrice)}</p>
-                      <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-200">{formatPrice(order.totalPrice)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(order.createdAt)}</p>
                     </div>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.orderStatus)}`}>
                       {order.orderStatus}
@@ -215,36 +215,36 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Top Products */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Top Products</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Top Products</h3>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {stats.topProducts.map((product) => (
-              <div key={product._id} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
+              <div key={product._id} className="px-4 sm:px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{product.name}</p>
                     <div className="flex items-center mt-1">
                       <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
                           <svg
                             key={i}
-                            className={`w-3 h-3 sm:w-4 sm:h-4 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                            className={`w-3 h-3 sm:w-4 sm:h-4 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                           </svg>
                         ))}
-                        <span className="ml-1 text-xs text-gray-500">({product.rating})</span>
+                        <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">({product.rating})</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center justify-between sm:justify-end sm:text-right gap-4 mt-2 sm:mt-0">
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{formatPrice(product.price)}</p>
-                      <p className="text-xs text-gray-500">{product.countInStock} in stock</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{formatPrice(product.price)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{product.countInStock} in stock</p>
                     </div>
                   </div>
                 </div>

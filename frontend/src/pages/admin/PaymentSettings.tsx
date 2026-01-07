@@ -86,19 +86,19 @@ const PaymentSettings: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-900">Payment Configuration</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Payment Configuration</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Stripe Section */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 transition-colors duration-200">
           <div className="flex items-center justify-between mb-4">
-             <h2 className="text-lg font-medium text-gray-900">Stripe Payments</h2>
+             <h2 className="text-lg font-medium text-gray-900 dark:text-white">Stripe Payments</h2>
              <button
                type="button"
                onClick={() => handleToggle('stripe')}
                className={`${
-                 formData.stripe.isEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                 formData.stripe.isEnabled ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
                } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
              >
                <span
@@ -112,38 +112,38 @@ const PaymentSettings: React.FC = () => {
           {formData.stripe.isEnabled && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Publishable Key</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Publishable Key</label>
                 <input
                   type="text"
                   value={formData.stripe.publishableKey}
                   onChange={(e) => handleChange('stripe', 'publishableKey', e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                 />
               </div>
               <div>
-                 <label className="block text-sm font-medium text-gray-700">Secret Key</label>
+                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Secret Key</label>
                  <input
                    type="password"
                    value={formData.stripe.secretKey}
                    onChange={(e) => handleChange('stripe', 'secretKey', e.target.value)}
-                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                   className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                    placeholder={settings?.payment?.stripe?.secretKey ? '********' : 'Enter Secret Key'}
                  />
-                 <p className="mt-1 text-xs text-gray-500">Encrypted in database. Leave as '********' to keep unchanged.</p>
+                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Encrypted in database. Leave as '********' to keep unchanged.</p>
               </div>
             </div>
           )}
         </div>
 
         {/* Bank Transfer Section */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 transition-colors duration-200">
           <div className="flex items-center justify-between mb-4">
-             <h2 className="text-lg font-medium text-gray-900">Bank Transfer</h2>
+             <h2 className="text-lg font-medium text-gray-900 dark:text-white">Bank Transfer</h2>
              <button
                type="button"
                onClick={() => handleToggle('bankTransfer')}
                className={`${
-                 formData.bankTransfer.isEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                 formData.bankTransfer.isEnabled ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
                } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
              >
                <span
@@ -157,39 +157,39 @@ const PaymentSettings: React.FC = () => {
           {formData.bankTransfer.isEnabled && (
              <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Bank Name</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Bank Name</label>
                   <input
                     type="text"
                     value={formData.bankTransfer.bankName}
                     onChange={(e) => handleChange('bankTransfer', 'bankName', e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Account Name</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Account Name</label>
                   <input
                     type="text"
                     value={formData.bankTransfer.accountName}
                     onChange={(e) => handleChange('bankTransfer', 'accountName', e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Account Number / IBAN</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Account Number / IBAN</label>
                   <input
                     type="text"
                     value={formData.bankTransfer.accountNumber}
                     onChange={(e) => handleChange('bankTransfer', 'accountNumber', e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Instructions</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Instructions</label>
                   <textarea
                     rows={3}
                     value={formData.bankTransfer.instructions}
                     onChange={(e) => handleChange('bankTransfer', 'instructions', e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                     placeholder="e.g. Please upload receipt..."
                   />
                 </div>
@@ -198,14 +198,14 @@ const PaymentSettings: React.FC = () => {
         </div>
 
         {/* COD Section */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 transition-colors duration-200">
            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-medium text-gray-900">Cash on Delivery (COD)</h2>
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white">Cash on Delivery (COD)</h2>
               <button
                 type="button"
                 onClick={() => handleToggle('cod')}
                 className={`${
-                  formData.cod.isEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                  formData.cod.isEnabled ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
                 } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
               >
                 <span

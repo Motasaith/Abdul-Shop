@@ -148,13 +148,13 @@ const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
       {/* Mobile menu backdrop */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
         <div className="fixed inset-0 bg-gray-900/80" onClick={() => setSidebarOpen(false)}></div>
         
         {/* Mobile sidebar */}
-        <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl">
+        <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 shadow-xl transition-colors duration-300">
           <div className="flex h-full flex-col">
             {/* Mobile sidebar header */}
             <div className="flex h-16 items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 px-6">
@@ -184,8 +184,8 @@ const AdminLayout: React.FC = () => {
                     onClick={() => setSidebarOpen(false)}
                     className={`group flex items-center rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? 'bg-blue-50 text-blue-700 shadow-sm'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 shadow-sm'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     <div className="relative">
@@ -249,7 +249,7 @@ const AdminLayout: React.FC = () => {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
-        <div className="flex h-full flex-col bg-white shadow-xl overflow-hidden">
+        <div className="flex h-full flex-col bg-white dark:bg-gray-800 shadow-xl overflow-hidden transition-colors duration-300">
           {/* Desktop sidebar header */}
           <div className="flex h-16 items-center bg-gradient-to-r from-blue-600 to-blue-700 px-6">
             <div className="flex items-center space-x-3">
@@ -273,8 +273,8 @@ const AdminLayout: React.FC = () => {
                     to={item.href}
                     className={`group flex items-center rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? 'bg-blue-50 text-blue-700 shadow-sm'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 shadow-sm'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     <div className="relative">
@@ -298,9 +298,9 @@ const AdminLayout: React.FC = () => {
           </div>
           
           {/* Footer - Fixed at bottom */}
-          <div className="bg-white z-10">
+          <div className="bg-white dark:bg-gray-800 z-10 transition-colors duration-300">
             {/* Currency Selector */}
-            <div className="border-t border-gray-200 p-4">
+            <div className="border-t border-gray-200 dark:border-gray-700 p-4">
               <CurrencySelector />
             </div>
 
@@ -322,8 +322,8 @@ const AdminLayout: React.FC = () => {
                   <UserIcon className="h-5 w-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{user?.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
                 </div>
                 <button
                   onClick={handleLogout}
@@ -341,7 +341,7 @@ const AdminLayout: React.FC = () => {
       {/* Main content */}
       <div className="lg:pl-72">
         {/* Top header for mobile */}
-        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:hidden">
+        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:hidden">
           <button
             type="button"
             className="-m-2.5 p-2.5 text-gray-700 lg:hidden"

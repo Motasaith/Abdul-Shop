@@ -335,74 +335,74 @@ const AdminSettings: React.FC = () => {
   const renderAppearanceSettings = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Appearance Settings</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Appearance Settings</h3>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Primary Color</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Primary Color</label>
             <div className="flex items-center space-x-3 mt-1">
               <input
                 type="color"
                 value={localSettings.appearance.primaryColor}
                 onChange={(e) => updateSetting('appearance', 'primaryColor', e.target.value)}
-                className="h-10 w-16 rounded border border-gray-300"
+                className="h-10 w-16 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
               />
               <input
                 type="text"
                 value={localSettings.appearance.primaryColor}
                 onChange={(e) => updateSetting('appearance', 'primaryColor', e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Secondary Color</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Secondary Color</label>
             <div className="flex items-center space-x-3 mt-1">
               <input
                 type="color"
                 value={localSettings.appearance.secondaryColor}
                 onChange={(e) => updateSetting('appearance', 'secondaryColor', e.target.value)}
-                className="h-10 w-16 rounded border border-gray-300"
+                className="h-10 w-16 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
               />
               <input
                 type="text"
                 value={localSettings.appearance.secondaryColor}
                 onChange={(e) => updateSetting('appearance', 'secondaryColor', e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Logo URL</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Logo URL</label>
             <input
               type="url"
               value={localSettings.appearance.logoUrl}
               onChange={(e) => updateSetting('appearance', 'logoUrl', e.target.value)}
               placeholder="https://example.com/logo.png"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Favicon URL</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Favicon URL</label>
             <input
               type="url"
               value={localSettings.appearance.faviconUrl}
               onChange={(e) => updateSetting('appearance', 'faviconUrl', e.target.value)}
               placeholder="https://example.com/favicon.ico"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
         
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-6">
           <div>
-            <label className="text-sm font-medium text-gray-900">Dark Mode</label>
-            <p className="text-sm text-gray-500">Enable dark theme for the admin panel</p>
+            <label className="text-sm font-medium text-gray-900 dark:text-white">Dark Mode</label>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Enable dark theme for the admin panel</p>
           </div>
           <button
             type="button"
             onClick={() => updateSetting('appearance', 'darkMode', !localSettings.appearance.darkMode)}
             className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-              localSettings.appearance.darkMode ? 'bg-blue-600' : 'bg-gray-200'
+              localSettings.appearance.darkMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
             }`}
           >
             <span
@@ -436,8 +436,8 @@ const AdminSettings: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Manage your application settings and preferences
           </p>
         </div>
@@ -452,10 +452,10 @@ const AdminSettings: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 lg:grid-cols-4">
           {/* Sidebar */}
-          <div className="lg:col-span-1 bg-gray-50 border-r border-gray-200">
+          <div className="lg:col-span-1 bg-gray-50 dark:bg-gray-900/50 border-r border-gray-200 dark:border-gray-700">
             <nav className="space-y-1 p-4">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -465,8 +465,8 @@ const AdminSettings: React.FC = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                       activeTab === tab.id
-                        ? 'bg-blue-50 text-blue-700 border-blue-500'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-blue-500'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     <Icon className="mr-3 h-5 w-5 flex-shrink-0" />

@@ -408,4 +408,64 @@ router.get('/admin/stats', auth, admin, async (req, res) => {
   }
 });
 
+// @route   POST api/newsletter/admin/send
+// @desc    Send newsletter email to subscribers (Admin only)
+// @access  Private/Admin
+router.post('/admin/send', auth, admin, [
+  check('subject', 'Subject is required').not().isEmpty(),
+  check('content', 'Content is required').not().isEmpty()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { subject, content, filter = 'active' } = req.body;
+
+    // Build query based on filter
+    const query = {};
+    if (filter === 'active') {
+      query.isActive = true;
+    } else if (filter === 'inactive') {
+      query.isActive = false;
+    }
+    // 'all' includes everyone
+
+    const subscribers = await Newsletter.find(query);
+    
+    if (subscribers.length === 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'No subscribers found matching the selected filter.' 
+      });
+    }
+
+    console.log(`Starting newsletter broadcast: "${subject}" to ${subscribers.length} subscribers (Filter: ${filter})`);
+
+    const result = await emailService.sendNewsletterBroadcast({
+      subscribers,
+      subject,
+      content,
+      campaignName: subject
+    });
+
+    console.log('Newsletter broadcast completed:', result);
+
+    res.json({
+      success: true,
+      message: 'Newsletter broadcast completed',
+      stats: {
+        totalTargeted: subscribers.length,
+        successful: result.successful,
+        failed: result.failed
+      }
+    });
+
+  } catch (error) {
+    console.error('Send newsletter error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

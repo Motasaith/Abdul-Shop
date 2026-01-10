@@ -57,7 +57,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
           vendorStatus: targetVendorStatus,
           // Since we can't easily get shop name here, we might leave vendorDetails empty 
           // or set a default. The user can update it later in profile.
-          isVerified: true // OAuth emails are already verified
+          emailVerified: true // OAuth emails are already verified
         });
 
         done(null, user);
@@ -104,7 +104,7 @@ if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
           email: email,
           password: 'oauth-' + Date.now(), // Dummy password
           facebookId: profile.id,
-          isVerified: true
+          emailVerified: true
         });
 
         done(null, user);

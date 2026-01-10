@@ -235,12 +235,20 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-        state.error = null;
-        localStorage.setItem('token', action.payload.token);
+        if (action.payload.emailVerificationRequired) {
+          state.loading = false;
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          state.error = null;
+        } else {
+          state.loading = false;
+          state.user = action.payload.user;
+          state.token = action.payload.token;
+          state.isAuthenticated = true;
+          state.error = null;
+          localStorage.setItem('token', action.payload.token);
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;

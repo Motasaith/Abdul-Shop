@@ -89,6 +89,9 @@ const RegisterPage: React.FC = () => {
             devCode: result.devCode 
           }
         });
+      } else if (result.emailVerificationRequired) {
+        toast.success('Registration successful! Please check your email for verification link.');
+        navigate('/email-verification');
       } else {
         toast.success(t('auth.registerSuccess'));
         navigate('/');

@@ -342,30 +342,17 @@ router.post(
         console.error('Failed to create admin notification:', notifyError);
       }
 
-      jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRE || '7d' },
-        (err, token) => {
-          if (err) throw err;
-          res.json({ 
-            token,
-            message: 'Registration successful! Please verify your email and phone number in your profile.',
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              phone: user.phone,
-              phoneVerified: user.phoneVerified || false,
-              emailVerified: user.emailVerified || false,
-              emailVerified: user.emailVerified || false,
-              role: user.role,
-              vendorStatus: user.vendorStatus,
-              vendorDetails: user.vendorDetails
-            }
-          });
+      // Do not log in immediately. Require email verification.
+      res.json({ 
+        message: 'Registration successful! Please check your email to verify your account.',
+        emailVerificationRequired: true,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone
         }
-      );
+      });
     } catch (err) {
       console.error('Registration error:', err);
       if (err.name === 'ValidationError') {
@@ -409,6 +396,10 @@ router.post('/login', [
 
     if (!user.isActive) {
       return res.status(400).json({ errors: [{ msg: 'Account is deactivated' }] });
+    }
+
+    if (!user.emailVerified) {
+       return res.status(403).json({ errors: [{ msg: 'Please verify your email address to log in. Check your inbox for the verification link.' }] });
     }
 
     // Update last login

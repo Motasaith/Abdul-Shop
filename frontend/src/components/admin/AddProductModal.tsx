@@ -1,7 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import adminService from '../../services/adminService';
 import { Product } from '../../types';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  X, 
+  Upload, 
+  Link as LinkIcon, 
+  Plus, 
+  Trash2, 
+  Image as ImageIcon, 
+  Video, 
+  Save, 
+  Loader,
+  Check,
+  AlertCircle,
+  Package,
+  Layers,
+  DollarSign,
+  Tag
+} from 'lucide-react';
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -39,15 +57,16 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
   const [imageUrl, setImageUrl] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
-  const [uploadMode, setUploadMode] = useState('file'); // 'file' or 'url'
+  const [uploadMode, setUploadMode] = useState<'file' | 'url'>('file');
 
   const categories = [
     'Electronics', 'Clothing', 'Books', 'Home & Garden', 
     'Sports', 'Beauty', 'Health', 'Toys', 'Automotive', 'Other'
   ];
 
+  // Reset or populate form when product changes
   useEffect(() => {
-    if (product) {
+    if (product && isOpen) {
       setFormData({
         name: product.name || '',
         description: product.description || '',
@@ -66,8 +85,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
         specifications: product.specifications || [],
         whatsInBox: product.whatsInBox || []
       });
-    } else {
-      resetForm();
+    } else if (!product && isOpen) {
+        resetForm();
     }
   }, [product, isOpen]);
 
@@ -78,7 +97,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
     try {
       const formDataToSend = new FormData();
       
-      // Add basic form data
+      // Basic info
       formDataToSend.append('name', formData.name);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('price', formData.price);
@@ -89,47 +108,27 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       formDataToSend.append('isNewArrival', formData.isNewArrival.toString());
       formDataToSend.append('onSale', formData.onSale.toString());
       
-      if (formData.comparePrice) {
-        formDataToSend.append('comparePrice', formData.comparePrice);
-      }
-      if (formData.sku) {
-        formDataToSend.append('sku', formData.sku);
-      }
-      if (formData.weight) {
-        formDataToSend.append('weight', formData.weight);
-      }
+      if (formData.comparePrice) formDataToSend.append('comparePrice', formData.comparePrice);
+      if (formData.sku) formDataToSend.append('sku', formData.sku);
+      if (formData.weight) formDataToSend.append('weight', formData.weight);
       
-      // Add image files
-      imageFiles.forEach((file, index) => {
-        formDataToSend.append(`images`, file);
-      });
+      // Files
+      imageFiles.forEach((file) => formDataToSend.append(`images`, file));
+      videoFiles.forEach((file) => formDataToSend.append(`videos`, file));
       
-      // Add video files
-      videoFiles.forEach((file, index) => {
-        formDataToSend.append(`videos`, file);
-      });
-      
-      // Add image URLs
+      // URLs (Logic to handle existing vs new URLs varies by backend, 
+      // but assuming consistent handling with previous version)
       formData.images.forEach((image, index) => {
-        if (!imageFiles.length && !videoFiles.length && product) {
-            // If in edit mode and using JSON update, don't append here to avoid duplication if we switch logic
-            // But if we use FormData for update too:
-             formDataToSend.append(`imageUrls[${index}][url]`, image.url);
-             formDataToSend.append(`imageUrls[${index}][public_id]`, image.public_id);
-        } else {
-             formDataToSend.append(`imageUrls[${index}][url]`, image.url);
-             formDataToSend.append(`imageUrls[${index}][public_id]`, image.public_id);
-        }
-       
+         formDataToSend.append(`imageUrls[${index}][url]`, image.url);
+         formDataToSend.append(`imageUrls[${index}][public_id]`, image.public_id);
       });
       
-      // Add video URLs
       formData.videos.forEach((video, index) => {
         formDataToSend.append(`videoUrls[${index}][url]`, video.url);
         formDataToSend.append(`videoUrls[${index}][public_id]`, video.public_id);
       });
 
-      // Add specifications
+      // Complex objects
       formData.specifications.forEach((spec, index) => {
         if (spec.name && spec.value) {
           formDataToSend.append(`specifications[${index}][name]`, spec.name);
@@ -137,7 +136,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
         }
       });
 
-      // Add whatsInBox
       formData.whatsInBox.forEach((item, index) => {
         if (item.item) {
           formDataToSend.append(`whatsInBox[${index}][item]`, item.item);
@@ -146,52 +144,30 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       });
 
       if (product) {
-          // Update existing product
-           if (imageFiles.length === 0 && videoFiles.length === 0) {
-             // JSON Update
-             await adminService.updateProduct(product._id, {
-               ...formData,
-               price: parseFloat(formData.price),
-               comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
-               countInStock: parseInt(formData.countInStock),
-               weight: formData.weight ? parseFloat(formData.weight) : undefined
-             });
-           } else {
-             // File Update - We need an endpoint for this or handle it. 
-             // Assuming updateProduct can take FormData or we might need a specific route if the backend expects different handling.
-             // Usually PUT /api/products/:id supports what POST does.
-             // We'll try passing FormData if adminService supports it? 
-             // adminService.updateProduct expects data object. usage in AdminProducts.tsx shows passing object.
-             // We probably need to check adminService if it handles formData or if we should stick to JSON for now for updates unless backend supports multipart on PUT.
-             // For safety in this task, I'll stick to JSON update for basic fields and existing images. New files might require special handling.
-             // Let's assume for now we use the same strategy: if files, use a likely method or warn.
-             // Actually, usually PUT supports it. Let's try sending JSON for now as commonly defined in simple MERNS.
-             
-             // Wait, createProductWithFiles exists. Does updateProductWithFiles exist?
-             // I should check adminService.
-             
-              await adminService.updateProduct(product._id, {
-               ...formData,
-               price: parseFloat(formData.price),
-               comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
-               countInStock: parseInt(formData.countInStock),
-               weight: formData.weight ? parseFloat(formData.weight) : undefined
-             });
-             
-             if(imageFiles.length > 0) {
-                 toast('Uploading new files during update is not fully supported in this quick patch. Only text/existing media updated.', { icon: '⚠️'});
-             }
-           }
-            toast.success('Product updated successfully!');
-      } else {
-        // Create new product
-        if (imageFiles.length === 0 && videoFiles.length === 0) {
-            await adminService.createProduct({
+         // Update Logic
+         const updateData = {
             ...formData,
             price: parseFloat(formData.price),
             comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
             countInStock: parseInt(formData.countInStock),
             weight: formData.weight ? parseFloat(formData.weight) : undefined
+         };
+         
+         await adminService.updateProduct(product._id, updateData);
+         
+         if(imageFiles.length > 0) {
+             toast('Note: New file uploads during quick-update are strictly text/url based in this version.', { icon: 'ℹ️'});
+         }
+         toast.success('Product updated successfully!');
+      } else {
+        // Create Logic
+        if (imageFiles.length === 0 && videoFiles.length === 0) {
+            await adminService.createProduct({
+                ...formData,
+                price: parseFloat(formData.price),
+                comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
+                countInStock: parseInt(formData.countInStock),
+                weight: formData.weight ? parseFloat(formData.weight) : undefined
             });
         } else {
             await adminService.createProductWithFiles(formDataToSend);
@@ -224,10 +200,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       featured: false,
       isNewArrival: false,
       onSale: false,
-      images: [] as Media[],
-      videos: [] as Media[],
-      specifications: [] as { name: string; value: string }[],
-      whatsInBox: [] as { item: string; quantity: number }[]
+      images: [],
+      videos: [],
+      specifications: [],
+      whatsInBox: []
     });
     setImageFiles([]);
     setVideoFiles([]);
@@ -243,579 +219,350 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
     }));
   };
 
-  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
     const files = Array.from(e.target.files || []);
-    setImageFiles(prev => [...prev, ...files]);
+    if (type === 'image') setImageFiles(prev => [...prev, ...files]);
+    else setVideoFiles(prev => [...prev, ...files]);
   };
 
-  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setVideoFiles(prev => [...prev, ...files]);
-  };
-
-  const addImageUrl = () => {
-    if (imageUrl.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, { url: imageUrl.trim(), public_id: `url-${Date.now()}` }]
-      }));
-      setImageUrl('');
+  const addUrl = (type: 'image' | 'video') => {
+    const val = type === 'image' ? imageUrl : videoUrl;
+    if (val.trim()) {
+       const newItem = { url: val.trim(), public_id: `url-${Date.now()}` };
+       setFormData(prev => ({
+         ...prev,
+         [type === 'image' ? 'images' : 'videos']: [...prev[type === 'image' ? 'images' : 'videos'], newItem]
+       }));
+       if (type === 'image') setImageUrl('');
+       else setVideoUrl('');
     }
   };
 
-  const addVideoUrl = () => {
-    if (videoUrl.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        videos: [...prev.videos, { url: videoUrl.trim(), public_id: `url-${Date.now()}` }]
-      }));
-      setVideoUrl('');
-    }
-  };
-
-  const removeImage = (index: number, type: 'file' | 'url') => {
-    if (type === 'file') {
-      setImageFiles(prev => prev.filter((_, i) => i !== index));
+  const removeMedia = (index: number, type: 'image' | 'video', source: 'file' | 'url') => {
+    if (source === 'file') {
+       if (type === 'image') setImageFiles(prev => prev.filter((_, i) => i !== index));
+       else setVideoFiles(prev => prev.filter((_, i) => i !== index));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        images: prev.images.filter((_, i) => i !== index)
-      }));
+       setFormData(prev => ({
+         ...prev,
+         [type === 'image' ? 'images' : 'videos']: prev[type === 'image' ? 'images' : 'videos'].filter((_, i) => i !== index)
+       }));
     }
   };
 
-  const removeVideo = (index: number, type: 'file' | 'url') => {
-    if (type === 'file') {
-      setVideoFiles(prev => prev.filter((_, i) => i !== index));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        videos: prev.videos.filter((_, i) => i !== index)
-      }));
-    }
+  const updateArrayItem = (index: number, field: string, value: any, arrayName: 'specifications' | 'whatsInBox') => {
+     setFormData(prev => ({
+       ...prev,
+       [arrayName]: prev[arrayName].map((item: any, i) => i === index ? { ...item, [field]: value } : item)
+     }));
   };
 
-  const addSpecification = () => {
+  const removeArrayItem = (index: number, arrayName: 'specifications' | 'whatsInBox') => {
     setFormData(prev => ({
       ...prev,
-      specifications: [...prev.specifications, { name: '', value: '' }]
+      [arrayName]: (prev[arrayName] as any[]).filter((_: any, i: number) => i !== index)
     }));
   };
 
-  const removeSpecification = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      specifications: prev.specifications.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updateSpecification = (index: number, field: 'name' | 'value', value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      specifications: prev.specifications.map((item, i) => 
-        i === index ? { ...item, [field]: value } : item
-      )
-    }));
-  };
-
-  const addWhatsInBox = () => {
-    setFormData(prev => ({
-      ...prev,
-      whatsInBox: [...prev.whatsInBox, { item: '', quantity: 1 }]
-    }));
-  };
-
-  const removeWhatsInBox = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      whatsInBox: prev.whatsInBox.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updateWhatsInBox = (index: number, field: 'item' | 'quantity', value: string | number) => {
-    setFormData(prev => ({
-      ...prev,
-      whatsInBox: prev.whatsInBox.map((item, i) => 
-        i === index ? { ...item, [field]: value } : item
-      )
-    }));
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transition-colors duration-200">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{product ? 'Edit Product' : 'Add New Product'}</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Product Name *
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Category *
-                </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                >
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Price *
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  step="0.01"
-                  min="0"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Compare Price
-                </label>
-                <input
-                  type="number"
-                  name="comparePrice"
-                  value={formData.comparePrice}
-                  onChange={handleInputChange}
-                  step="0.01"
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Brand
-                </label>
-                <input
-                  type="text"
-                  name="brand"
-                  value={formData.brand}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Stock Quantity *
-                </label>
-                <input
-                  type="number"
-                  name="countInStock"
-                  value={formData.countInStock}
-                  onChange={handleInputChange}
-                  min="0"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  SKU
-                </label>
-                <input
-                  type="text"
-                  name="sku"
-                  value={formData.sku}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Weight (kg)
-                </label>
-                <input
-                  type="number"
-                  name="weight"
-                  value={formData.weight}
-                  onChange={handleInputChange}
-                  step="0.01"
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
+  // Helper Input Component
+  const InputField = ({ label, icon: Icon, fullWidth = false, ...props }: any) => (
+    <div className={`${fullWidth ? 'col-span-full' : ''}`}>
+      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+        {label}
+      </label>
+      <div className="relative group">
+        {Icon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                <Icon className="w-4 h-4" />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Description *
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows={4}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
-            {/* Media Upload Section */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Product Media</h3>
-              
-              {/* Upload Mode Toggle */}
-              <div className="flex space-x-4 mb-4">
-                <button
-                  type="button"
-                  onClick={() => setUploadMode('file')}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    uploadMode === 'file'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  Upload Files
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUploadMode('url')}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    uploadMode === 'url'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  Add by URL
-                </button>
-              </div>
-
-              {/* File Upload Mode */}
-              {uploadMode === 'file' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Upload Images
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageFileChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
-                    {imageFiles.length > 0 && (
-                      <div className="mt-2 space-y-1">
-                        {imageFiles.map((file, index) => (
-                          <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
-                            <span className="text-sm text-gray-600 dark:text-gray-300 truncate">{file.name}</span>
-                            <button
-                              type="button"
-                              onClick={() => removeImage(index, 'file')}
-                              className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Upload Videos
-                    </label>
-                    <input
-                      type="file"
-                      accept="video/*"
-                      multiple
-                      onChange={handleVideoFileChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
-                    {videoFiles.length > 0 && (
-                      <div className="mt-2 space-y-1">
-                        {videoFiles.map((file, index) => (
-                          <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
-                            <span className="text-sm text-gray-600 dark:text-gray-300 truncate">{file.name}</span>
-                            <button
-                              type="button"
-                              onClick={() => removeVideo(index, 'file')}
-                              className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* URL Mode */}
-              {uploadMode === 'url' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Add Image URL
-                    </label>
-                    <div className="flex space-x-2">
-                      <input
-                        type="url"
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                        placeholder="https://example.com/image.jpg"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={addImageUrl}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Add Video URL
-                    </label>
-                    <div className="flex space-x-2">
-                      <input
-                        type="url"
-                        value={videoUrl}
-                        onChange={(e) => setVideoUrl(e.target.value)}
-                        placeholder="https://example.com/video.mp4"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={addVideoUrl}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Display added URLs */}
-              {(formData.images.length > 0 || formData.videos.length > 0) && (
-                <div className="mt-4 space-y-2">
-                  <h4 className="text-sm font-medium text-gray-700">Added Media:</h4>
-                  
-                  {formData.images.length > 0 && (
-                    <div>
-                      <h5 className="text-xs font-medium text-gray-600 mb-1">Images:</h5>
-                      {formData.images.map((image, index) => (
-                        <div key={index} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/10 p-2 rounded mb-1">
-                          <span className="text-xs text-gray-600 dark:text-gray-300 truncate">{image.url}</span>
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index, 'url')}
-                            className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {formData.videos.length > 0 && (
-                    <div>
-                      <h5 className="text-xs font-medium text-gray-600 mb-1">Videos:</h5>
-                      {formData.videos.map((video, index) => (
-                        <div key={index} className="flex items-center justify-between bg-green-50 dark:bg-green-900/10 p-2 rounded mb-1">
-                          <span className="text-xs text-gray-600 dark:text-gray-300 truncate">{video.url}</span>
-                          <button
-                            type="button"
-                            onClick={() => removeVideo(index, 'url')}
-                            className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Specifications Section */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Specifications (Optional)</h3>
-                <button
-                  type="button"
-                  onClick={addSpecification}
-                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
-                >
-                  + Add Spec
-                </button>
-              </div>
-              {formData.specifications.map((spec, index) => (
-                <div key={index} className="flex gap-2 mb-2 items-start">
-                  <input
-                    type="text"
-                    placeholder="Name (e.g., Color)"
-                    value={spec.name}
-                    onChange={(e) => updateSpecification(index, 'name', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Value (e.g., Red)"
-                    value={spec.value}
-                    onChange={(e) => updateSpecification(index, 'value', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeSpecification(index)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded dark:hover:bg-red-900/30"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* What's in the Box Section */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">What's in the Box (Optional)</h3>
-                <button
-                  type="button"
-                  onClick={addWhatsInBox}
-                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
-                >
-                  + Add Item
-                </button>
-              </div>
-              {formData.whatsInBox.map((item, index) => (
-                <div key={index} className="flex gap-2 mb-2 items-start">
-                  <input
-                    type="text"
-                    placeholder="Item Name"
-                    value={item.item}
-                    onChange={(e) => updateWhatsInBox(index, 'item', e.target.value)}
-                    className="flex-[2] px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Qty"
-                    value={item.quantity}
-                    onChange={(e) => updateWhatsInBox(index, 'quantity', parseInt(e.target.value) || 1)}
-                    min="1"
-                    className="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeWhatsInBox(index)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded dark:hover:bg-red-900/30"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <div className="flex space-x-6">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="featured"
-                    checked={formData.featured}
-                    onChange={handleInputChange}
-                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Featured Product</span>
-                </label>
-                
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="isNewArrival"
-                    checked={formData.isNewArrival}
-                    onChange={handleInputChange}
-                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manual New Arrival</span>
-                </label>
-                
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="onSale"
-                    checked={formData.onSale}
-                    onChange={handleInputChange}
-                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manual On Sale</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50"
-              >
-                {loading ? (product ? 'Updating...' : 'Creating...') : (product ? 'Update Product' : 'Create Product')}
-              </button>
-            </div>
-          </form>
-        </div>
+        )}
+        <input
+          {...props}
+          className={`w-full ${Icon ? 'pl-9' : 'pl-4'} pr-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder-gray-400 dark:text-white dark:placeholder-gray-500 text-sm`}
+        />
       </div>
     </div>
+  );
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6"
+          >
+            <motion.div
+               initial={{ opacity: 0, scale: 0.95, y: 20 }}
+               animate={{ opacity: 1, scale: 1, y: 0 }}
+               exit={{ opacity: 0, scale: 0.95, y: 20 }}
+               onClick={(e) => e.stopPropagation()}
+               className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md sticky top-0 z-10">
+                <div>
+                   <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                     {product ? 'Edit Product' : 'Add New Product'}
+                   </h2>
+                   <p className="text-sm text-gray-500 dark:text-gray-400">Fill in the details below</p>
+                </div>
+                <button 
+                  onClick={onClose}
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+                <form id="product-form" onSubmit={handleSubmit} className="space-y-8">
+                  
+                  {/* General Information */}
+                  <section>
+                    <h3 className="flex items-center text-sm font-semibold text-gray-900 dark:text-white mb-4">
+                      <Layers className="w-4 h-4 mr-2 text-blue-500" />
+                      General Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <InputField fullWidth label="Product Name *" name="name" value={formData.name} onChange={handleInputChange} required placeholder="e.g., Wireless Headphones" />
+                      
+                      <div className="col-span-full">
+                         <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                            Description *
+                         </label>
+                         <textarea
+                           name="description"
+                           value={formData.description}
+                           onChange={handleInputChange}
+                           rows={4}
+                           required
+                           className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder-gray-400 dark:text-white dark:placeholder-gray-500 text-sm resize-none"
+                           placeholder="Describe your product..."
+                         />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">Category *</label>
+                        <select
+                          name="category"
+                          value={formData.category}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white text-sm appearance-none cursor-pointer"
+                        >
+                          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                      <InputField label="Brand" name="brand" value={formData.brand} onChange={handleInputChange} placeholder="e.g., Sony" />
+                    </div>
+                  </section>
+
+                  {/* Pricing & Inventory */}
+                  <section>
+                     <h3 className="flex items-center text-sm font-semibold text-gray-900 dark:text-white mb-4">
+                      <DollarSign className="w-4 h-4 mr-2 text-green-500" />
+                      Pricing & Inventory
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                       <InputField label="Price *" type="number" name="price" value={formData.price} onChange={handleInputChange} step="0.01" min="0" required icon={DollarSign} />
+                       <InputField label="Compare Price" type="number" name="comparePrice" value={formData.comparePrice} onChange={handleInputChange} step="0.01" min="0" />
+                       <InputField label="Stock *" type="number" name="countInStock" value={formData.countInStock} onChange={handleInputChange} min="0" required icon={Package} />
+                       <InputField label="SKU" name="sku" value={formData.sku} onChange={handleInputChange} placeholder="Stock Keeping Unit" />
+                       <InputField label="Weight (kg)" type="number" name="weight" value={formData.weight} onChange={handleInputChange} step="0.01" min="0" />
+                    </div>
+                  </section>
+
+                  {/* Media */}
+                  <section>
+                    <h3 className="flex items-center text-sm font-semibold text-gray-900 dark:text-white mb-4">
+                      <ImageIcon className="w-4 h-4 mr-2 text-purple-500" />
+                      Media
+                    </h3>
+                    
+                    <div className="bg-gray-50 dark:bg-gray-900/30 rounded-xl p-4 border border-gray-100 dark:border-gray-700/50">
+                        <div className="flex gap-4 mb-4">
+                           <button 
+                             type="button" 
+                             onClick={() => setUploadMode('file')}
+                             className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${uploadMode === 'file' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
+                           >
+                             <Upload className="w-4 h-4 mr-2" /> Upload Files
+                           </button>
+                            <button 
+                             type="button" 
+                             onClick={() => setUploadMode('url')}
+                             className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${uploadMode === 'url' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
+                           >
+                             <LinkIcon className="w-4 h-4 mr-2" /> Add by URL
+                           </button>
+                        </div>
+
+                        {uploadMode === 'file' ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                               <div className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-blue-500/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors group cursor-pointer relative">
+                                  <input type="file" multiple accept="image/*" onChange={(e) => handleFileChange(e, 'image')} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                                  <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full w-fit mx-auto mb-3 text-blue-600 group-hover:scale-110 transition-transform">
+                                     <ImageIcon className="w-6 h-6" />
+                                  </div>
+                                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Drop images here or click</p>
+                                  <p className="text-xs text-gray-400 mt-1">Supports: JPG, PNG, WEBP</p>
+                               </div>
+                               <div className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-purple-500/50 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-colors group cursor-pointer relative">
+                                  <input type="file" multiple accept="video/*" onChange={(e) => handleFileChange(e, 'video')} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                                  <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full w-fit mx-auto mb-3 text-purple-600 group-hover:scale-110 transition-transform">
+                                      <Video className="w-6 h-6" />
+                                  </div>
+                                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Drop videos here or click</p>
+                                  <p className="text-xs text-gray-400 mt-1">Supports: MP4, WEBM</p>
+                               </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                <div className="flex gap-2">
+                                   <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Image URL..." className="flex-1 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:border-blue-500" />
+                                   <button type="button" onClick={() => addUrl('image')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-xl transition-colors"><Plus className="w-5 h-5" /></button>
+                                </div>
+                                <div className="flex gap-2">
+                                   <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="Video URL..." className="flex-1 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:border-blue-500" />
+                                   <button type="button" onClick={() => addUrl('video')} className="bg-purple-600 hover:bg-purple-700 text-white px-4 rounded-xl transition-colors"><Plus className="w-5 h-5" /></button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* File Preview List */}
+                        {(imageFiles.length > 0 || videoFiles.length > 0 || formData.images.length > 0 || formData.videos.length > 0) && (
+                            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                {[...formData.images.map((img, i) => ({ type: 'url', src: img, idx: i, isVideo: false })), 
+                                  ...imageFiles.map((file, i) => ({ type: 'file', src: file, idx: i, isVideo: false })),
+                                  ...formData.videos.map((vid, i) => ({ type: 'url', src: vid, idx: i, isVideo: true })),
+                                  ...videoFiles.map((file, i) => ({ type: 'file', src: file, idx: i, isVideo: true }))
+                                ].map((item: any, i) => (
+                                    <div key={i} className="relative group aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                                        <div className="absolute top-1 right-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button 
+                                              type="button" 
+                                              onClick={() => item.type === 'file' 
+                                                ? (item.isVideo ? setVideoFiles(prev => prev.filter((_, idx) => idx !== item.idx)) : setImageFiles(prev => prev.filter((_, idx) => idx !== item.idx)))
+                                                : removeMedia(item.idx, item.isVideo ? 'video' : 'image', 'url')
+                                              }
+                                              className="bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                                            >
+                                                <X className="w-3 h-3" />
+                                            </button>
+                                        </div>
+                                        <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 break-all p-2">
+                                            {item.type === 'file' ? (
+                                                <div className="text-center">
+                                                    {item.isVideo ? <Video className="w-6 h-6 mx-auto mb-1" /> : <ImageIcon className="w-6 h-6 mx-auto mb-1" />}
+                                                    <span className="line-clamp-2">{item.src.name}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="line-clamp-3">{item.src.url}</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                  </section>
+
+                  {/* Specifications & Box Content */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <section>
+                         <div className="flex items-center justify-between mb-4">
+                             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Specifications</h3>
+                             <button type="button" onClick={() => setFormData(p => ({...p, specifications: [...p.specifications, { name: '', value: '' }]}))} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                                 + Add Spec
+                             </button>
+                         </div>
+                         <div className="space-y-3">
+                             {formData.specifications.map((spec, i) => (
+                                 <div key={i} className="flex gap-2">
+                                     <input placeholder="Name" value={spec.name} onChange={(e) => updateArrayItem(i, 'name', e.target.value, 'specifications')} className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg text-sm outline-none" />
+                                     <input placeholder="Value" value={spec.value} onChange={(e) => updateArrayItem(i, 'value', e.target.value, 'specifications')} className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg text-sm outline-none" />
+                                     <button type="button" onClick={() => removeArrayItem(i, 'specifications')} className="text-red-500 hover:bg-red-50 p-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                                 </div>
+                             ))}
+                             {formData.specifications.length === 0 && <p className="text-xs text-gray-400 italic">No specifications added.</p>}
+                         </div>
+                      </section>
+
+                       <section>
+                         <div className="flex items-center justify-between mb-4">
+                             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">What's in the Box</h3>
+                             <button type="button" onClick={() => setFormData(p => ({...p, whatsInBox: [...p.whatsInBox, { item: '', quantity: 1 }]}))} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                                 + Add Item
+                             </button>
+                         </div>
+                         <div className="space-y-3">
+                             {formData.whatsInBox.map((box, i) => (
+                                 <div key={i} className="flex gap-2">
+                                     <input placeholder="Item" value={box.item} onChange={(e) => updateArrayItem(i, 'item', e.target.value, 'whatsInBox')} className="flex-[2] px-3 py-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg text-sm outline-none" />
+                                      <input type="number" placeholder="Qty" value={box.quantity} onChange={(e) => updateArrayItem(i, 'quantity', parseInt(e.target.value)||1, 'whatsInBox')} className="w-20 px-3 py-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg text-sm outline-none" />
+                                     <button type="button" onClick={() => removeArrayItem(i, 'whatsInBox')} className="text-red-500 hover:bg-red-50 p-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                                 </div>
+                             ))}
+                             {formData.whatsInBox.length === 0 && <p className="text-xs text-gray-400 italic">No items added.</p>}
+                         </div>
+                      </section>
+                  </div>
+
+                  {/* Toggles */}
+                  <section className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-xl flex flex-wrap gap-6">
+                      {[
+                        { name: 'featured', label: 'Featured Product', color: 'blue' },
+                        { name: 'isNewArrival', label: 'New Arrival', color: 'purple' },
+                        { name: 'onSale', label: 'On Sale', color: 'amber' }
+                      ].map((toggle) => (
+                          <label key={toggle.name} className="flex items-center cursor-pointer group">
+                             <div className="relative">
+                                <input 
+                                  type="checkbox" 
+                                  name={toggle.name} 
+                                  checked={(formData as any)[toggle.name]} 
+                                  onChange={handleInputChange} 
+                                  className="sr-only" 
+                                />
+                                <div className={`w-10 h-6 rounded-full transition-colors ${(formData as any)[toggle.name] ? `bg-${toggle.color}-500` : 'bg-gray-300 dark:bg-gray-600'}`}></div>
+                                <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${(formData as any)[toggle.name] ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                             </div>
+                             <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{toggle.label}</span>
+                          </label>
+                      ))}
+                  </section>
+
+                </form>
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md sticky bottom-0 z-10 flex justify-end gap-3">
+                 <button 
+                   type="button" 
+                   onClick={onClose}
+                   className="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                 >
+                   Cancel
+                 </button>
+                 <button 
+                   onClick={() => (document.getElementById('product-form') as HTMLFormElement)?.requestSubmit()}
+                   disabled={loading}
+                   className="px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 transition-all flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
+                 >
+                   {loading ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                   {product ? 'Update Product' : 'Create Product'}
+                 </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 };
 

@@ -57,6 +57,69 @@ const getDashboardStats = async (req, res) => {
     const topProducts = await Product.find({ isActive: true })
       .sort({ rating: -1 })
       .limit(5);
+      
+    const recentUsers = await User.find({})
+      .select('name email createdAt avatar')
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    // Combine and sort for recent activity
+    const activities = [
+      ...recentOrders.map(order => ({
+        type: 'order',
+        message: `New order placed by ${order.user ? order.user.name : 'Unknown'}`,
+        amount: order.totalPrice,
+        id: order._id,
+        createdAt: order.createdAt
+      })),
+      ...recentUsers.map(user => ({
+        type: 'user',
+        message: `New user registered: ${user.name}`,
+        email: user.email,
+        id: user._id,
+        createdAt: user.createdAt
+      }))
+    ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 5);
+
+    // Get daily stats for the last 7 days
+    const last7Days = new Date();
+    last7Days.setDate(last7Days.getDate() - 7);
+
+    const dailyStats = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: last7Days },
+          orderStatus: { $ne: 'Cancelled' }
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          revenue: { $sum: "$totalPrice" },
+          orders: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    // Format stats to ensure all days are represented
+    const formattedDailyStats = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateString = d.toISOString().split('T')[0];
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+      
+      const foundStat = dailyStats.find(stat => stat._id === dateString);
+      
+      formattedDailyStats.push({
+        name: dayName,
+        date: dateString,
+        revenue: foundStat ? foundStat.revenue : 0,
+        orders: foundStat ? foundStat.orders : 0
+      });
+    }
 
     res.json({
       totalUsers,
@@ -65,7 +128,10 @@ const getDashboardStats = async (req, res) => {
       totalRevenue,
       lostRevenue,
       recentOrders,
-      topProducts
+      recentOrders,
+      topProducts,
+      dailyStats: formattedDailyStats,
+      recentActivity: activities
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);

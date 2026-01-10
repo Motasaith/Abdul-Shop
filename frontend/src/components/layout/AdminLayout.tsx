@@ -147,123 +147,106 @@ const AdminLayout: React.FC = () => {
     return location.pathname === path || (path === '/admin' && location.pathname === '/admin');
   };
 
+  // Custom Scrollbar Styles
+  const scrollbarStyles = `
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.5);
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.8);
+    }
+  `;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 font-sans">
+      <style>{scrollbarStyles}</style>
+      
       {/* Mobile menu backdrop */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-gray-900/80" onClick={() => setSidebarOpen(false)}></div>
+        <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm" onClick={() => setSidebarOpen(false)}></div>
         
         {/* Mobile sidebar */}
-        <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 shadow-xl transition-colors duration-300">
-          <div className="flex h-full flex-col">
-            {/* Mobile sidebar header */}
-            <div className="flex h-16 items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 px-6">
-              <div className="flex items-center space-x-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                  <span className="text-lg font-bold text-white">S</span>
+        <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 shadow-2xl transition-all duration-300">
+           {/* Mobile Sidebar Content (Same as desktop but with close button) */}
+           <div className="flex h-full flex-col">
+             <div className="flex h-20 items-center justify-between px-6 border-b border-gray-100 dark:border-gray-700/50">
+                <div className="flex items-center space-x-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30">
+                    <span className="text-xl font-bold text-white">S</span>
+                  </div>
+                  <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                    ShopHub
+                  </h1>
                 </div>
-                <h1 className="text-lg font-semibold text-white">ShopHub Admin</h1>
-              </div>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-              >
-                <XMarkIcon className="h-5 w-5" />
-              </button>
-            </div>
-            
-            {/* Mobile navigation */}
-            <nav className="flex-1 space-y-1 px-4 py-6 overflow-y-auto min-h-0">
-              {navigation.map((item) => {
-                const isActive = isCurrentPath(item.href);
-                const Icon = isActive ? item.iconSolid : item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`group flex items-center rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 shadow-sm'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                  >
-                    <div className="relative">
-                      <Icon className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                        isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
+                <button onClick={() => setSidebarOpen(false)} className="text-gray-500">
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
+             </div>
+             {/* Navigation reused below logic... simplified for update */}
+             {/* We will reuse the same mapping structure for mobile */}
+              <nav className="flex-1 space-y-2 px-4 py-6 overflow-y-auto custom-scrollbar">
+                {navigation.map((item) => {
+                  const isActive = isCurrentPath(item.href);
+                  const Icon = isActive ? item.iconSolid : item.icon;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`group relative flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                    >
+                      <Icon className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors ${
+                        isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'
                       }`} />
+                      <div className="flex-1">
+                        <span className="block font-semibold">{item.name}</span>
+                        <span className={`text-[10px] ${isActive ? 'text-blue-100' : 'text-gray-400'} group-hover:opacity-100`}>{item.description}</span>
+                      </div>
                       {item.name === 'Notifications' && unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
-                          {unreadCount > 99 ? '99+' : unreadCount}
+                        <span className="absolute right-3 top-3 flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                         </span>
                       )}
-                    </div>
-                    <div>
-                      <div className="font-medium">{item.name}</div>
-                      <div className="text-xs text-gray-500">{item.description}</div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Currency Selector (Mobile) */}
-            <div className="border-t border-gray-200 p-4">
-              <CurrencySelector />
-            </div>
-
-            {/* Back to Website (Mobile) */}
-            <div className="border-t border-gray-200 p-4 pb-0">
-              <Link
-                to="/"
-                onClick={() => setSidebarOpen(false)}
-                className="flex w-full items-center justify-center rounded-lg bg-white border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
-              >
-                <GlobeAltIcon className="mr-2 h-5 w-5 text-gray-400" />
-                Return to Website
-              </Link>
-            </div>
-            
-            {/* Mobile user info */}
-            <div className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                  <UserIcon className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                  title="Logout"
-                >
-                  <ArrowLeftOnRectangleIcon className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </div>
+                    </Link>
+                  );
+                })}
+              </nav>
+           </div>
         </div>
       </div>
 
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
-        <div className="flex h-full flex-col bg-white dark:bg-gray-800 shadow-xl overflow-hidden transition-colors duration-300">
-          {/* Desktop sidebar header */}
-          <div className="flex h-16 items-center bg-gradient-to-r from-blue-600 to-blue-700 px-6">
+        <div className="flex h-full flex-col bg-white dark:bg-[#0B1120] border-r border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden transition-colors duration-300">
+          
+          {/* Header */}
+          <div className="flex h-20 items-center px-6 border-b border-gray-100 dark:border-gray-800">
             <div className="flex items-center space-x-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                <span className="text-lg font-bold text-white">S</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30">
+                <span className="text-xl font-bold text-white">S</span>
               </div>
-              <h1 className="text-lg font-semibold text-white">ShopHub Admin</h1>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white leading-none">ShopHub</h1>
+                <span className="text-xs text-blue-500 font-semibold tracking-wider">ADMIN</span>
+              </div>
             </div>
           </div>
           
-          
-          {/* Desktop navigation - Scrollable */}
-          <div className="flex-1 overflow-y-auto min-h-0">
-            <nav className="space-y-1 px-4 py-6">
+          {/* Navigation */}
+          <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar py-6 px-4">
+            <nav className="space-y-2">
               {navigation.map((item) => {
                 const isActive = isCurrentPath(item.href);
                 const Icon = isActive ? item.iconSolid : item.icon;
@@ -271,96 +254,98 @@ const AdminLayout: React.FC = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`group flex items-center rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200 ${
+                    className={`group relative flex items-center px-4 py-3.5 text-sm font-medium rounded-2xl transition-all duration-300 ${
                       isActive
-                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 shadow-sm'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 translate-x-1'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/80 hover:text-gray-900 dark:hover:text-white hover:translate-x-1'
                     }`}
                   >
-                    <div className="relative">
-                      <Icon className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                        isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
-                      }`} />
-                      {item.name === 'Notifications' && unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
-                          {unreadCount > 99 ? '99+' : unreadCount}
-                        </span>
-                      )}
+                    <Icon className={`mr-3.5 h-6 w-6 flex-shrink-0 transition-colors ${
+                      isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'
+                    }`} />
+                    <div className="flex-1">
+                      <span className="block font-bold tracking-wide">{item.name}</span>
+                      <span className={`text-[10px] uppercase tracking-wider font-semibold ${isActive ? 'text-blue-100' : 'text-gray-400 group-hover:text-gray-500'}`}>{item.description}</span>
                     </div>
-                    <div>
-                      <div className="font-medium">{item.name}</div>
-                      <div className="text-xs text-gray-500">{item.description}</div>
-                    </div>
+                    
+                    {/* Active Indicator */}
+                    {isActive && (
+                       <div className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-white/30 rounded-r-full" />
+                    )}
+
+                    {item.name === 'Notifications' && unreadCount > 0 && (
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-gray-900">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
             </nav>
           </div>
           
-          {/* Footer - Fixed at bottom */}
-          <div className="bg-white dark:bg-gray-800 z-10 transition-colors duration-300">
-            {/* Currency Selector */}
-            <div className="border-t border-gray-200 dark:border-gray-700 p-4">
-              <CurrencySelector />
-            </div>
+          {/* Footer - Profile & Settings */}
+          <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm">
+             {/* Currency Selector */}
+             <div className="mb-4">
+               <CurrencySelector />
+             </div>
 
-            {/* Back to Website */}
-            <div className="border-t border-gray-200 p-4 pt-0">
-              <Link
+             {/* Return to Website Button */}
+             <Link
                 to="/"
-                className="flex w-full items-center justify-center rounded-lg bg-white border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
+                className="flex w-full items-center justify-center rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-all mb-4"
               >
-                <GlobeAltIcon className="mr-2 h-5 w-5 text-gray-400" />
-                Return to Website
+                <GlobeAltIcon className="mr-2 h-5 w-5 text-gray-500" />
+                Visit Website
               </Link>
-            </div>
-
-            {/* Desktop user info */}
-            <div className="border-t border-gray-200 p-4 pt-0">
-              <div className="flex items-center space-x-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                  <UserIcon className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{user?.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                  title="Logout"
-                >
-                  <ArrowLeftOnRectangleIcon className="h-4 w-4" />
-                </button>
+              
+            <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white dark:hover:bg-gray-700 transition-colors cursor-pointer group">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-0.5">
+                 <div className="h-full w-full rounded-full bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden">
+                    {/* Simple user avatar or icon */}
+                    <UserIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                 </div>
               </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user?.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Admin</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                title="Logout"
+              >
+                <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-72">
+      <div className="lg:pl-72 transition-all duration-300 bg-gray-50 dark:bg-gray-900 min-h-screen">
         {/* Top header for mobile */}
-        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:hidden">
-          <button
-            type="button"
-            className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Bars3Icon className="h-6 w-6" />
-          </button>
-          
-          <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-            <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <h1 className="text-lg font-semibold text-gray-900">
-                {navigation.find(item => isCurrentPath(item.href))?.name || 'Admin'}
-              </h1>
-            </div>
+        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md px-4 shadow-sm lg:hidden">
+          <div className="flex items-center gap-3">
+             <button
+              type="button"
+              className="-m-2.5 p-2.5 text-gray-700 dark:text-gray-200"
+              onClick={() => setSidebarOpen(true)}
+             >
+              <Bars3Icon className="h-6 w-6" />
+             </button>
+             <h1 className="text-lg font-bold text-gray-900 dark:text-white">ShopHub</h1>
+          </div>
+          <div className="flex items-center">
+             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
+               A
+             </div>
           </div>
         </div>
 
         {/* Page content */}
-        <main className="py-6">
+        <main className="py-8">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Outlet />
           </div>

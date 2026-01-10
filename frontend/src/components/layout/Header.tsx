@@ -86,7 +86,7 @@ const Header: React.FC = () => {
               <Link to="/register/vendor" className="hidden sm:inline hover:text-blue-200 font-medium">Sell on ShopHub</Link>
               <Link to="/track" className="hidden sm:inline hover:text-blue-200">{t('common.trackOrder')}</Link>
               <div className="flex items-center sm:border-l sm:border-blue-400 sm:pl-4 sm:ml-2 space-x-2">
-                <CurrencySelector />
+                <CurrencySelector variant="header" />
                 <LanguageSelector />
                 <div className="ml-2 pl-2 border-l border-blue-400">
                   <ThemeToggle />

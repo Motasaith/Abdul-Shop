@@ -11,6 +11,7 @@ interface ConfirmationModalProps {
   confirmText?: string;
   cancelText?: string;
   variant?: 'danger' | 'warning' | 'info';
+  icon?: React.ElementType;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -21,7 +22,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   message,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
-  variant = 'danger'
+  variant = 'danger',
+  icon: Icon = AlertTriangle
 }) => {
   if (!isOpen) return null;
 
@@ -77,7 +79,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <div className="p-6">
                 <div className="flex items-start gap-4">
                   <div className={`p-3 rounded-full flex-shrink-0 ${styles.iconBg}`}>
-                    <AlertTriangle className={`w-6 h-6 ${styles.iconColor}`} />
+                    <Icon className={`w-6 h-6 ${styles.iconColor}`} />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">

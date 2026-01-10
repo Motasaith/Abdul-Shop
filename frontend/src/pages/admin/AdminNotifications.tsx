@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import notificationService from '../../services/notificationService';
 import { 
-  CheckCircleIcon, 
-  ExclamationTriangleIcon, 
-  ShoppingBagIcon, 
-  UserPlusIcon, 
-  EnvelopeIcon,
-  TrashIcon,
-  CheckIcon
-} from '@heroicons/react/24/outline';
+  CheckCircle, 
+  AlertTriangle, 
+  ShoppingBag, 
+  UserPlus, 
+  Mail,
+  Trash2,
+  Check,
+  Bell,
+  Clock,
+  Info
+} from 'lucide-react';
+import ConfirmationModal from '../../components/common/ConfirmationModal';
 
 interface Notification {
   _id: string;
@@ -26,6 +31,7 @@ const AdminNotifications: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showClearModal, setShowClearModal] = useState(false);
 
   const fetchNotifications = async (pageNum = 1) => {
     try {
@@ -70,8 +76,20 @@ const AdminNotifications: React.FC = () => {
     }
   };
 
+  const handleClearAll = async () => {
+    try {
+      await notificationService.clearAllNotifications();
+      setNotifications([]);
+      setUnreadCount(0);
+      setTotalPages(1);
+      setShowClearModal(false);
+      toast.success('All notifications cleared');
+    } catch (error) {
+      toast.error('Failed to clear notifications');
+    }
+  };
+
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this notification?')) return;
     try {
       await notificationService.deleteNotification(id);
       setNotifications(notifications.filter(n => n._id !== id));
@@ -84,121 +102,229 @@ const AdminNotifications: React.FC = () => {
   const getIcon = (type: string) => {
     switch (type) {
       case 'order':
-        return <ShoppingBagIcon className="h-6 w-6 text-blue-500" />;
+        return <ShoppingBag className="h-5 w-5 text-blue-500" />;
       case 'user':
-        return <UserPlusIcon className="h-6 w-6 text-green-500" />;
+        return <UserPlus className="h-5 w-5 text-green-500" />;
       case 'stock':
-        return <ExclamationTriangleIcon className="h-6 w-6 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-amber-500" />;
       case 'newsletter':
-        return <EnvelopeIcon className="h-6 w-6 text-purple-500" />;
+        return <Mail className="h-5 w-5 text-purple-500" />;
       default:
-        return <CheckCircleIcon className="h-6 w-6 text-gray-500" />;
+        return <Info className="h-5 w-5 text-gray-500" />;
+    }
+  };
+
+  const getIconBg = (type: string) => {
+    switch (type) {
+      case 'order':
+        return 'bg-blue-100 dark:bg-blue-900/30';
+      case 'user':
+        return 'bg-green-100 dark:bg-green-900/30';
+      case 'stock':
+        return 'bg-amber-100 dark:bg-amber-900/30';
+      case 'newsletter':
+        return 'bg-purple-100 dark:bg-purple-900/30';
+      default:
+        return 'bg-gray-100 dark:bg-gray-800';
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    
+    // If less than 24 hours, show relative time
+    if (diff < 24 * 60 * 60 * 1000) {
+      if (diff < 60 * 60 * 1000) {
+        const minutes = Math.floor(diff / (60 * 1000));
+        return `${minutes}m ago`;
+      }
+      const hours = Math.floor(diff / (60 * 60 * 1000));
+      return `${hours}h ago`;
+    }
+    
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric'
+    });
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
   };
 
   if (loading && notifications.length === 0) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+            Notifications
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1 flex items-center gap-2">
+            You have <span className="font-semibold text-blue-600 dark:text-blue-400">{unreadCount}</span> unread notifications
           </p>
         </div>
-        {unreadCount > 0 && (
-          <button
-            onClick={handleMarkAllAsRead}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
-          >
-            <CheckCircleIcon className="h-5 w-5" />
-            Mark All Read
-          </button>
-        )}
+        
+        <div className="flex gap-2">
+          {unreadCount > 0 && (
+            <button
+              onClick={handleMarkAllAsRead}
+              className="flex items-center px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all active:scale-95"
+            >
+              <CheckCircle className="w-4 h-4 mr-2" />
+              Mark all read
+            </button>
+          )}
+          {notifications.length > 0 && (
+            <button
+              onClick={() => setShowClearModal(true)}
+              className="flex items-center px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl border border-red-100 dark:border-red-900/30 shadow-sm hover:bg-red-100 dark:hover:bg-red-900/40 transition-all active:scale-95"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Clear All
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden transition-colors duration-200">
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {notifications.length === 0 ? (
-            <li className="p-6 text-center text-gray-500 dark:text-gray-400">
-              No notifications found
-            </li>
-          ) : (
-            notifications.map((notification) => (
-              <li 
-                key={notification._id} 
-                className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${!notification.read ? 'bg-blue-50 dark:bg-blue-900/10' : 'bg-white dark:bg-gray-800'}`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    {getIcon(notification.type)}
+      {/* Notifications List */}
+      <div className="space-y-4">
+        {notifications.length === 0 ? (
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl p-12 text-center border border-white/20 dark:border-gray-700 shadow-sm">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Bell className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">All caught up!</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
+              You have no new notifications at the moment.
+            </p>
+          </div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="space-y-3"
+          >
+            <AnimatePresence>
+              {notifications.map((notification) => (
+                <motion.div
+                  key={notification._id}
+                  variants={itemVariants}
+                  exit={{ opacity: 0, x: -20 }}
+                  className={`group relative overflow-hidden rounded-2xl p-4 transition-all duration-200 border ${
+                    !notification.read
+                      ? 'bg-white dark:bg-gray-800 border-blue-200 dark:border-blue-900/50 shadow-md ring-1 ring-blue-500/20'
+                      : 'bg-white/60 dark:bg-gray-900/60 border-gray-100 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <div className="flex gap-4">
+                    {/* Icon */}
+                    <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${getIconBg(notification.type)}`}>
+                      {getIcon(notification.type)}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0 pt-1">
+                      <div className="flex justify-between items-start gap-4">
+                        <p className={`text-base ${!notification.read ? 'font-semibold text-gray-900 dark:text-white' : 'font-medium text-gray-700 dark:text-gray-300'}`}>
+                          {notification.message}
+                        </p>
+                        <span className="flex items-center text-xs text-gray-400 whitespace-nowrap">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {formatDate(notification.createdAt)}
+                        </span>
+                      </div>
+                      
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {!notification.read && (
+                          <button
+                            onClick={() => handleMarkAsRead(notification._id)}
+                            className="flex items-center text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                          >
+                            <Check className="w-3 h-3 mr-1" />
+                            Mark read
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(notification._id)}
+                          className="flex items-center text-xs font-medium text-red-500 hover:text-red-700 transition-colors ml-auto"
+                        >
+                          <Trash2 className="w-3 h-3 mr-1" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium text-gray-900 dark:text-white ${!notification.read ? 'font-bold' : ''}`}>
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {formatDate(notification.createdAt)}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {!notification.read && (
-                      <button
-                        onClick={() => handleMarkAsRead(notification._id)}
-                        className="p-1 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-full"
-                        title="Mark as read"
-                      >
-                        <CheckIcon className="h-5 w-5" />
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleDelete(notification._id)}
-                      className="p-1 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full"
-                      title="Delete"
-                    >
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))
-          )}
-        </ul>
+
+                  {/* Unread Indicator Dot */}
+                  {!notification.read && (
+                    <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500" />
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="flex justify-center gap-2 pt-6">
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
           >
             Previous
           </button>
-          <span className="px-3 py-1 dark:text-gray-300">
+          <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 flex items-center">
             Page {page} of {totalPages}
           </span>
           <button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
           >
             Next
           </button>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={showClearModal}
+        onClose={() => setShowClearModal(false)}
+        onConfirm={handleClearAll}
+        title="Clear All Notifications"
+        message="Are you sure you want to delete all notifications? This action cannot be undone."
+        confirmText="Clear All"
+        variant="danger"
+        icon={Trash2}
+      />
     </div>
   );
 };

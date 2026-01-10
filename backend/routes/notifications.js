@@ -71,6 +71,19 @@ router.put('/mark-all-read', [auth, admin], async (req, res) => {
   }
 });
 
+// @route   DELETE api/notifications/clear-all
+// @desc    Delete all notifications
+// @access  Private/Admin
+router.delete('/clear-all', [auth, admin], async (req, res) => {
+  try {
+    await Notification.deleteMany({});
+    res.json({ msg: 'All notifications cleared' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   DELETE api/notifications/:id
 // @desc    Delete notification
 // @access  Private/Admin

@@ -40,11 +40,17 @@ const deleteNotification = async (id: string): Promise<{ msg: string }> => {
   return response.data;
 };
 
+const clearAllNotifications = async (): Promise<{ msg: string }> => {
+  const response = await apiService.delete(`/notifications/clear-all`);
+  return response.data;
+};
+
 const notificationService = {
   getNotifications,
   markAsRead,
   markAllAsRead,
-  deleteNotification
+  deleteNotification,
+  clearAllNotifications
 };
 
 export default notificationService;

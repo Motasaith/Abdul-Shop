@@ -21,10 +21,15 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://abdul-shop.onrender.com/api/auth/google/callback"
+      callbackURL: "https://abdul-shop.onrender.com/api/auth/google/callback",
+      passReqToCallback: true
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
       try {
+        const stateRole = req.query.state;
+        const targetRole = 'user'; // Always start as user until approved
+        const targetVendorStatus = stateRole === 'vendor' ? 'pending' : 'none';
+
         // Check if user already exists
         let user = await User.findOne({ googleId: profile.id });
         
@@ -48,6 +53,10 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
           email: profile.emails[0].value,
           password: 'oauth-' + Date.now(), // Dummy password for OAuth users
           googleId: profile.id,
+          role: targetRole,
+          vendorStatus: targetVendorStatus,
+          // Since we can't easily get shop name here, we might leave vendorDetails empty 
+          // or set a default. The user can update it later in profile.
           isVerified: true // OAuth emails are already verified
         });
 

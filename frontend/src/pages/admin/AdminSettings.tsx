@@ -15,6 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { getSettings, updateSettings } from '../../store/slices/settingSlice';
+import { useTheme } from '../../context/ThemeProvider';
 
 interface Settings {
 
@@ -53,6 +54,7 @@ interface Settings {
 const AdminSettings: React.FC = () => {
   const dispatch = useAppDispatch();
   const { settings, loading, error } = useAppSelector((state) => state.settings);
+  const { setTheme } = useTheme();
   const [localSettings, setLocalSettings] = useState<Settings | null>(null);
   const [activeTab, setActiveTab] = useState('notifications');
 
@@ -400,7 +402,11 @@ const AdminSettings: React.FC = () => {
           </div>
           <button
             type="button"
-            onClick={() => updateSetting('appearance', 'darkMode', !localSettings.appearance.darkMode)}
+            onClick={() => {
+              const newDarkMode = !localSettings.appearance.darkMode;
+              updateSetting('appearance', 'darkMode', newDarkMode);
+              setTheme(newDarkMode ? 'dark' : 'light');
+            }}
             className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
               localSettings.appearance.darkMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
             }`}

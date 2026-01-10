@@ -109,7 +109,7 @@ const VerifyPhonePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100">
@@ -127,23 +127,23 @@ const VerifyPhonePage: React.FC = () => {
               />
             </svg>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
             Verify Your Phone Number
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
             We've sent a 6-digit verification code to:
           </p>
-          <p className="text-center text-sm font-medium text-gray-900 mt-1">
+          <p className="text-center text-sm font-medium text-gray-900 dark:text-gray-300 mt-1">
             {phoneNumber}
           </p>
-          <p className="mt-2 text-center text-xs text-gray-500">
-            Code expires in: <span className="font-medium text-red-600">{formatTime(timeLeft)}</span>
+          <p className="mt-2 text-center text-xs text-gray-500 dark:text-gray-500">
+            Code expires in: <span className="font-medium text-red-600 dark:text-red-400">{formatTime(timeLeft)}</span>
           </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleVerify}>
           <div>
-            <label htmlFor="verification-code" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="verification-code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Verification Code
             </label>
             <input
@@ -152,13 +152,13 @@ const VerifyPhonePage: React.FC = () => {
               value={verificationCode}
               onChange={handleCodeChange}
               placeholder="Enter 6-digit code"
-              className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10"
+              className="appearance-none relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-md text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 dark:bg-gray-700"
               maxLength={6}
               autoComplete="one-time-code"
               autoFocus
               required
             />
-            <p className="mt-2 text-xs text-gray-500 text-center">
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
               Enter the 6-digit code sent to your phone
             </p>
           </div>
@@ -183,7 +183,7 @@ const VerifyPhonePage: React.FC = () => {
               type="button"
               onClick={handleResendCode}
               disabled={resendLoading || !canResend}
-              className="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {resendLoading ? (
                 <div className="flex items-center">
@@ -199,22 +199,22 @@ const VerifyPhonePage: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Need help?{' '}
-              <Link to="/contact" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link to="/contact" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
                 Contact Support
               </Link>
             </p>
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
               Wrong number?{' '}
-              <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
                 Register Again
               </Link>
             </p>
           </div>
         </form>
 
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-md p-4">
+        <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
@@ -222,10 +222,10 @@ const VerifyPhonePage: React.FC = () => {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-blue-800">
+              <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">
                 Didn't receive the code?
               </h3>
-              <div className="mt-2 text-sm text-blue-700">
+              <div className="mt-2 text-sm text-blue-700 dark:text-blue-400">
                 <ul className="list-disc pl-5 space-y-1">
                   <li>Check your phone's message inbox</li>
                   <li>The code may take up to 2 minutes to arrive</li>
@@ -239,7 +239,7 @@ const VerifyPhonePage: React.FC = () => {
 
         {/* Development Mode Info with Code Display */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-md p-4">
+          <div className="mt-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -247,15 +247,15 @@ const VerifyPhonePage: React.FC = () => {
                 </svg>
               </div>
               <div className="ml-3 flex-1">
-                <h3 className="text-sm font-medium text-yellow-800">
+                <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
                   Development Mode
                 </h3>
-                <div className="mt-2 text-sm text-yellow-700">
+                <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-400">
                   <p>Free SMS APIs may only work in test mode. Your verification code:</p>
                   {currentDevCode && (
-                    <div className="mt-3 p-3 bg-yellow-100 border border-yellow-300 rounded-md">
+                    <div className="mt-3 p-3 bg-yellow-100 dark:bg-yellow-900/40 border border-yellow-300 dark:border-yellow-700 rounded-md">
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-mono font-bold text-yellow-900">
+                        <span className="text-lg font-mono font-bold text-yellow-900 dark:text-yellow-200">
                           {currentDevCode}
                         </span>
                         <button

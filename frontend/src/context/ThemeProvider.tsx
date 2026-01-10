@@ -5,11 +5,13 @@ import { getPublicSettings } from '../store/slices/settingSlice';
 interface ThemeContextType {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  setTheme: React.Dispatch<React.SetStateAction<'light' | 'dark'>>;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
   toggleTheme: () => {},
+  setTheme: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
@@ -69,7 +71,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

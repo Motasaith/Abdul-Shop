@@ -3,10 +3,18 @@ import api from '../../services/api';
 import { toast } from 'react-hot-toast';
 import { User } from '../../types';
 
+import Modal from '../../components/common/Modal';
+
 const AdminVendorRequests: React.FC = () => {
   const [requests, setRequests] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [confirmDetails, setConfirmDetails] = useState<{
+    isOpen: boolean;
+    type: 'approve' | 'reject';
+    id: string;
+    name: string;
+  }>({ isOpen: false, type: 'approve', id: '', name: '' });
 
   const fetchRequests = async () => {
     try {
@@ -24,33 +32,31 @@ const AdminVendorRequests: React.FC = () => {
     fetchRequests();
   }, []);
 
-  const handleApprove = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to approve ${name} as a vendor?`)) return;
-    
-    setProcessingId(id);
-    try {
-      await api.put(`/admin/vendors/${id}/approve`);
-      toast.success(`${name} approved successfully`);
-      fetchRequests(); // Refresh list
-    } catch (error) {
-      console.error('Error approving vendor:', error);
-      toast.error('Failed to approve vendor');
-    } finally {
-      setProcessingId(null);
-    }
+  const openApproveModal = (id: string, name: string) => {
+    setConfirmDetails({ isOpen: true, type: 'approve', id, name });
   };
 
-  const handleReject = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to reject ${name}'s application?`)) return;
-    
+  const openRejectModal = (id: string, name: string) => {
+    setConfirmDetails({ isOpen: true, type: 'reject', id, name });
+  };
+
+  const processVendorAction = async () => {
+    const { id, name, type } = confirmDetails;
+    setConfirmDetails(prev => ({ ...prev, isOpen: false }));
     setProcessingId(id);
+
     try {
-      await api.put(`/admin/vendors/${id}/reject`);
-      toast.success(`${name}'s application rejected`);
+      if (type === 'approve') {
+        await api.put(`/admin/vendors/${id}/approve`);
+        toast.success(`${name} approved successfully`);
+      } else {
+        await api.put(`/admin/vendors/${id}/reject`);
+        toast.success(`${name}'s application rejected`);
+      }
       fetchRequests(); // Refresh list
     } catch (error) {
-      console.error('Error rejecting vendor:', error);
-      toast.error('Failed to reject vendor');
+      console.error(`Error ${type}ing vendor:`, error);
+      toast.error(`Failed to ${type} vendor`);
     } finally {
       setProcessingId(null);
     }
@@ -129,14 +135,14 @@ const AdminVendorRequests: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => handleApprove(request._id, request.name)}
+                        onClick={() => openApproveModal(request._id, request.name)}
                         disabled={processingId === request._id}
                         className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 mr-4 disabled:opacity-50"
                       >
                         Approve
                       </button>
                       <button
-                        onClick={() => handleReject(request._id, request.name)}
+                        onClick={() => openRejectModal(request._id, request.name)}
                         disabled={processingId === request._id}
                         className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 disabled:opacity-50"
                       >
@@ -150,6 +156,33 @@ const AdminVendorRequests: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      <Modal
+        isOpen={confirmDetails.isOpen}
+        onClose={() => setConfirmDetails(prev => ({ ...prev, isOpen: false }))}
+        title={confirmDetails.type === 'approve' ? 'Approve Vendor' : 'Reject Vendor'}
+        actionButton={
+          <button
+            type="button"
+            className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+              confirmDetails.type === 'approve' 
+                ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' 
+                : 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+            }`}
+            onClick={processVendorAction}
+          >
+            {confirmDetails.type === 'approve' ? 'Approve' : 'Reject'}
+          </button>
+        }
+      >
+        <p className="text-sm text-gray-500 dark:text-gray-300">
+          Are you sure you want to {confirmDetails.type} <span className="font-semibold text-gray-900 dark:text-white">{confirmDetails.name}</span>?
+          {confirmDetails.type === 'approve' 
+            ? ' They will get access to the vendor dashboard immediately.' 
+            : ' This action cannot be undone.'}
+        </p>
+      </Modal>
     </div>
   );
 };

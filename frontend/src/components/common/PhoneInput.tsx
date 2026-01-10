@@ -57,7 +57,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   return (
     <div className={`relative ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -69,8 +69,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           <select
             value={selectedCountry.code}
             onChange={handleCountrySelect}
-            className={`px-3 py-2 border rounded-l-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              error ? 'border-red-300' : 'border-gray-300'
+            className={`px-3 py-2 border rounded-l-md bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              error ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
             }`}
           >
             {countryCodes.map((country) => (
@@ -88,8 +88,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           onChange={handlePhoneNumberChange}
           placeholder={placeholder}
           required={required}
-          className={`flex-1 px-3 py-2 border rounded-r-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            error ? 'border-red-300' : 'border-gray-300'
+          className={`flex-1 px-3 py-2 border rounded-r-md text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            error ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
           }`}
         />
       </div>
@@ -100,7 +100,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       )}
 
       {/* Help Text */}
-      <p className="mt-1 text-xs text-gray-500">
+      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
         Selected: {selectedCountry.name} ({selectedCountry.dialCode})
       </p>
     </div>

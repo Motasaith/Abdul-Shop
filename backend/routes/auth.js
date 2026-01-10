@@ -11,7 +11,10 @@ const passport = require('passport');
 const router = express.Router();
 
 // Google Auth Routes
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', (req, res, next) => {
+  const state = req.query.role || 'user';
+  passport.authenticate('google', { scope: ['profile', 'email'], state })(req, res, next);
+});
 
 router.get('/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login', session: false }),

@@ -56,7 +56,7 @@ const BlogPage: React.FC = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-20"></div>
@@ -92,7 +92,7 @@ const BlogPage: React.FC = () => {
       </div>
 
       {/* Categories Section */}
-      <div className="py-12 bg-white border-b border-gray-200">
+      <div className="py-12 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category, index) => (
@@ -101,7 +101,7 @@ const BlogPage: React.FC = () => {
                 className={`px-6 py-3 rounded-full font-medium transition duration-300 ${
                   category.active
                     ? 'bg-indigo-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 {category.name} ({category.count})
@@ -112,15 +112,15 @@ const BlogPage: React.FC = () => {
       </div>
 
       {/* Featured Post */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('blogPage.common.featured')}</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('blogPage.common.featured')}</h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto"></div>
           </div>
           
           <div className="group cursor-pointer">
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transform hover:-translate-y-2 transition duration-500 border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transform hover:-translate-y-2 transition duration-500 border border-gray-100 dark:border-gray-700">
               <div className="relative h-96 overflow-hidden">
                 <img 
                   src={featuredPost.image} 
@@ -154,11 +154,11 @@ const BlogPage: React.FC = () => {
                 </div>
               </div>
               <div className="p-8">
-                <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
                   {featuredPost.excerpt}
                 </p>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-6 text-gray-500">
+                  <div className="flex items-center space-x-6 text-gray-500 dark:text-gray-400">
                     <div className="flex items-center">
                       <EyeIcon className="w-5 h-5 mr-2" />
                       <span>{featuredPost.views}</span>
@@ -184,14 +184,14 @@ const BlogPage: React.FC = () => {
       </div>
 
       {/* Blog Posts Grid */}
-      <div className="py-20 bg-gray-50">
+      <div className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('blogPage.hero.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('blogPage.hero.subtitle')}
             </p>
           </div>
@@ -209,7 +209,7 @@ const BlogPage: React.FC = () => {
               
               return (
                 <article key={index} className="group cursor-pointer">
-                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 overflow-hidden border border-gray-100">
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
                     <div className="relative h-48 overflow-hidden">
                       <img 
                         src={post.image} 
@@ -224,13 +224,13 @@ const BlogPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition duration-300 line-clamp-2">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition duration-300 line-clamp-2">
                         {post.title}
                       </h3>
-                      <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-4 line-clamp-2">
                         {post.excerpt}
                       </p>
-                      <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4">
                         <div className="flex items-center space-x-3">
                           <div className="flex items-center">
                             <UserIcon className="w-3 h-3 mr-1" />
@@ -241,10 +241,10 @@ const BlogPage: React.FC = () => {
                             {post.readTime}
                           </div>
                         </div>
-                        <div className="text-gray-400">{post.date}</div>
+                        <div className="text-gray-400 dark:text-gray-500">{post.date}</div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4 text-gray-400 text-xs">
+                        <div className="flex items-center space-x-4 text-gray-400 dark:text-gray-500 text-xs">
                           <div className="flex items-center">
                             <EyeIcon className="w-4 h-4 mr-1" />
                             <span>{post.views}</span>
@@ -254,7 +254,7 @@ const BlogPage: React.FC = () => {
                             <span>{post.likes}</span>
                           </div>
                         </div>
-                        <button className="flex items-center text-indigo-600 hover:text-indigo-700 font-medium text-sm group">
+                        <button className="flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium text-sm group">
                           {t('blogPage.common.readMore')}
                           <ArrowRightIcon className="w-3 h-3 ml-1 group-hover:translate-x-1 transition duration-300" />
                         </button>

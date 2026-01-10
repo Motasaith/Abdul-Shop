@@ -61,7 +61,7 @@ const PressPage: React.FC = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-20"></div>
@@ -97,10 +97,10 @@ const PressPage: React.FC = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('pressPage.stats.title')}</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('pressPage.stats.title')}</h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto"></div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -116,7 +116,7 @@ const PressPage: React.FC = () => {
                   <div className={`text-4xl md:text-5xl font-bold ${colorClasses[stat.color as keyof typeof colorClasses]} mb-2 group-hover:scale-110 transform transition duration-300`}>
                     {stat.number}
                   </div>
-                  <div className="text-gray-600 font-medium">{stat.label}</div>
+                  <div className="text-gray-600 dark:text-gray-300 font-medium">{stat.label}</div>
                 </div>
               );
             })}
@@ -125,14 +125,14 @@ const PressPage: React.FC = () => {
       </div>
 
       {/* Press Releases Section */}
-      <div className="py-20 bg-gray-50">
+      <div className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('pressPage.releases.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('pressPage.releases.subtitle')}
             </p>
           </div>
@@ -148,21 +148,21 @@ const PressPage: React.FC = () => {
               
               return (
                 <div key={index} className="group">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100">
+                  <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100 dark:border-gray-700">
                     <div className="flex items-start justify-between mb-4">
                       <div className={`inline-block px-3 py-1 bg-gradient-to-r ${colorClasses[release.color as keyof typeof colorClasses]} text-white text-sm font-medium rounded-full`}>
                         {release.category}
                       </div>
-                      <div className="flex items-center text-gray-500 text-sm">
+                      <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
                         <CalendarDaysIcon className="w-4 h-4 mr-2" />
                         {release.date}
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition duration-300">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition duration-300">
                       {release.title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed mb-6">{release.excerpt}</p>
-                    <button className="flex items-center text-blue-600 hover:text-blue-700 font-medium transition duration-300">
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">{release.excerpt}</p>
+                    <button className="flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition duration-300">
                       {t('pressPage.releases.readFull')}
                       <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-2" />
                     </button>
@@ -175,14 +175,14 @@ const PressPage: React.FC = () => {
       </div>
 
       {/* Media Kit Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('pressPage.mediaKit.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('pressPage.mediaKit.subtitle')}
             </p>
           </div>
@@ -192,13 +192,13 @@ const PressPage: React.FC = () => {
               const IconComponent = item.icon;
               return (
                 <div key={index} className="group">
-                  <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100 text-center">
-                    <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:bg-blue-600 transition duration-300">
-                      <IconComponent className="w-8 h-8 text-blue-600 group-hover:text-white transition duration-300" />
+                  <div className="bg-white dark:bg-gray-700/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100 dark:border-gray-600 text-center">
+                    <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:bg-blue-600 transition duration-300">
+                      <IconComponent className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition duration-300" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">{item.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4">{item.description}</p>
-                    <ul className="text-gray-500 text-sm space-y-1 mb-6">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{item.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{item.description}</p>
+                    <ul className="text-gray-500 dark:text-gray-400 text-sm space-y-1 mb-6">
                       {item.items.map((subItem, subIndex) => (
                         <li key={subIndex}>• {subItem}</li>
                       ))}
@@ -215,14 +215,14 @@ const PressPage: React.FC = () => {
       </div>
 
       {/* Awards Section */}
-      <div className="py-20 bg-gradient-to-r from-gray-50 to-blue-50">
+      <div className="py-20 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('pressPage.awards.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('pressPage.awards.subtitle')}
             </p>
           </div>
@@ -232,13 +232,13 @@ const PressPage: React.FC = () => {
               const IconComponent = award.icon;
               return (
                 <div key={index} className="group">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 text-center">
+                  <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 text-center border border-transparent dark:border-gray-700">
                     <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6">
                       <IconComponent className="w-10 h-10 text-white" />
                     </div>
-                    <div className="text-yellow-600 font-bold text-lg mb-2">{award.year}</div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">{award.title}</h3>
-                    <p className="text-gray-600">{award.organization}</p>
+                    <div className="text-yellow-600 dark:text-yellow-500 font-bold text-lg mb-2">{award.year}</div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{award.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{award.organization}</p>
                   </div>
                 </div>
               );

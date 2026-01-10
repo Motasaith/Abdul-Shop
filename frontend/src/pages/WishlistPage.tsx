@@ -125,10 +125,10 @@ const WishlistPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
-          <div className="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-            <HeartIcon className="h-12 w-12 text-gray-400" />
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+            <HeartIcon className="h-12 w-12 text-gray-400 dark:text-gray-500" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Wishlist is Empty</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Your Wishlist is Empty</h2>
           <p className="text-gray-600 mb-8">
             Save items you love by clicking the heart icon on any product. 
             They'll appear here for easy access later.
@@ -145,7 +145,7 @@ const WishlistPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -158,7 +158,7 @@ const WishlistPage: React.FC = () => {
           {itemCount > 0 && (
             <button
               onClick={handleClearWishlist}
-              className="text-red-600 hover:text-red-700 font-medium text-sm flex items-center"
+              className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium text-sm flex items-center"
             >
               <TrashIcon className="h-4 w-4 mr-1" />
               Clear All
@@ -171,7 +171,7 @@ const WishlistPage: React.FC = () => {
           {wishlistItems.map((item) => (
             <div
               key={item._id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group"
             >
               {/* Product Image */}
               <div className="relative aspect-square overflow-hidden">
@@ -189,14 +189,14 @@ const WishlistPage: React.FC = () => {
                   <div className="flex space-x-2">
                     <Link
                       to={`/products/${item.product._id}`}
-                      className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors"
+                      className="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
                       title="View Product"
                     >
-                      <EyeIcon className="h-5 w-5 text-gray-700" />
+                      <EyeIcon className="h-5 w-5 text-gray-700 dark:text-gray-200" />
                     </Link>
                     <button
                       onClick={() => handleRemoveItem(item.product._id)}
-                      className="bg-white p-2 rounded-full shadow-md hover:bg-red-50 transition-colors"
+                      className="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                       title="Remove from Wishlist"
                     >
                       <TrashIcon className="h-5 w-5 text-red-600" />
@@ -217,14 +217,14 @@ const WishlistPage: React.FC = () => {
                 <div className="mb-2">
                   <Link
                     to={`/products/${item.product._id}`}
-                    className="text-lg font-medium text-gray-900 hover:text-red-600 transition-colors line-clamp-2"
+                    className="text-lg font-medium text-gray-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors line-clamp-2"
                   >
                     {item.product.name}
                   </Link>
                 </div>
 
                 <div className="mb-2">
-                  <span className="text-sm text-gray-500">{item.product.brand}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{item.product.brand}</span>
                 </div>
 
                 {/* Rating */}
@@ -251,7 +251,7 @@ const WishlistPage: React.FC = () => {
                     disabled={item.product.countInStock === 0}
                     className={`w-full flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors ${
                       item.product.countInStock === 0
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                         : 'bg-red-600 text-white hover:bg-red-700'
                     }`}
                   >
@@ -261,7 +261,7 @@ const WishlistPage: React.FC = () => {
 
                   <button
                     onClick={() => handleRemoveItem(item.product._id)}
-                    className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
                     <HeartIcon className="h-4 w-4 mr-2" />
                     Remove
@@ -269,7 +269,7 @@ const WishlistPage: React.FC = () => {
                 </div>
 
                 {/* Added date */}
-                <div className="mt-3 text-xs text-gray-500">
+                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
                   Added {new Date(item.addedAt).toLocaleDateString()}
                 </div>
               </div>

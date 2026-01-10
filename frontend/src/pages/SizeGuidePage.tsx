@@ -66,26 +66,26 @@ const SizeGuidePage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.size')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.chest')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.waist')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.hips')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.length')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.shoulder')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.sleeve')}</th>
+                <tr className="border-b border-gray-200 dark:border-gray-700">
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.size')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.chest')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.waist')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.hips')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.length')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.shoulder')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.sleeve')}</th>
                 </tr>
               </thead>
               <tbody>
                 {clothingSizes.map((size, index) => (
-                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                    <td className="py-3 px-4 font-medium text-gray-900">{size.size}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.chest}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.waist}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.hips}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.length}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.shoulder}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.sleeve}</td>
+                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800'}>
+                    <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{size.size}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.chest}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.waist}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.hips}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.length}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.shoulder}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.sleeve}</td>
                   </tr>
                 ))}
               </tbody>
@@ -98,20 +98,20 @@ const SizeGuidePage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.size')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.waist')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.hips')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.inseam')}</th>
+                <tr className="border-b border-gray-200 dark:border-gray-700">
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.size')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.waist')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.hips')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.inseam')}</th>
                 </tr>
               </thead>
               <tbody>
                 {pantsSizes.map((size, index) => (
-                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                    <td className="py-3 px-4 font-medium text-gray-900">{size.size}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.waist}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.hips}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.inseam}</td>
+                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800'}>
+                    <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{size.size}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.waist}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.hips}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.inseam}</td>
                   </tr>
                 ))}
               </tbody>
@@ -124,20 +124,20 @@ const SizeGuidePage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.size')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.uk')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.us')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('sizeGuidePage.table.eu')}</th>
+                <tr className="border-b border-gray-200 dark:border-gray-700">
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.size')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.uk')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.us')}</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">{t('sizeGuidePage.table.eu')}</th>
                 </tr>
               </thead>
               <tbody>
                 {shoeSizes.map((size, index) => (
-                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                    <td className="py-3 px-4 font-medium text-gray-900">{size.size}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.uk}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.us}</td>
-                    <td className="py-3 px-4 text-gray-700">{size.eu}</td>
+                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800'}>
+                    <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{size.size}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.uk}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.us}</td>
+                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.eu}</td>
                   </tr>
                 ))}
               </tbody>
@@ -151,22 +151,22 @@ const SizeGuidePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center items-center mb-4">
-            <Ruler className="h-12 w-12 text-blue-600 mr-3" />
-            <h1 className="text-4xl font-bold text-gray-900">{t('sizeGuidePage.title')}</h1>
+            <Ruler className="h-12 w-12 text-blue-600 dark:text-blue-400 mr-3" />
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">{t('sizeGuidePage.title')}</h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             {t('sizeGuidePage.subtitle')}
           </p>
         </div>
 
         {/* Category Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-1 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-300">
             {categories.map((category) => {
               const Icon = category.icon;
               return (
@@ -176,7 +176,7 @@ const SizeGuidePage: React.FC = () => {
                   className={`flex items-center px-6 py-3 rounded-md font-medium transition-colors ${
                     activeCategory === category.id
                       ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <Icon className="h-5 w-5 mr-2" />
@@ -188,9 +188,9 @@ const SizeGuidePage: React.FC = () => {
         </div>
 
         {/* Size Chart */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-12">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-12 transition-colors duration-300">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
               {categories.find(c => c.id === activeCategory)?.name} Size Chart
             </h2>
           </div>
@@ -200,22 +200,22 @@ const SizeGuidePage: React.FC = () => {
         </div>
 
         {/* How to Measure */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('sizeGuidePage.measure.title')}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 transition-colors duration-300">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('sizeGuidePage.measure.title')}</h2>
           
           {activeCategory === 'clothing' && (
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.body')}</h3>
-                <ul className="space-y-3 text-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('sizeGuidePage.measure.body')}</h3>
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   <li><strong>{t('sizeGuidePage.measure.chest')}:</strong> Measure around the fullest part of your chest, keeping the tape horizontal.</li>
                   <li><strong>{t('sizeGuidePage.measure.waist')}:</strong> Measure around your natural waistline, keeping the tape comfortably loose.</li>
                   <li><strong>{t('sizeGuidePage.measure.hips')}:</strong> Measure around the fullest part of your hips, keeping the tape horizontal.</li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.garment')}</h3>
-                <ul className="space-y-3 text-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('sizeGuidePage.measure.garment')}</h3>
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   <li><strong>{t('sizeGuidePage.measure.length')}:</strong> Measured from the highest point of the shoulder to the bottom hem.</li>
                   <li><strong>{t('sizeGuidePage.measure.shoulder')}:</strong> Measured from shoulder point to shoulder point across the back.</li>
                   <li><strong>{t('sizeGuidePage.measure.sleeve')}:</strong> Measured from the shoulder seam to the end of the cuff.</li>
@@ -227,15 +227,15 @@ const SizeGuidePage: React.FC = () => {
           {activeCategory === 'pants' && (
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.body')}</h3>
-                <ul className="space-y-3 text-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('sizeGuidePage.measure.body')}</h3>
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   <li><strong>{t('sizeGuidePage.measure.waist')}:</strong> Measure around your natural waistline where you normally wear your pants.</li>
                   <li><strong>{t('sizeGuidePage.measure.hips')}:</strong> Measure around the fullest part of your hips and seat.</li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Garment Measurements</h3>
-                <ul className="space-y-3 text-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Garment Measurements</h3>
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   <li><strong>Inseam:</strong> Measured from the crotch seam to the bottom of the leg opening.</li>
                   <li><strong>Rise:</strong> Measured from the crotch seam to the top of the waistband.</li>
                 </ul>
@@ -246,16 +246,16 @@ const SizeGuidePage: React.FC = () => {
           {activeCategory === 'shoes' && (
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sizeGuidePage.measure.foot')}</h3>
-                <ul className="space-y-3 text-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('sizeGuidePage.measure.foot')}</h3>
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   <li><strong>{t('sizeGuidePage.measure.ftLength')}:</strong> Measure from the back of your heel to the tip of your longest toe.</li>
                   <li><strong>{t('sizeGuidePage.measure.width')}:</strong> Measure across the widest part of your foot.</li>
                   <li><strong>Best Time:</strong> Measure your feet in the evening when they're at their largest.</li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Size Conversion</h3>
-                <ul className="space-y-3 text-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Size Conversion</h3>
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   <li><strong>UK:</strong> Standard UK sizing</li>
                   <li><strong>US:</strong> Standard US sizing</li>
                   <li><strong>EU:</strong> European sizing</li>
@@ -266,9 +266,9 @@ const SizeGuidePage: React.FC = () => {
         </div>
 
         {/* Tips */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">{t('sizeGuidePage.tips.title')}</h3>
-          <ul className="space-y-2 text-blue-800">
+        <div className="mt-8 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-6 transition-colors duration-300">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">{t('sizeGuidePage.tips.title')}</h3>
+          <ul className="space-y-2 text-blue-800 dark:text-blue-200">
             {(t('sizeGuidePage.tips.list', { returnObjects: true }) as string[]).map((tip, index) => (
               <li key={index}>• {tip}</li>
             ))}

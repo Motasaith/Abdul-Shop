@@ -310,20 +310,20 @@ const VendorProductForm: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{isEditMode ? 'Edit Product' : 'Add New Product'}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{isEditMode ? 'Edit Product' : 'Add New Product'}</h1>
         <button
           onClick={() => navigate('/vendor/dashboard')}
-          className="text-gray-600 hover:text-gray-900"
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
         >
           Cancel
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-300">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Product Name *
               </label>
               <input
@@ -332,12 +332,12 @@ const VendorProductForm: React.FC = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Category *
               </label>
               <select
@@ -345,7 +345,7 @@ const VendorProductForm: React.FC = () => {
                 value={formData.category}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 {categories.map(category => (
                   <option key={category} value={category}>{category}</option>
@@ -365,7 +365,7 @@ const VendorProductForm: React.FC = () => {
                 step="0.01"
                 min="0"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
@@ -385,7 +385,7 @@ const VendorProductForm: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Brand
               </label>
               <input
@@ -408,7 +408,7 @@ const VendorProductForm: React.FC = () => {
                 onChange={handleInputChange}
                 min="0"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
@@ -436,13 +436,13 @@ const VendorProductForm: React.FC = () => {
                 onChange={handleInputChange}
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Description *
             </label>
             <textarea
@@ -451,14 +451,14 @@ const VendorProductForm: React.FC = () => {
               onChange={handleInputChange}
               rows={4}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             />
           </div>
 
           {/* Media Upload Section - Only allow adding/removing if supported or just show list */}
           {/* For now, we will show the media list but disable new uploads or hide the upload inputs in edit mode to avoid confusion */}
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Product Media</h3>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Product Media</h3>
             {isEditMode && (
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
                     <p className="text-sm text-yellow-700">
@@ -477,7 +477,7 @@ const VendorProductForm: React.FC = () => {
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                     uploadMode === 'file'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                     }`}
                 >
                     Upload Files
@@ -488,7 +488,7 @@ const VendorProductForm: React.FC = () => {
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                     uploadMode === 'url'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                     }`}
                 >
                     Add by URL
@@ -506,13 +506,13 @@ const VendorProductForm: React.FC = () => {
                         accept="image/*"
                         multiple
                         onChange={handleImageFileChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                     {imageFiles.length > 0 && (
                         <div className="mt-2 space-y-1">
                         {imageFiles.map((file, index) => (
-                            <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                            <span className="text-sm text-gray-600 truncate">{file.name}</span>
+                            <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                            <span className="text-sm text-gray-600 dark:text-gray-300 truncate">{file.name}</span>
                             <button
                                 type="button"
                                 onClick={() => removeImage(index, 'file')}
@@ -535,13 +535,13 @@ const VendorProductForm: React.FC = () => {
                         accept="video/*"
                         multiple
                         onChange={handleVideoFileChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                     {videoFiles.length > 0 && (
                         <div className="mt-2 space-y-1">
                         {videoFiles.map((file, index) => (
-                            <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                            <span className="text-sm text-gray-600 truncate">{file.name}</span>
+                            <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                            <span className="text-sm text-gray-600 dark:text-gray-300 truncate">{file.name}</span>
                             <button
                                 type="button"
                                 onClick={() => removeVideo(index, 'file')}
@@ -566,7 +566,7 @@ const VendorProductForm: React.FC = () => {
                         value={imageUrl}
                         onChange={(e) => setImageUrl(e.target.value)}
                         placeholder="Image URL"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         />
                         <button
                         type="button"
@@ -585,7 +585,7 @@ const VendorProductForm: React.FC = () => {
                         value={videoUrl}
                         onChange={(e) => setVideoUrl(e.target.value)}
                         placeholder="Video URL"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         />
                         <button
                         type="button"
@@ -603,7 +603,7 @@ const VendorProductForm: React.FC = () => {
 
             {(formData.images.length > 0 || formData.videos.length > 0) && (
               <div className="mt-4 space-y-2">
-                <h4 className="text-sm font-medium text-gray-700">Current Media:</h4>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Current Media:</h4>
                 <div className="grid grid-cols-4 gap-2">
                     {formData.images.map((image, index) => (
                     <div key={index} className="relative group">
@@ -618,10 +618,10 @@ const VendorProductForm: React.FC = () => {
             )}
           </div>
 
-          <div className="border-t pt-4">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Specifications</h3>
-              <button type="button" onClick={addSpecification} className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Specifications</h3>
+              <button type="button" onClick={addSpecification} className="px-3 py-1 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded">
                 + Add Spec
               </button>
             </div>
@@ -632,24 +632,24 @@ const VendorProductForm: React.FC = () => {
                   placeholder="Name"
                   value={spec.name}
                   onChange={(e) => updateSpecification(index, 'name', e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
                 <input
                   type="text"
                   placeholder="Value"
                   value={spec.value}
                   onChange={(e) => updateSpecification(index, 'value', e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
                 <button type="button" onClick={() => removeSpecification(index)} className="p-2 text-red-500">×</button>
               </div>
             ))}
           </div>
 
-          <div className="border-t pt-4">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">What's in the Box</h3>
-              <button type="button" onClick={addWhatsInBox} className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">What's in the Box</h3>
+              <button type="button" onClick={addWhatsInBox} className="px-3 py-1 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded">
                 + Add Item
               </button>
             </div>
@@ -660,7 +660,7 @@ const VendorProductForm: React.FC = () => {
                   placeholder="Item"
                   value={item.item}
                   onChange={(e) => updateWhatsInBox(index, 'item', e.target.value)}
-                  className="flex-[2] px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="flex-[2] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
                 <input
                   type="number"
@@ -668,7 +668,7 @@ const VendorProductForm: React.FC = () => {
                   value={item.quantity}
                   onChange={(e) => updateWhatsInBox(index, 'quantity', parseInt(e.target.value) || 1)}
                   min="1"
-                  className="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="w-20 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
                 <button type="button" onClick={() => removeWhatsInBox(index)} className="p-2 text-red-500">×</button>
               </div>
@@ -679,7 +679,7 @@ const VendorProductForm: React.FC = () => {
              <button
               type="button"
               onClick={() => navigate('/vendor/dashboard')}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200"
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               Cancel
             </button>

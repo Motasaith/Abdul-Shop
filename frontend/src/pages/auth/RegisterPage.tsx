@@ -99,15 +99,15 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
             {t('auth.registerTitle')}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
             {t('auth.alreadyAccount')}{' '}
-            <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
               {t('auth.loginHere')}
             </Link>
           </p>
@@ -116,7 +116,7 @@ const RegisterPage: React.FC = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('auth.name')}
                 </label>
                 <input
@@ -125,7 +125,7 @@ const RegisterPage: React.FC = () => {
                   type="text"
                   autoComplete="name"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-700"
                   placeholder={t('auth.name')}
                   value={formData.name}
                   onChange={handleChange}
@@ -142,7 +142,7 @@ const RegisterPage: React.FC = () => {
               />
               
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('auth.email')}
                 </label>
                 <input
@@ -151,7 +151,7 @@ const RegisterPage: React.FC = () => {
                   type="email"
                   autoComplete="email"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-700"
                   placeholder={t('auth.email')}
                   value={formData.email}
                   onChange={handleChange}
@@ -159,7 +159,7 @@ const RegisterPage: React.FC = () => {
               </div>
               
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('auth.password')}
                 </label>
                 <input
@@ -168,7 +168,7 @@ const RegisterPage: React.FC = () => {
                   type="password"
                   autoComplete="new-password"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-700"
                   placeholder={t('auth.password')}
                   value={formData.password}
                   onChange={handleChange}
@@ -176,7 +176,7 @@ const RegisterPage: React.FC = () => {
               </div>
               
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('auth.confirmPassword')}
                 </label>
                 <input
@@ -185,7 +185,7 @@ const RegisterPage: React.FC = () => {
                   type="password"
                   autoComplete="new-password"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-700"
                   placeholder={t('auth.confirmPassword')}
                   value={formData.confirmPassword}
                   onChange={handleChange}
@@ -210,10 +210,10 @@ const RegisterPage: React.FC = () => {
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
+                  <div className="w-full border-t border-gray-300 dark:border-gray-600" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-gray-50 text-gray-500">{t('auth.orContinue')}</span>
+                  <span className="px-2 bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 transition-colors duration-300">{t('auth.orContinue')}</span>
                 </div>
               </div>
 
@@ -221,11 +221,11 @@ const RegisterPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-                    window.location.href = `${API_URL}/api/auth/google`;
-                  }}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
+                  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+                  window.location.href = `${API_URL}/api/auth/google`;
+                }}
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+              >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"

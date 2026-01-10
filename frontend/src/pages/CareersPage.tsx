@@ -69,7 +69,7 @@ const CareersPage: React.FC = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-20"></div>
@@ -105,49 +105,49 @@ const CareersPage: React.FC = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="py-16 bg-white border-b border-gray-200">
+      <div className="py-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-indigo-600 mb-2">150+</div>
-              <div className="text-gray-600">{t('careersPage.stats.members')}</div>
+              <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">150+</div>
+              <div className="text-gray-600 dark:text-gray-300">{t('careersPage.stats.members')}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">12</div>
-              <div className="text-gray-600">{t('careersPage.stats.positions')}</div>
+              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">12</div>
+              <div className="text-gray-600 dark:text-gray-300">{t('careersPage.stats.positions')}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-2">25+</div>
-              <div className="text-gray-600">{t('careersPage.stats.countries')}</div>
+              <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">25+</div>
+              <div className="text-gray-600 dark:text-gray-300">{t('careersPage.stats.countries')}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">4.8★</div>
-              <div className="text-gray-600">{t('careersPage.stats.rating')}</div>
+              <div className="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">4.8★</div>
+              <div className="text-gray-600 dark:text-gray-300">{t('careersPage.stats.rating')}</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Company Values */}
-      <div className="py-20 bg-gray-50">
+      <div className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('careersPage.values.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('careersPage.values.subtitle')}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <div key={index} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100 dark:border-gray-700">
                 <div className="text-center">
                   <div className="text-6xl mb-4">{value.emoji}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{value.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{value.description}</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{value.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{value.description}</p>
                 </div>
               </div>
             ))}
@@ -156,14 +156,14 @@ const CareersPage: React.FC = () => {
       </div>
 
       {/* Benefits Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('careersPage.benefits.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('careersPage.benefits.subtitle')}
             </p>
           </div>
@@ -181,12 +181,12 @@ const CareersPage: React.FC = () => {
               
               return (
                 <div key={index} className="group">
-                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100">
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100 dark:border-gray-600">
                     <div className={`w-16 h-16 bg-gradient-to-r ${colorClasses[benefit.color as keyof typeof colorClasses]} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300`}>
                       <benefit.icon className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">{benefit.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{benefit.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{benefit.description}</p>
                   </div>
                 </div>
               );
@@ -196,14 +196,14 @@ const CareersPage: React.FC = () => {
       </div>
 
       {/* Job Openings */}
-      <div className="py-20 bg-gray-50">
+      <div className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('careersPage.jobs.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('careersPage.jobs.subtitle')}
             </p>
           </div>
@@ -220,7 +220,7 @@ const CareersPage: React.FC = () => {
               };
               
               return (
-                <div key={index} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 overflow-hidden border border-gray-100">
+                <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
                   <div className="p-8">
                     <div className="flex items-start justify-between mb-6">
                       <div className="flex-1">
@@ -228,10 +228,10 @@ const CareersPage: React.FC = () => {
                           <span className={`bg-gradient-to-r ${colorClasses[job.color as keyof typeof colorClasses]} text-white px-3 py-1 rounded-full text-sm font-medium mr-3`}>
                             {job.department}
                           </span>
-                          <span className="text-gray-500 text-sm">{job.experience}</span>
+                          <span className="text-gray-500 dark:text-gray-400 text-sm">{job.experience}</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">{job.title}</h3>
-                        <div className="flex flex-wrap items-center text-gray-600 text-sm space-x-4 mb-4">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{job.title}</h3>
+                        <div className="flex flex-wrap items-center text-gray-600 dark:text-gray-300 text-sm space-x-4 mb-4">
                           <div className="flex items-center">
                             <MapPinIcon className="w-4 h-4 mr-1" />
                             {job.location}
@@ -248,13 +248,13 @@ const CareersPage: React.FC = () => {
                       </div>
                     </div>
                     
-                    <p className="text-gray-600 leading-relaxed mb-6">{job.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">{job.description}</p>
                     
                     <div className="mb-6">
-                      <h4 className="font-semibold text-gray-900 mb-3">{t('careersPage.jobs.requirements')}</h4>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-3">{t('careersPage.jobs.requirements')}</h4>
                       <ul className="space-y-2">
                         {job.requirements.map((req, reqIndex) => (
-                          <li key={reqIndex} className="flex items-center text-gray-600 text-sm">
+                          <li key={reqIndex} className="flex items-center text-gray-600 dark:text-gray-300 text-sm">
                             <CheckIcon className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                             {req}
                           </li>
@@ -266,7 +266,7 @@ const CareersPage: React.FC = () => {
                       <button className={`flex-1 bg-gradient-to-r ${colorClasses[job.color as keyof typeof colorClasses]} text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transform hover:scale-105 transition duration-300`}>
                         {t('careersPage.jobs.apply')}
                       </button>
-                      <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-semibold hover:border-indigo-500 hover:text-indigo-600 transition duration-300">
+                      <button className="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full font-semibold hover:border-indigo-500 dark:hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition duration-300">
                         {t('careersPage.jobs.learnMore')}
                       </button>
                     </div>
@@ -279,27 +279,27 @@ const CareersPage: React.FC = () => {
       </div>
 
       {/* Employee Testimonials */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('careersPage.testimonials.title')}
             </h2>
             <div className="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('careersPage.testimonials.subtitle')}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+              <div key={index} className="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-8 border border-gray-200 dark:border-gray-600">
                 <div className="flex items-center mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <StarIcon key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed mb-6 italic">"{testimonial.quote}"</p>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 italic">"{testimonial.quote}"</p>
                 <div className="flex items-center">
                   <img 
                     src={testimonial.image} 
@@ -307,8 +307,8 @@ const CareersPage: React.FC = () => {
                     className="w-12 h-12 rounded-full object-cover mr-4"
                   />
                   <div>
-                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                    <div className="text-gray-600 text-sm">{testimonial.role}</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</div>
+                    <div className="text-gray-600 dark:text-gray-400 text-sm">{testimonial.role}</div>
                   </div>
                 </div>
               </div>

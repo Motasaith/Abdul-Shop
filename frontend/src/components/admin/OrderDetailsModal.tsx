@@ -92,20 +92,20 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
 
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+          <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-2xl font-bold leading-6 text-gray-900">
+                <h3 className="text-2xl font-bold leading-6 text-gray-900 dark:text-white">
                   Order #{order._id.slice(-8)}
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Placed on {formatDate(order.createdAt)}
                 </p>
               </div>
               <button
                 onClick={onClose}
-                className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                className="bg-white dark:bg-gray-800 rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
@@ -114,50 +114,50 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Left Column: Items */}
               <div className="md:col-span-2 space-y-6">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-700 mb-3">Order Items</h4>
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">Order Items</h4>
                   <div className="space-y-4">
                     {order.orderItems.map((item: any, index: number) => (
                       <div key={index} className="flex items-center space-x-4">
                         <img 
                           src={item.image} 
                           alt={item.name} 
-                          className="w-16 h-16 object-cover rounded-md border border-gray-200"
+                          className="w-16 h-16 object-cover rounded-md border border-gray-200 dark:border-gray-600"
                         />
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">{item.name}</p>
-                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{item.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
                         </div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-200">
                           {formatPrice(item.price * item.quantity)}
                         </div>
                       </div>
                     ))}
                   </div>
-                  <div className="border-t border-gray-200 mt-4 pt-4 flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">Total</span>
-                    <span className="font-bold text-xl text-gray-900">{formatPrice(order.totalPrice)}</span>
+                  <div className="border-t border-gray-200 dark:border-gray-600 mt-4 pt-4 flex justify-between items-center">
+                    <span className="font-semibold text-gray-900 dark:text-white">Total</span>
+                    <span className="font-bold text-xl text-gray-900 dark:text-white">{formatPrice(order.totalPrice)}</span>
                   </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-700 mb-3">Shipping Address</h4>
-                   <p className="text-sm text-gray-600 mb-1">{order.user?.name}</p>
-                   <p className="text-sm text-gray-600 mb-1">{order.user?.email}</p>
-                   <div className="border-t border-gray-200 my-2 pt-2">
-                     <p className="text-sm text-gray-600">{(order.shippingAddress as any).address}</p>
-                     <p className="text-sm text-gray-600">
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">Shipping Address</h4>
+                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{order.user?.name}</p>
+                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{order.user?.email}</p>
+                   <div className="border-t border-gray-200 dark:border-gray-600 my-2 pt-2">
+                     <p className="text-sm text-gray-600 dark:text-gray-300">{(order.shippingAddress as any).address}</p>
+                     <p className="text-sm text-gray-600 dark:text-gray-300">
                        {order.shippingAddress.city}, {(order.shippingAddress as any).state} {(order.shippingAddress as any).postalCode}
                      </p>
-                     <p className="text-sm text-gray-600">{order.shippingAddress.country}</p>
+                     <p className="text-sm text-gray-600 dark:text-gray-300">{order.shippingAddress.country}</p>
                    </div>
                 </div>
               </div>
 
               {/* Right Column: Status & Actions */}
               <div className="space-y-6">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-700 mb-3">Order Status</h4>
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">Order Status</h4>
                   <div className="mb-4">
                     <span className={`px-3 py-1 text-sm font-bold rounded-full ${getStatusColor(order.orderStatus)}`}>
                       {order.orderStatus}
@@ -165,11 +165,11 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
                   </div>
                   
                   <div className="space-y-3">
-                    <label className="block text-sm font-medium text-gray-700">Update Status</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Update Status</label>
                     <select
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
-                      className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      className="w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white"
                     >
                       <option value="Processing">Processing</option>
                       <option value="Shipped">Shipped</option>
@@ -185,14 +185,14 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
                           placeholder="Tracking Number"
                           value={trackingNumber}
                           onChange={(e) => setTrackingNumber(e.target.value)}
-                          className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          className="w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white"
                         />
                         <input
                           type="text"
                           placeholder="Carrier (e.g., FedEx, UPS)"
                           value={carrier}
                           onChange={(e) => setCarrier(e.target.value)}
-                          className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          className="w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white"
                         />
                       </div>
                     )}
@@ -202,7 +202,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
                       disabled={loading || status === order.orderStatus}
                       className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                         loading || status === order.orderStatus
-                          ? 'bg-gray-400 cursor-not-allowed'
+                          ? 'bg-gray-400 cursor-not-allowed dark:bg-gray-600'
                           : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
                       }`}
                     >
@@ -211,20 +211,20 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
                   </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-700 mb-3">Payment Info</h4>
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">Payment Info</h4>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">Method</span>
-                    <span className="text-sm font-medium text-gray-900">{order.paymentMethod}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Method</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">{order.paymentMethod}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Status</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Status</span>
                     <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${order.isPaid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                       {order.isPaid ? 'Paid' : 'Unpaid'}
                     </span>
                   </div>
                   {order.isPaid && order.paidAt && (
-                    <div className="mt-2 text-xs text-gray-500 text-right">
+                    <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-right">
                       {formatDate(order.paidAt)}
                     </div>
                   )}

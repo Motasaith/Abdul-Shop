@@ -166,32 +166,32 @@ const ProductsPage: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Products</h1>
 
             {currentSearch && (
-              <p className="mt-2 text-gray-600">Search results for "{currentSearch}"</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Search results for "{currentSearch}"</p>
             )}
             {currentCategory && (
-              <p className="mt-2 text-gray-600">Category: {currentCategory}</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Category: {currentCategory}</p>
             )}
-            <p className="mt-2 text-sm text-gray-500">{totalProducts} products found</p>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{totalProducts} products found</p>
           </div>
           
           {/* Mobile filter toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="lg:hidden bg-white p-2 rounded-md shadow-sm border border-gray-300 hover:bg-gray-50"
+            className="lg:hidden bg-white dark:bg-gray-800 p-2 rounded-md shadow-sm border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
           >
-            <FunnelIcon className="h-5 w-5 text-gray-600" />
+            <FunnelIcon className="h-5 w-5 text-gray-600 dark:text-white" />
           </button>
         </div>
         
         <div className="lg:grid lg:grid-cols-4 lg:gap-8">
           {/* Filters Sidebar */}
           <div className={`lg:col-span-1 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6 lg:mb-0">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6 lg:mb-0 transition-colors duration-300">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
                 <button
                   onClick={clearFilters}
                   className="text-sm text-blue-600 hover:text-blue-800"
@@ -202,9 +202,9 @@ const ProductsPage: React.FC = () => {
               
               {/* Category Filter */}
               <div className="mb-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Category</h3>
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Category</h3>
                 <div className="space-y-2">
-                  <label className="flex items-center">
+                  <label className="flex items-center text-gray-700 dark:text-gray-300">
                     <input
                       type="radio"
                       name="category"
@@ -216,7 +216,7 @@ const ProductsPage: React.FC = () => {
                     <span className="text-sm">All Categories</span>
                   </label>
                   {categories.map((category) => (
-                    <label key={category} className="flex items-center">
+                    <label key={category} className="flex items-center text-gray-700 dark:text-gray-300">
                       <input
                         type="radio"
                         name="category"
@@ -233,31 +233,31 @@ const ProductsPage: React.FC = () => {
               
               {/* Price Range */}
               <div className="mb-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Price Range</h3>
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Price Range</h3>
                 <div className="flex space-x-2">
                   <input
                     type="number"
                     placeholder="Min"
                     value={filters.minPrice}
                     onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={filters.maxPrice}
                     onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                 </div>
               </div>
               
               {/* Rating Filter */}
               <div className="mb-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Rating</h3>
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Rating</h3>
                 <div className="space-y-2">
                   {[4, 3, 2, 1].map((rating) => (
-                    <label key={rating} className="flex items-center">
+                    <label key={rating} className="flex items-center text-gray-700 dark:text-gray-300">
                       <input
                         type="radio"
                         name="rating"
@@ -268,7 +268,7 @@ const ProductsPage: React.FC = () => {
                       />
                       <div className="flex items-center">
                         {renderStars(rating)}
-                        <span className="ml-2 text-sm text-gray-600">& up</span>
+                        <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">& up</span>
                       </div>
                     </label>
                   ))}
@@ -290,11 +290,11 @@ const ProductsPage: React.FC = () => {
             {/* Sort and View Options */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <label className="text-sm font-medium text-gray-900">Sort by:</label>
+                <label className="text-sm font-medium text-gray-900 dark:text-white">Sort by:</label>
                 <select
                   value={filters.sort}
                   onChange={(e) => handleFilterChange('sort', e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+                  className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400"
                 >
                   {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -313,7 +313,7 @@ const ProductsPage: React.FC = () => {
               </div>
             ) : products.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-600 mb-4">No products found.</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">No products found.</p>
                 <button
                   onClick={clearFilters}
                   className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
@@ -326,7 +326,7 @@ const ProductsPage: React.FC = () => {
                 {/* Products Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                   {products.map((product) => (
-                    <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <div key={product._id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                       <Link to={`/products/${product._id}`}>
                         <div className="aspect-w-1 aspect-h-1 bg-gray-200">
                           <img
@@ -338,19 +338,19 @@ const ProductsPage: React.FC = () => {
                       </Link>
                       <div className="p-4">
                         <Link to={`/products/${product._id}`}>
-                          <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+                          <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                             {product.name}
                           </h3>
                         </Link>
                         <div className="flex items-center mb-2">
                           {renderStars(product.rating)}
-                          <span className="text-sm text-gray-600 ml-2">({product.numReviews})</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">({product.numReviews})</span>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg font-bold text-gray-900">{formatPrice(product.price)}</span>
+                            <span className="text-lg font-bold text-gray-900 dark:text-white">{formatPrice(product.price)}</span>
                             {product.comparePrice && (
-                              <span className="text-sm text-gray-500 line-through">
+                              <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
                                 {formatPrice(product.comparePrice)}
                               </span>
                             )}
@@ -361,7 +361,7 @@ const ProductsPage: React.FC = () => {
                             className={`p-2 rounded-full transition-colors ${
                               product.countInStock > 0
                                 ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                             }`}
                           >
                             <ShoppingCartIcon className="h-4 w-4" />
@@ -383,8 +383,8 @@ const ProductsPage: React.FC = () => {
                       disabled={currentPage === 1}
                       className={`px-3 py-2 rounded-md text-sm ${
                         currentPage === 1
-                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                          ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                          : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
                       }`}
                     >
                       Previous
@@ -399,7 +399,7 @@ const ProductsPage: React.FC = () => {
                           className={`px-3 py-2 rounded-md text-sm ${
                             page === currentPage
                               ? 'bg-blue-600 text-white'
-                              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
                           }`}
                         >
                           {page}
@@ -412,8 +412,8 @@ const ProductsPage: React.FC = () => {
                       disabled={currentPage === totalPages}
                       className={`px-3 py-2 rounded-md text-sm ${
                         currentPage === totalPages
-                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                          ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                          : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
                       }`}
                     >
                       Next

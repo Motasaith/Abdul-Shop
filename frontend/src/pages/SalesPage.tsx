@@ -74,7 +74,7 @@ const SalesPage: React.FC = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Banner */}
       <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white py-12 mb-8 relative overflow-hidden">
         {/* Decorative Circles */}
@@ -110,8 +110,8 @@ const SalesPage: React.FC = () => {
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-12">
-            <TagIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4 text-lg">No active deals right now. Check back later!</p>
+            <TagIcon className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <p className="text-gray-600 dark:text-gray-400 mb-4 text-lg">No active deals right now. Check back later!</p>
           </div>
         ) : (
           <>
@@ -132,8 +132,8 @@ const SalesPage: React.FC = () => {
                   disabled={currentPage === 1}
                   className={`px-3 py-2 rounded-md text-sm ${
                     currentPage === 1
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                      ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
                   Previous
@@ -145,7 +145,7 @@ const SalesPage: React.FC = () => {
                     className={`px-3 py-2 rounded-md text-sm ${
                       (i + 1) === currentPage
                         ? 'bg-red-600 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
                     }`}
                   >
                     {i + 1}
@@ -156,8 +156,8 @@ const SalesPage: React.FC = () => {
                   disabled={currentPage === totalPages}
                   className={`px-3 py-2 rounded-md text-sm ${
                     currentPage === totalPages
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                      ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
                   Next

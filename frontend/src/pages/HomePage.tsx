@@ -141,7 +141,7 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Features Section */}
-      <div className="bg-white py-16">
+      <div className="bg-white dark:bg-gray-800 transition-colors duration-300 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
@@ -149,8 +149,8 @@ const HomePage: React.FC = () => {
                 <div className="flex justify-center mb-4">
                   <feature.icon className="h-12 w-12 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-lg font-semibold mb-2 dark:text-white">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -158,11 +158,11 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Categories Section */}
-      <div className="bg-gray-50 py-16">
+      <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('home.shopCategory')}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('home.shopCategory')}</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               {t('home.exploreCategories')}
             </p>
           </div>
@@ -185,11 +185,11 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Featured Products */}
-      <div className="bg-white py-16">
+      <div className="bg-white dark:bg-gray-800 transition-colors duration-300 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('home.featuredProducts')}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('home.featuredProducts')}</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               {t('home.discoverFeatured')}
             </p>
           </div>
@@ -240,7 +240,7 @@ const HomePage: React.FC = () => {
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               disabled={newsletterLoading}
-              className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50"
+              className="flex-1 px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-500 disabled:opacity-50"
             />
             <button 
               type="submit"

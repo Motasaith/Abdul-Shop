@@ -238,14 +238,14 @@ const ProductDetailPage: React.FC = () => {
   const similarProducts = products?.filter(p => p._id !== product._id && p.category === product.category).slice(0, 4) || [];
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Main Product Section */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-6 transition-colors duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 p-4 sm:p-6">
             {/* Product Images */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden">
+              <div className="aspect-w-1 aspect-h-1 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
                 {allMedia.length > 0 ? (
                   <img
                     src={allMedia[selectedImage]?.url || 'https://via.placeholder.com/600x600?text=No+Image'}
@@ -256,7 +256,7 @@ const ProductDetailPage: React.FC = () => {
                     }}
                   />
                 ) : (
-                  <div className="w-full h-64 sm:h-80 lg:h-96 flex items-center justify-center bg-gray-200">
+                  <div className="w-full h-64 sm:h-80 lg:h-96 flex items-center justify-center bg-gray-200 dark:bg-gray-700">
                     <span className="text-gray-400">No image available</span>
                   </div>
                 )}
@@ -270,7 +270,7 @@ const ProductDetailPage: React.FC = () => {
                       key={index}
                       onClick={() => setSelectedImage(index)}
                       className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
-                        selectedImage === index ? 'border-blue-600' : 'border-gray-300'
+                        selectedImage === index ? 'border-blue-600' : 'border-gray-300 dark:border-gray-600'
                       }`}
                     >
                       <img
@@ -290,8 +290,8 @@ const ProductDetailPage: React.FC = () => {
             {/* Product Info */}
             <div className="lg:col-span-2 space-y-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-                <p className="text-gray-600 mt-2">{product.category}</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{product.name}</h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-2">{product.category}</p>
                 {product.brand && (
                   <p className="text-blue-600 font-medium mt-1">By {product.brand}</p>
                 )}
@@ -304,11 +304,11 @@ const ProductDetailPage: React.FC = () => {
                     i < Math.floor(product.rating) ? (
                       <StarSolidIcon key={i} className="h-5 w-5 text-yellow-400" />
                     ) : (
-                      <StarIcon key={i} className="h-5 w-5 text-gray-300" />
+                      <StarIcon key={i} className="h-5 w-5 text-gray-300 dark:text-gray-600" />
                     )
                   ))}
                 </div>
-                <span className="text-sm text-gray-600">({product.numReviews} {t('product.reviews')})</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">({product.numReviews} {t('product.reviews')})</span>
               </div>
 
               {/* Price */}
@@ -326,9 +326,9 @@ const ProductDetailPage: React.FC = () => {
 
               {/* Stock */}
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Availability:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Availability:</span>
                 <span className={`text-sm font-medium ${
-                  product.countInStock > 0 ? 'text-green-600' : 'text-red-600'
+                  product.countInStock > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                 }`}>
                   {product.countInStock > 0 ? `${product.countInStock} ${t('product.inStock')}` : t('product.outOfStock')}
                 </span>
@@ -337,28 +337,28 @@ const ProductDetailPage: React.FC = () => {
               {/* Quantity and Add to Cart */}
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center border border-gray-300 rounded-lg">
+                  <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-3 py-2 text-gray-600 hover:text-gray-800"
+                      className="px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
                     >
                       -
                     </button>
-                    <span className="px-4 py-2 border-x border-gray-300">{quantity}</span>
+                    <span className="px-4 py-2 border-x border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">{quantity}</span>
                     <button
                       onClick={() => setQuantity(Math.min(product.countInStock, quantity + 1))}
-                      className="px-3 py-2 text-gray-600 hover:text-gray-800"
+                      className="px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
                     >
                       +
                     </button>
                   </div>
-                  <span className="text-sm text-gray-600">{t('product.onlyLeft', { count: product.countInStock })}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t('product.onlyLeft', { count: product.countInStock })}</span>
                 </div>
                 
                 <div className="flex space-x-3">
                   <WishlistButton 
                     productId={product._id}
-                    className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     size="md"
                   />
                   <button
@@ -383,19 +383,19 @@ const ProductDetailPage: React.FC = () => {
             {/* Delivery & Service Info */}
             <div className="lg:col-span-1 space-y-4">
               {/* Delivery Options */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-colors duration-300">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                   <TruckIcon className="h-5 w-5 mr-2" />
                   {t('product.deliveryOptions')}
                 </h3>
                 
                 <div className="space-y-3">
                   <div className="flex items-start space-x-2">
-                    <MapPinIcon className="h-4 w-4 text-gray-600 mt-0.5" />
+                    <MapPinIcon className="h-4 w-4 text-gray-600 dark:text-gray-400 mt-0.5" />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-700">{deliveryAddress}</span>
-                        <button className="text-blue-600 text-xs hover:underline">CHANGE</button>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{deliveryAddress}</span>
+                        <button className="text-blue-600 dark:text-blue-400 text-xs hover:underline">CHANGE</button>
                       </div>
                     </div>
                   </div>
@@ -403,28 +403,28 @@ const ProductDetailPage: React.FC = () => {
                   {product.deliveryInfo?.standardDelivery?.available && (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <TruckIcon className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm text-gray-700">{t('product.standardDelivery')}</span>
+                        <TruckIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{t('product.standardDelivery')}</span>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-medium text-gray-900">{formatPrice(product.deliveryInfo.standardDelivery.cost || 135)}</div>
-                        <div className="text-xs text-gray-500">{product.deliveryInfo.standardDelivery.days}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{formatPrice(product.deliveryInfo.standardDelivery.cost || 135)}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{product.deliveryInfo.standardDelivery.days}</div>
                       </div>
                     </div>
                   )}
                   
                   {product.deliveryInfo?.cashOnDelivery?.available && (
                     <div className="flex items-center space-x-2">
-                      <CurrencyDollarIcon className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-green-600 font-medium">{t('product.codAvailable')}</span>
+                      <CurrencyDollarIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <span className="text-sm text-green-600 dark:text-green-400 font-medium">{t('product.codAvailable')}</span>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Return & Warranty */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-colors duration-300">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                   <ShieldCheckIcon className="h-5 w-5 mr-2" />
                   {t('product.returnWarranty')}
                 </h3>
@@ -432,8 +432,8 @@ const ProductDetailPage: React.FC = () => {
                 <div className="space-y-3">
                   {product.returnPolicy?.available && (
                     <div className="flex items-center space-x-2">
-                      <ArrowPathIcon className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-700">
+                      <ArrowPathIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
                         {product.returnPolicy.days} {t('product.easyReturn')}
                       </span>
                     </div>
@@ -441,15 +441,15 @@ const ProductDetailPage: React.FC = () => {
                   
                   {product.warranty?.available ? (
                     <div className="flex items-center space-x-2">
-                      <CheckBadgeIcon className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm text-gray-700">
+                      <CheckBadgeIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
                         {product.warranty.duration} {product.warranty.type} {t('product.warranty')}
                       </span>
                     </div>
                   ) : (
                     <div className="flex items-center space-x-2">
                       <ExclamationTriangleIcon className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
                         {t('product.warrantyNotAvailable')}
                       </span>
                     </div>
@@ -461,9 +461,9 @@ const ProductDetailPage: React.FC = () => {
         </div>
 
         {/* Product Details Tabs */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-6 transition-colors duration-300">
           {/* Tab Navigation */}
-          <div className="border-b border-gray-200">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="flex space-x-8 px-6">
               {['description', 'specifications', 'whatsInBox', 'reviews', 'questions'].map((tab) => (
                 <button
@@ -471,8 +471,8 @@ const ProductDetailPage: React.FC = () => {
                   onClick={() => setActiveTab(tab)}
                   className={`py-4 px-1 border-b-2 font-medium text-sm ${
                     activeTab === tab
-                      ? 'border-orange-500 text-orange-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-orange-500 text-orange-600 dark:text-orange-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                 >
                   {tab === 'description' && t('product.description')}
@@ -489,15 +489,15 @@ const ProductDetailPage: React.FC = () => {
           <div className="p-6">
             {activeTab === 'description' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('product.description')}</h3>
-                <div className="prose max-w-none">
-                  <p className="text-gray-700 leading-relaxed">{product.description}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('product.description')}</h3>
+                <div className="prose max-w-none dark:prose-invert">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{product.description}</p>
                   {product.tags && product.tags.length > 0 && (
                     <div className="mt-6">
-                      <h4 className="text-md font-medium text-gray-900 mb-2">Tags</h4>
+                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-2">Tags</h4>
                       <div className="flex flex-wrap gap-2">
                         {product.tags.map((tag, index) => (
-                          <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                          <span key={index} className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm">
                             {tag}
                           </span>
                         ))}
@@ -510,13 +510,13 @@ const ProductDetailPage: React.FC = () => {
 
             {activeTab === 'specifications' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('product.specifications')}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('product.specifications')}</h3>
                 {product.specifications && product.specifications.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {product.specifications.map((spec, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-4">
-                        <dt className="font-medium text-gray-900">{spec.name}</dt>
-                        <dd className="text-gray-700 mt-1">{spec.value}</dd>
+                      <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                        <dt className="font-medium text-gray-900 dark:text-white">{spec.name}</dt>
+                        <dd className="text-gray-700 dark:text-gray-300 mt-1">{spec.value}</dd>
                       </div>
                     ))}
                   </div>
@@ -530,13 +530,13 @@ const ProductDetailPage: React.FC = () => {
 
             {activeTab === 'whatsInBox' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('product.whatsInBox')}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('product.whatsInBox')}</h3>
                 {product.whatsInBox && product.whatsInBox.length > 0 ? (
                   <ul className="space-y-2">
                     {product.whatsInBox.map((item, index) => (
                       <li key={index} className="flex items-center space-x-3">
                         <div className="flex-shrink-0 w-2 h-2 bg-orange-500 rounded-full"></div>
-                        <span className="text-gray-700">{item.quantity}x {item.item}</span>
+                        <span className="text-gray-700 dark:text-gray-300">{item.quantity}x {item.item}</span>
                       </li>
                     ))}
                   </ul>
@@ -551,7 +551,7 @@ const ProductDetailPage: React.FC = () => {
             {activeTab === 'reviews' && (
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">{t('product.reviews')}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('product.reviews')}</h3>
                   {user && (
                     <button
                       onClick={() => setShowReviewForm(!showReviewForm)}
@@ -564,11 +564,11 @@ const ProductDetailPage: React.FC = () => {
 
                 {/* Review Form */}
                 {showReviewForm && user && (
-                  <div className="bg-gray-50 p-6 rounded-lg mb-6">
-                    <h4 className="text-md font-semibold text-gray-900 mb-4">{t('product.writeYourReview')}</h4>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg mb-6">
+                    <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">{t('product.writeYourReview')}</h4>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('product.rating')}</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('product.rating')}</label>
                         <div className="flex items-center space-x-1">
                           {[1, 2, 3, 4, 5].map((rating) => (
                             <button
@@ -579,30 +579,30 @@ const ProductDetailPage: React.FC = () => {
                               {rating <= newReview.rating ? (
                                 <StarSolidIcon className="h-6 w-6 text-yellow-400" />
                               ) : (
-                                <StarIcon className="h-6 w-6 text-gray-300" />
+                                <StarIcon className="h-6 w-6 text-gray-300 dark:text-gray-500" />
                               )}
                             </button>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Review</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Review</label>
                         <textarea
                           value={newReview.comment}
                           onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
                           rows={4}
-                          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                           placeholder={t('product.review') + "..."}
                         />
                       </div>
                       
                       {/* Image Upload Section */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('product.addPhotos')}</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('product.addPhotos')}</label>
                         <div className="flex items-center space-x-4">
-                          <label className="cursor-pointer bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors flex items-center space-x-2">
-                            <ArrowPathIcon className="h-5 w-5 text-gray-500" />
-                            <span className="text-sm text-gray-700">{t('product.chooseFiles')}</span>
+                          <label className="cursor-pointer bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2">
+                            <ArrowPathIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">{t('product.chooseFiles')}</span>
                             <input
                               type="file"
                               multiple
@@ -620,7 +620,7 @@ const ProductDetailPage: React.FC = () => {
                         {reviewImages.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-3">
                             {reviewImages.map((file, index) => (
-                              <div key={index} className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                              <div key={index} className="relative w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
                                 <img
                                   src={URL.createObjectURL(file)}
                                   alt="Preview"
@@ -654,7 +654,7 @@ const ProductDetailPage: React.FC = () => {
                             setShowReviewForm(false);
                             setReviewImages([]);
                           }}
-                          className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors"
+                          className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
                         >
                           {t('product.cancel')}
                         </button>
@@ -667,25 +667,25 @@ const ProductDetailPage: React.FC = () => {
                 {product.reviews && product.reviews.length > 0 ? (
                   <div className="space-y-6">
                     {(showAllReviews ? product.reviews : product.reviews.slice(0, 3)).map((review, index) => (
-                      <div key={index} className="border-b border-gray-200 pb-6 last:border-b-0">
+                      <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0">
                         <div className="flex items-start space-x-4">
                           <div className="flex-shrink-0">
-                            <UserCircleIcon className="h-10 w-10 text-gray-400" />
+                            <UserCircleIcon className="h-10 w-10 text-gray-400 dark:text-gray-500" />
                           </div>
                           <div className="flex-grow">
                             <div className="flex items-center space-x-2 mb-2">
-                              <span className="font-medium text-gray-900">{review.name}</span>
+                              <span className="font-medium text-gray-900 dark:text-white">{review.name}</span>
                               <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
                                   i < review.rating ? (
                                     <StarSolidIcon key={i} className="h-4 w-4 text-yellow-400" />
                                   ) : (
-                                    <StarIcon key={i} className="h-4 w-4 text-gray-300" />
+                                    <StarIcon key={i} className="h-4 w-4 text-gray-300 dark:text-gray-600" />
                                   )
                                 ))}
                               </div>
                             </div>
-                            <p className="text-gray-700">{review.comment}</p>
+                            <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
                             <p className="text-sm text-gray-500 mt-2">
                               {new Date(review.createdAt).toLocaleDateString()}
                             </p>
@@ -729,19 +729,19 @@ const ProductDetailPage: React.FC = () => {
             {activeTab === 'questions' && (
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">{t('product.questions')}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('product.questions')}</h3>
                 </div>
 
                 {/* Ask Question Form */}
                 {user && (
-                  <div className="bg-gray-50 p-6 rounded-lg mb-6">
-                    <h4 className="text-md font-semibold text-gray-900 mb-4">{t('product.askQuestion')}</h4>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg mb-6">
+                    <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">{t('product.askQuestion')}</h4>
                     <div className="space-y-4">
                       <textarea
                         value={newQuestion}
                         onChange={(e) => setNewQuestion(e.target.value)}
                         rows={3}
-                        className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                         placeholder={t('product.askPlaceholder')}
                       />
                       <div className="flex space-x-3">
@@ -760,11 +760,11 @@ const ProductDetailPage: React.FC = () => {
                 {product.qnaQuestions && product.qnaQuestions.length > 0 ? (
                   <div className="space-y-6">
                     {product.qnaQuestions.map((qna, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <div className="mb-4">
                           <div className="flex items-center space-x-2 mb-2">
-                            <ChatBubbleLeftRightIcon className="h-5 w-5 text-blue-600" />
-                            <span className="font-medium text-gray-900">Q: {qna.question}</span>
+                            <ChatBubbleLeftRightIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                            <span className="font-medium text-gray-900 dark:text-white">Q: {qna.question}</span>
                           </div>
                           <p className="text-sm text-gray-500 ml-7">
                             Asked by {qna.userName} on {new Date(qna.createdAt).toLocaleDateString()}
@@ -772,9 +772,9 @@ const ProductDetailPage: React.FC = () => {
                           
                           {/* Answer Section */}
                           {qna.answer ? (
-                            <div className="mt-4 pl-4 border-l-2 border-orange-200">
-                              <p className="text-gray-800 font-medium">A: {qna.answer.text}</p>
-                              <p className="text-xs text-gray-500 mt-1">
+                            <div className="mt-4 pl-4 border-l-2 border-orange-200 dark:border-orange-500/50">
+                              <p className="text-gray-800 dark:text-gray-200 font-medium">A: {qna.answer.text}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                 Answered by {qna.answer.answeredByName} on {new Date(qna.answer.answeredAt).toLocaleDateString()}
                               </p>
                             </div>

@@ -345,13 +345,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transition-colors duration-200">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">{product ? 'Edit Product' : 'Add New Product'}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{product ? 'Edit Product' : 'Add New Product'}</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -362,7 +362,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Product Name *
                 </label>
                 <input
@@ -371,12 +371,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Category *
                 </label>
                 <select
@@ -384,7 +384,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   value={formData.category}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 >
                   {categories.map(category => (
                     <option key={category} value={category}>{category}</option>
@@ -393,7 +393,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Price *
                 </label>
                 <input
@@ -404,12 +404,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   step="0.01"
                   min="0"
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Compare Price
                 </label>
                 <input
@@ -419,12 +419,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   onChange={handleInputChange}
                   step="0.01"
                   min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Brand
                 </label>
                 <input
@@ -432,12 +432,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   name="brand"
                   value={formData.brand}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Stock Quantity *
                 </label>
                 <input
@@ -447,12 +447,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   onChange={handleInputChange}
                   min="0"
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   SKU
                 </label>
                 <input
@@ -460,12 +460,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   name="sku"
                   value={formData.sku}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Weight (kg)
                 </label>
                 <input
@@ -475,13 +475,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   onChange={handleInputChange}
                   step="0.01"
                   min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Description *
               </label>
               <textarea
@@ -490,13 +490,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                 onChange={handleInputChange}
                 rows={4}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
             {/* Media Upload Section */}
-            <div className="border-t pt-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Product Media</h3>
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Product Media</h3>
               
               {/* Upload Mode Toggle */}
               <div className="flex space-x-4 mb-4">
@@ -506,7 +506,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   className={`px-3 py-2 rounded-md text-sm font-medium ${
                     uploadMode === 'file'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                   }`}
                 >
                   Upload Files
@@ -517,7 +517,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   className={`px-3 py-2 rounded-md text-sm font-medium ${
                     uploadMode === 'url'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                   }`}
                 >
                   Add by URL
@@ -528,7 +528,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
               {uploadMode === 'file' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Upload Images
                     </label>
                     <input
@@ -536,17 +536,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                       accept="image/*"
                       multiple
                       onChange={handleImageFileChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                     {imageFiles.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {imageFiles.map((file, index) => (
-                          <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                            <span className="text-sm text-gray-600 truncate">{file.name}</span>
+                          <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
+                            <span className="text-sm text-gray-600 dark:text-gray-300 truncate">{file.name}</span>
                             <button
                               type="button"
                               onClick={() => removeImage(index, 'file')}
-                              className="text-red-500 hover:text-red-700"
+                              className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
                             >
                               ×
                             </button>
@@ -557,7 +557,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Upload Videos
                     </label>
                     <input
@@ -565,17 +565,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                       accept="video/*"
                       multiple
                       onChange={handleVideoFileChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                     {videoFiles.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {videoFiles.map((file, index) => (
-                          <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                            <span className="text-sm text-gray-600 truncate">{file.name}</span>
+                          <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
+                            <span className="text-sm text-gray-600 dark:text-gray-300 truncate">{file.name}</span>
                             <button
                               type="button"
                               onClick={() => removeVideo(index, 'file')}
-                              className="text-red-500 hover:text-red-700"
+                              className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
                             >
                               ×
                             </button>
@@ -600,7 +600,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                         value={imageUrl}
                         onChange={(e) => setImageUrl(e.target.value)}
                         placeholder="https://example.com/image.jpg"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       />
                       <button
                         type="button"
@@ -622,7 +622,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                         value={videoUrl}
                         onChange={(e) => setVideoUrl(e.target.value)}
                         placeholder="https://example.com/video.mp4"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       />
                       <button
                         type="button"
@@ -645,12 +645,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     <div>
                       <h5 className="text-xs font-medium text-gray-600 mb-1">Images:</h5>
                       {formData.images.map((image, index) => (
-                        <div key={index} className="flex items-center justify-between bg-blue-50 p-2 rounded mb-1">
-                          <span className="text-xs text-gray-600 truncate">{image.url}</span>
+                        <div key={index} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/10 p-2 rounded mb-1">
+                          <span className="text-xs text-gray-600 dark:text-gray-300 truncate">{image.url}</span>
                           <button
                             type="button"
                             onClick={() => removeImage(index, 'url')}
-                            className="text-red-500 hover:text-red-700"
+                            className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
                           >
                             ×
                           </button>
@@ -663,12 +663,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     <div>
                       <h5 className="text-xs font-medium text-gray-600 mb-1">Videos:</h5>
                       {formData.videos.map((video, index) => (
-                        <div key={index} className="flex items-center justify-between bg-green-50 p-2 rounded mb-1">
-                          <span className="text-xs text-gray-600 truncate">{video.url}</span>
+                        <div key={index} className="flex items-center justify-between bg-green-50 dark:bg-green-900/10 p-2 rounded mb-1">
+                          <span className="text-xs text-gray-600 dark:text-gray-300 truncate">{video.url}</span>
                           <button
                             type="button"
                             onClick={() => removeVideo(index, 'url')}
-                            className="text-red-500 hover:text-red-700"
+                            className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
                           >
                             ×
                           </button>
@@ -681,13 +681,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
             </div>
 
             {/* Specifications Section */}
-            <div className="border-t pt-4">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Specifications (Optional)</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Specifications (Optional)</h3>
                 <button
                   type="button"
                   onClick={addSpecification}
-                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
                 >
                   + Add Spec
                 </button>
@@ -699,19 +699,19 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     placeholder="Name (e.g., Color)"
                     value={spec.name}
                     onChange={(e) => updateSpecification(index, 'name', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                   <input
                     type="text"
                     placeholder="Value (e.g., Red)"
                     value={spec.value}
                     onChange={(e) => updateSpecification(index, 'value', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                   <button
                     type="button"
                     onClick={() => removeSpecification(index)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                    className="p-2 text-red-500 hover:bg-red-50 rounded dark:hover:bg-red-900/30"
                   >
                     ×
                   </button>
@@ -720,13 +720,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
             </div>
 
             {/* What's in the Box Section */}
-            <div className="border-t pt-4">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">What's in the Box (Optional)</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">What's in the Box (Optional)</h3>
                 <button
                   type="button"
                   onClick={addWhatsInBox}
-                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                  className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
                 >
                   + Add Item
                 </button>
@@ -738,7 +738,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     placeholder="Item Name"
                     value={item.item}
                     onChange={(e) => updateWhatsInBox(index, 'item', e.target.value)}
-                    className="flex-[2] px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="flex-[2] px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                   <input
                     type="number"
@@ -746,12 +746,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     value={item.quantity}
                     onChange={(e) => updateWhatsInBox(index, 'quantity', parseInt(e.target.value) || 1)}
                     min="1"
-                    className="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                   <button
                     type="button"
                     onClick={() => removeWhatsInBox(index)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                    className="p-2 text-red-500 hover:bg-red-50 rounded dark:hover:bg-red-900/30"
                   >
                     ×
                   </button>
@@ -769,7 +769,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     onChange={handleInputChange}
                     className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <span className="text-sm font-medium text-gray-700">Featured Product</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Featured Product</span>
                 </label>
                 
                 <label className="flex items-center">
@@ -780,7 +780,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     onChange={handleInputChange}
                     className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <span className="text-sm font-medium text-gray-700">Manual New Arrival</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manual New Arrival</span>
                 </label>
                 
                 <label className="flex items-center">
@@ -791,7 +791,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                     onChange={handleInputChange}
                     className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <span className="text-sm font-medium text-gray-700">Manual On Sale</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manual On Sale</span>
                 </label>
               </div>
             </div>
@@ -800,7 +800,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
               >
                 Cancel
               </button>

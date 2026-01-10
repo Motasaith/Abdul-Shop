@@ -80,29 +80,29 @@ const ContactPage: React.FC = () => {
   // Success message component
   if (submitted && ticketId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
-            <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
-              <svg className="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 dark:bg-green-900/30 mb-6">
+              <svg className="h-10 w-10 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('contactPage.success.title')}</h2>
-            <p className="text-lg text-gray-600 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('contactPage.success.title')}</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
               {t('contactPage.success.message')}
             </p>
-            <div className="bg-white rounded-lg p-6 shadow-lg">
-              <p className="text-sm text-gray-600 mb-2">{t('contactPage.success.ticketId')}</p>
-              <p className="text-lg font-mono font-semibold text-gray-900 bg-gray-100 px-3 py-2 rounded">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-colors duration-300">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('contactPage.success.ticketId')}</p>
+              <p className="text-lg font-mono font-semibold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded">
                 #{ticketId.slice(-8).toUpperCase()}
               </p>
-              <p className="text-xs text-gray-500 mt-3 mb-4">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 mb-4">
                 You can view this ticket in your profile.
               </p>
               <Link
                 to={`/profile/tickets/${ticketId}`}
-                className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+                className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
               >
                 View Ticket
                 <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,9 +126,9 @@ const ContactPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-16">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-700 dark:from-blue-900 dark:to-purple-900 text-white py-16 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -145,79 +145,79 @@ const ContactPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Contact Information */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">{t('contactPage.info.title')}</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 transition-colors duration-300">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">{t('contactPage.info.title')}</h2>
               
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-blue-100 p-3 rounded-lg flex-shrink-0">
-                    <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-blue-100 dark:bg-blue-900/40 p-3 rounded-lg flex-shrink-0">
+                    <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.address')}</h3>
-                    <p className="text-gray-600">123 Shopping Street<br />Commerce City, CC 12345</p>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.address')}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">123 Shopping Street<br />Commerce City, CC 12345</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-4">
-                  <div className="bg-green-100 p-3 rounded-lg flex-shrink-0">
-                    <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-green-100 dark:bg-green-900/40 p-3 rounded-lg flex-shrink-0">
+                    <svg className="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.phone')}</h3>
-                    <p className="text-gray-600">1-800-SHOPHUB<br />(1-800-746-7482)</p>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.phone')}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">1-800-SHOPHUB<br />(1-800-746-7482)</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-4">
-                  <div className="bg-purple-100 p-3 rounded-lg flex-shrink-0">
-                    <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-purple-100 dark:bg-purple-900/40 p-3 rounded-lg flex-shrink-0">
+                    <svg className="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.email')}</h3>
-                    <p className="text-gray-600">support@shophub.com<br />info@shophub.com</p>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.email')}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">support@shophub.com<br />info@shophub.com</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-4">
-                  <div className="bg-orange-100 p-3 rounded-lg flex-shrink-0">
-                    <svg className="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-orange-100 dark:bg-orange-900/40 p-3 rounded-lg flex-shrink-0">
+                    <svg className="h-6 w-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('contactPage.info.hours')}</h3>
-                    <p className="text-gray-600">{t('contactPage.info.days.monFri')}: 9:00 AM - 6:00 PM<br />{t('contactPage.info.days.satSun')}: 10:00 AM - 4:00 PM</p>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.hours')}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{t('contactPage.info.days.monFri')}: 9:00 AM - 6:00 PM<br />{t('contactPage.info.days.satSun')}: 10:00 AM - 4:00 PM</p>
                   </div>
                 </div>
               </div>
 
               {/* Response Times */}
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">⏰ {t('contactPage.responseTimes.title')}</h3>
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">⏰ {t('contactPage.responseTimes.title')}</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('contactPage.responseTimes.general')}:</span>
-                    <span className="font-medium text-gray-900">24-48 hours</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('contactPage.responseTimes.general')}:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">24-48 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('contactPage.responseTimes.support')}:</span>
-                    <span className="font-medium text-gray-900">12-24 hours</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('contactPage.responseTimes.support')}:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">12-24 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('contactPage.responseTimes.order')}:</span>
-                    <span className="font-medium text-gray-900">4-8 hours</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('contactPage.responseTimes.order')}:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">4-8 hours</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('contactPage.responseTimes.urgent')}:</span>
-                    <span className="font-medium text-gray-900">2-4 hours</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('contactPage.responseTimes.urgent')}:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">2-4 hours</span>
                   </div>
                 </div>
               </div>
@@ -226,33 +226,33 @@ const ContactPage: React.FC = () => {
           
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">{t('contactPage.form.title')}</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 transition-colors duration-300">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">{t('contactPage.form.title')}</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.name')} *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contactPage.form.name')} *</label>
                     <input
                       type="text"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                       placeholder={t('contactPage.form.namePlaceholder')}
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.email')} *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contactPage.form.email')} *</label>
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                       placeholder={t('contactPage.form.emailPlaceholder')}
                     />
                   </div>
@@ -260,25 +260,25 @@ const ContactPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.phone')} (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contactPage.form.phone')} (Optional)</label>
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                       placeholder={t('contactPage.form.phonePlaceholder')}
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.subject')} *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contactPage.form.subject')} *</label>
                     <select
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                     >
                       <option value="general">{t('contactPage.form.subjects.general')}</option>
                       <option value="support">{t('contactPage.form.subjects.support')}</option>
@@ -292,30 +292,30 @@ const ContactPage: React.FC = () => {
 
                 {(formData.subject === 'order' || formData.subject === 'return') && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.orderNumber')} (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contactPage.form.orderNumber')} (Optional)</label>
                     <input
                       type="text"
                       name="orderNumber"
                       value={formData.orderNumber}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                       placeholder={t('contactPage.form.orderPlaceholder')}
                     />
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       💡 {t('contactPage.form.orderHint')}
                     </p>
                   </div>
                 )}
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('contactPage.form.message')} *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contactPage.form.message')} *</label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors resize-none"
                     placeholder={t('contactPage.form.messagePlaceholder')}
                     maxLength={1000}
                   />
@@ -348,12 +348,12 @@ const ContactPage: React.FC = () => {
               </form>
 
               {/* Additional Help */}
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Need Quick Help?</h3>
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Need Quick Help?</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <a
                     href="/track"
-                    className="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                    className="flex items-center p-4 bg-blue-50 dark:bg-blue-900/40 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors"
                   >
                     <div className="bg-blue-500 p-2 rounded-lg mr-4">
                       <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -361,14 +361,14 @@ const ContactPage: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{t('footer.track')}</h4>
-                      <p className="text-sm text-gray-600">{t('footer.track')} updates</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{t('footer.track')}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('footer.track')} updates</p>
                     </div>
                   </a>
                   
                   <a
                     href="/help"
-                    className="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                    className="flex items-center p-4 bg-green-50 dark:bg-green-900/40 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/60 transition-colors"
                   >
                     <div className="bg-green-500 p-2 rounded-lg mr-4">
                       <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -376,8 +376,8 @@ const ContactPage: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{t('footer.help')}</h4>
-                      <p className="text-sm text-gray-600">{t('footer.help')} answers</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{t('footer.help')}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('footer.help')} answers</p>
                     </div>
                   </a>
                 </div>

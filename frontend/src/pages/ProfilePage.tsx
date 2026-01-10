@@ -174,36 +174,36 @@ const ProfilePage: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Please log in to view your profile</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Please log in to view your profile</h2>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg transition-colors duration-300">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Profile</h1>
           </div>
           
           <div className="p-6 space-y-6">
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Full Name
                 </label>
-                <div className="px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900">
+                <div className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white">
                   {user.name}
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email Address
                 </label>
                 {editingEmail ? (
@@ -213,7 +213,7 @@ const ProfilePage: React.FC = () => {
                       value={emailAddress}
                       onChange={(e) => setEmailAddress(e.target.value)}
                       placeholder="Enter your email address"
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       required
                     />
                     <div className="flex space-x-2">
@@ -222,7 +222,7 @@ const ProfilePage: React.FC = () => {
                           setEditingEmail(false);
                           setEmailAddress(user.email || '');
                         }}
-                        className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                        className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
                       >
                         Cancel
                       </button>
@@ -237,12 +237,12 @@ const ProfilePage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="flex items-center justify-between">
-                    <div className="px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900 flex-1">
+                    <div className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white flex-1">
                       {user.email}
                     </div>
                     <button
                       onClick={() => setEditingEmail(true)}
-                      className="ml-2 px-3 py-2 text-sm text-blue-600 hover:text-blue-700"
+                      className="ml-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                     >
                       Edit
                     </button>
@@ -252,23 +252,23 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Phone Verification Section */}
-            <div className="border-t pt-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Phone Verification</h2>
+            <div className="border-t pt-6 border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Phone Verification</h2>
               
               <div className="space-y-4">
                 {/* Phone Number Display/Edit */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Phone Number
                     </label>
                     <div className="flex items-center space-x-2">
                       {user.phoneVerified ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
                           ✓ Verified
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
                           ⚠ Not Verified
                         </span>
                       )}
@@ -290,7 +290,7 @@ const ProfilePage: React.FC = () => {
                             setEditingPhone(false);
                             setPhoneNumber(user.phone || '');
                           }}
-                          className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                          className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
                         >
                           Cancel
                         </button>
@@ -308,12 +308,12 @@ const ProfilePage: React.FC = () => {
                     </div>
                   ) : (
                     <div className="flex items-center justify-between">
-                      <div className="px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900 flex-1">
+                      <div className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white flex-1">
                         {user.phone || 'No phone number added'}
                       </div>
                       <button
                         onClick={() => setEditingPhone(true)}
-                        className="ml-2 px-3 py-2 text-sm text-blue-600 hover:text-blue-700"
+                        className="ml-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                       >
                         Edit
                       </button>
@@ -323,18 +323,18 @@ const ProfilePage: React.FC = () => {
 
                 {/* Verification Actions */}
                 {user.phone && !user.phoneVerified && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
                     <div className="flex items-start">
                       <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                        <svg className="h-5 w-5 text-yellow-400 dark:text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
                       </div>
                       <div className="ml-3 flex-1">
-                        <h3 className="text-sm font-medium text-yellow-800">
+                        <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                           Phone Number Not Verified
                         </h3>
-                        <div className="mt-2 text-sm text-yellow-700">
+                        <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
                           <p>Verify your phone number to receive order updates and secure your account.</p>
                         </div>
                         
@@ -357,7 +357,7 @@ const ProfilePage: React.FC = () => {
                         ) : (
                           <form onSubmit={handleVerifyPhone} className="mt-4 space-y-3">
                             <div>
-                              <label className="block text-sm font-medium text-yellow-800 mb-1">
+                              <label className="block text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">
                                 Enter Verification Code
                               </label>
                               <input
@@ -365,11 +365,11 @@ const ProfilePage: React.FC = () => {
                                 value={verificationCode}
                                 onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                 placeholder="Enter 6-digit code"
-                                className="block w-full px-3 py-2 border border-yellow-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                                className="block w-full px-3 py-2 border border-yellow-300 dark:border-yellow-700 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 maxLength={6}
                                 required
                               />
-                              <p className="mt-1 text-xs text-yellow-600">
+                              <p className="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
                                 Check your phone for the verification code
                               </p>
                             </div>
@@ -387,7 +387,7 @@ const ProfilePage: React.FC = () => {
                                 type="button"
                                 onClick={handleResendCode}
                                 disabled={loading}
-                                className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-yellow-800 hover:bg-yellow-100 disabled:opacity-50 border border-yellow-300"
+                                className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 disabled:opacity-50 border border-yellow-300 dark:border-yellow-700"
                               >
                                 Resend Code
                               </button>
@@ -398,7 +398,7 @@ const ProfilePage: React.FC = () => {
                                   setShowVerificationForm(false);
                                   setVerificationCode('');
                                 }}
-                                className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-yellow-800 hover:bg-yellow-100"
+                                className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
                               >
                                 Cancel
                               </button>
@@ -411,12 +411,12 @@ const ProfilePage: React.FC = () => {
                 )}
 
                 {user.phoneVerified && (
-                  <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                  <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-md p-4">
                     <div className="flex items-center">
-                      <svg className="h-5 w-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="h-5 w-5 text-green-400 dark:text-green-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-sm text-green-800 font-medium">
+                      <span className="text-sm text-green-800 dark:text-green-200 font-medium">
                         Your phone number is verified!
                       </span>
                     </div>
@@ -426,48 +426,48 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Email Verification Section */}
-            <div className="border-t pt-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Email Verification</h2>
+            <div className="border-t pt-6 border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Email Verification</h2>
               
               <div className="space-y-4">
                 {/* Email Address Display */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Email Address
                     </label>
                     <div className="flex items-center space-x-2">
                       {user.emailVerified ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
                           ✓ Verified
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
                           ⚠ Not Verified
                         </span>
                       )}
                     </div>
                   </div>
                   
-                  <div className="px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900">
+                  <div className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white">
                     {user.email}
                   </div>
                 </div>
 
                 {/* Email Verification Actions */}
                 {!user.emailVerified && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
                     <div className="flex items-start">
                       <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                        <svg className="h-5 w-5 text-yellow-400 dark:text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
                       </div>
                       <div className="ml-3 flex-1">
-                        <h3 className="text-sm font-medium text-yellow-800">
+                        <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                           Email Not Verified
                         </h3>
-                        <div className="mt-2 text-sm text-yellow-700">
+                        <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
                           <p>Verify your email address to secure your account and receive important notifications.</p>
                         </div>
                         
@@ -492,12 +492,12 @@ const ProfilePage: React.FC = () => {
                 )}
 
                 {user.emailVerified && (
-                  <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                  <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-md p-4">
                     <div className="flex items-center">
-                      <svg className="h-5 w-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="h-5 w-5 text-green-400 dark:text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-sm text-green-800 font-medium">
+                      <span className="text-sm text-green-800 dark:text-green-200 font-medium">
                         Your email address is verified!
                       </span>
                     </div>
@@ -507,8 +507,8 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Password Management Section */}
-            <div className="border-t pt-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Password Management</h2>
+            <div className="border-t pt-6 border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Password Management</h2>
               
               <div className="space-y-4">
                 {!showPasswordForm ? (
@@ -522,55 +522,55 @@ const ProfilePage: React.FC = () => {
                     <button
                       onClick={handleForgotPassword}
                       disabled={loading}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                      className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                     >
                       {loading ? 'Sending...' : 'Send Password Reset Email'}
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handlePasswordChange} className="space-y-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                      <h3 className="text-sm font-medium text-blue-800 mb-3">Change Password</h3>
+                    <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-md p-4">
+                      <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-3">Change Password</h3>
                       
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-sm font-medium text-blue-800 mb-1">
+                          <label className="block text-sm font-medium text-blue-800 dark:text-blue-300 mb-1">
                             Current Password
                           </label>
                           <input
                             type="password"
                             value={passwordData.oldPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
-                            className="block w-full px-3 py-2 border border-blue-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="block w-full px-3 py-2 border border-blue-300 dark:border-blue-700 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                             required
                           />
                         </div>
                         
                         <div>
-                          <label className="block text-sm font-medium text-blue-800 mb-1">
+                          <label className="block text-sm font-medium text-blue-800 dark:text-blue-300 mb-1">
                             New Password
                           </label>
                           <input
                             type="password"
                             value={passwordData.newPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                            className="block w-full px-3 py-2 border border-blue-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="block w-full px-3 py-2 border border-blue-300 dark:border-blue-700 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                             required
                           />
-                          <p className="mt-1 text-xs text-blue-600">
+                          <p className="mt-1 text-xs text-blue-600 dark:text-blue-400">
                             Must be at least 8 characters with uppercase, lowercase, number, and special character
                           </p>
                         </div>
                         
                         <div>
-                          <label className="block text-sm font-medium text-blue-800 mb-1">
+                          <label className="block text-sm font-medium text-blue-800 dark:text-blue-300 mb-1">
                             Confirm New Password
                           </label>
                           <input
                             type="password"
                             value={passwordData.confirmPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                            className="block w-full px-3 py-2 border border-blue-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="block w-full px-3 py-2 border border-blue-300 dark:border-blue-700 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                             required
                           />
                         </div>
@@ -591,7 +591,7 @@ const ProfilePage: React.FC = () => {
                             setShowPasswordForm(false);
                             setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
                           }}
-                          className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-blue-800 hover:bg-blue-100 border border-blue-300"
+                          className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900/30 border border-blue-300 dark:border-blue-700"
                         >
                           Cancel
                         </button>

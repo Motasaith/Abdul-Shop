@@ -15,7 +15,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showNew
   const { formatPrice } = usePrice();
 
   return (
-    <div className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in">
+    <div className="group bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in">
       <Link to={`/products/${product._id}`} className="block relative overflow-hidden">
         <div className="aspect-w-1 aspect-h-1 bg-gray-200">
           <img
@@ -51,7 +51,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showNew
 
       <div className="p-4">
         <Link to={`/products/${product._id}`}>
-          <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
             {product.name}
           </h3>
         </Link>
@@ -66,7 +66,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showNew
               )
             ))}
           </div>
-          <span className="text-sm text-gray-600 ml-2">({product.numReviews})</span>
+          <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">({product.numReviews})</span>
         </div>
 
         <div className="flex items-center justify-between mt-3">
@@ -76,7 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showNew
                  {formatPrice(product.comparePrice)}
                </span>
              )}
-            <span className="text-lg font-bold text-gray-900">{formatPrice(product.price)}</span>
+            <span className="text-lg font-bold text-gray-900 dark:text-white">{formatPrice(product.price)}</span>
           </div>
           
           {onAddToCart && (

@@ -75,7 +75,7 @@ const AboutPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-20"></div>
@@ -106,15 +106,15 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 group-hover:scale-110 transform transition duration-300">
+                <div className="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400 mb-2 group-hover:scale-110 transform transition duration-300">
                   {stat.number}
                 </div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
+                <div className="text-gray-600 dark:text-gray-300 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -122,14 +122,14 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Mission Section */}
-      <div className="py-20 bg-gradient-to-r from-gray-50 to-blue-50">
+      <div className="py-20 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('about.mission.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
               {t('about.mission.description')}
             </p>
           </div>
@@ -137,14 +137,14 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Features Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('about.features.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('about.features.subtitle')}
             </p>
           </div>
@@ -154,12 +154,12 @@ const AboutPage: React.FC = () => {
               const IconComponent = feature.icon;
               return (
                 <div key={index} className="group">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100">
-                    <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 transition duration-300">
-                      <IconComponent className="w-8 h-8 text-blue-600 group-hover:text-white transition duration-300" />
+                  <div className="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 border border-gray-100 dark:border-gray-600">
+                    <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 transition duration-300">
+                      <IconComponent className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition duration-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{feature.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{feature.description}</p>
                   </div>
                 </div>
               );
@@ -169,14 +169,14 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Values Section */}
-      <div className="py-20 bg-gray-50">
+      <div className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               {t('about.values.title')}
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               {t('about.values.subtitle')}
             </p>
           </div>
@@ -192,12 +192,12 @@ const AboutPage: React.FC = () => {
               
               return (
                 <div key={index} className="group">
-                  <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 text-center">
+                  <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 text-center">
                     <div className={`w-20 h-20 bg-gradient-to-br ${colorClasses[value.color as keyof typeof colorClasses].split(' ')[0]} ${colorClasses[value.color as keyof typeof colorClasses].split(' ')[1]} rounded-full flex items-center justify-center mx-auto mb-6`}>
                       <IconComponent className="w-10 h-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">{value.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{value.description}</p>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{value.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{value.description}</p>
                   </div>
                 </div>
               );

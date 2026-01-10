@@ -113,21 +113,21 @@ const ReturnsPage: React.FC = () => {
   const renderPolicyTab = () => (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 text-center">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-8 text-center transition-colors duration-300">
         <div className="max-w-2xl mx-auto">
-          <ArrowPathIcon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('returnsPage.hero.title')}</h2>
-          <p className="text-lg text-gray-600 mb-6">{t('returnsPage.hero.subtitle')}</p>
+          <ArrowPathIcon className="h-16 w-16 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('returnsPage.hero.title')}</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">{t('returnsPage.hero.subtitle')}</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <div className="flex items-center text-green-600">
+            <div className="flex items-center text-green-600 dark:text-green-400">
               <CheckCircleIconSolid className="h-5 w-5 mr-2" />
               <span className="font-medium">{t('returnsPage.hero.badges.thirtyDay')}</span>
             </div>
-            <div className="flex items-center text-green-600">
+            <div className="flex items-center text-green-600 dark:text-green-400">
               <CheckCircleIconSolid className="h-5 w-5 mr-2" />
               <span className="font-medium">{t('returnsPage.hero.badges.freeShipping')}</span>
             </div>
-            <div className="flex items-center text-green-600">
+            <div className="flex items-center text-green-600 dark:text-green-400">
               <CheckCircleIconSolid className="h-5 w-5 mr-2" />
               <span className="font-medium">{t('returnsPage.hero.badges.fastRefunds')}</span>
             </div>
@@ -137,31 +137,31 @@ const ReturnsPage: React.FC = () => {
 
       {/* Return Requirements */}
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <div className="flex items-center mb-4">
             <CheckCircleIcon className="h-8 w-8 text-green-500 mr-3" />
-            <h3 className="text-xl font-semibold text-gray-900">{t('returnsPage.policy.canReturn')}</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{t('returnsPage.policy.canReturn')}</h3>
           </div>
           <ul className="space-y-3">
             {(t('returnsPage.policy.canReturnList', { returnObjects: true }) as string[]).map((item, index) => (
               <li key={index} className="flex items-start">
                 <CheckCircleIconSolid className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">{item}</span>
+                <span className="text-gray-700 dark:text-gray-300">{item}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <div className="flex items-center mb-4">
             <XCircleIcon className="h-8 w-8 text-red-500 mr-3" />
-            <h3 className="text-xl font-semibold text-gray-900">{t('returnsPage.policy.cannotReturn')}</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{t('returnsPage.policy.cannotReturn')}</h3>
           </div>
           <ul className="space-y-3">
              {(t('returnsPage.policy.cannotReturnList', { returnObjects: true }) as string[]).map((item, index) => (
               <li key={index} className="flex items-start">
                 <XCircleIcon className="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">{item}</span>
+                <span className="text-gray-700 dark:text-gray-300">{item}</span>
               </li>
             ))}
           </ul>
@@ -169,23 +169,23 @@ const ReturnsPage: React.FC = () => {
       </div>
 
       {/* Return Timeframes */}
-      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-          <CalendarDaysIcon className="h-6 w-6 text-blue-600 mr-2" />
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+          <CalendarDaysIcon className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
           {t('returnsPage.policy.timeframes.title')}
         </h3>
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="p-4 bg-green-50 rounded-lg">
-            <h4 className="font-semibold text-green-900 mb-2">{t('returnsPage.policy.timeframes.most')}</h4>
-            <p className="text-green-700 text-sm">{t('returnsPage.faq.q1.a')}</p>
+          <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg">
+            <h4 className="font-semibold text-green-900 dark:text-green-300 mb-2">{t('returnsPage.policy.timeframes.most')}</h4>
+            <p className="text-green-700 dark:text-green-200 text-sm">{t('returnsPage.faq.q1.a')}</p>
           </div>
-          <div className="p-4 bg-yellow-50 rounded-lg">
-            <h4 className="font-semibold text-yellow-900 mb-2">{t('returnsPage.policy.timeframes.electronics')}</h4>
-            <p className="text-yellow-700 text-sm">15 days</p>
+          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
+            <h4 className="font-semibold text-yellow-900 dark:text-yellow-300 mb-2">{t('returnsPage.policy.timeframes.electronics')}</h4>
+            <p className="text-yellow-700 dark:text-yellow-200 text-sm">15 days</p>
           </div>
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-semibold text-blue-900 mb-2">{t('returnsPage.policy.timeframes.beauty')}</h4>
-            <p className="text-blue-700 text-sm">30 days, unopened</p>
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+            <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">{t('returnsPage.policy.timeframes.beauty')}</h4>
+            <p className="text-blue-700 dark:text-blue-200 text-sm">30 days, unopened</p>
           </div>
         </div>
       </div>
@@ -195,22 +195,22 @@ const ReturnsPage: React.FC = () => {
   const renderProcessTab = () => (
     <div className="space-y-8">
       {/* Process Timeline */}
-      <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
-        <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">{t('returnsPage.process.title')}</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8 text-center">{t('returnsPage.process.title')}</h3>
         <div className="relative">
           {processSteps.map((step, index) => (
             <div key={step.step} className="flex items-center mb-8 last:mb-0">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 border-4 border-blue-600 relative z-10">
-                <step.icon className="h-6 w-6 text-blue-600" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 border-4 border-blue-600 relative z-10 transition-colors duration-300">
+                <step.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               {index < processSteps.length - 1 && (
-                <div className="absolute left-6 top-12 w-0.5 h-16 bg-gray-300 -z-10"></div>
+                <div className="absolute left-6 top-12 w-0.5 h-16 bg-gray-300 dark:bg-gray-600 -z-10 transition-colors duration-300"></div>
               )}
               <div className="ml-6 flex-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-lg font-semibold text-gray-900">{t('about.mission.title')}: {step.title}</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{t('about.mission.title')}: {step.title}</h4>
                 </div>
-                <p className="text-gray-600 mt-1">{step.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 mt-1">{step.description}</p>
               </div>
             </div>
           ))}
@@ -219,9 +219,9 @@ const ReturnsPage: React.FC = () => {
 
       {/* Quick Actions */}
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-blue-900 mb-4">{t('returnsPage.process.startReturn')}</h3>
-          <p className="text-blue-700 mb-6">{t('returnsPage.process.startDesc')}</p>
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl p-6 transition-colors duration-300">
+          <h3 className="text-xl font-semibold text-blue-900 dark:text-blue-100 mb-4">{t('returnsPage.process.startReturn')}</h3>
+          <p className="text-blue-700 dark:text-blue-200 mb-6">{t('returnsPage.process.startDesc')}</p>
           <Link
             to="/orders"
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -231,9 +231,9 @@ const ReturnsPage: React.FC = () => {
           </Link>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-green-900 mb-4">{t('returnsPage.process.needHelp')}</h3>
-          <p className="text-green-700 mb-6">{t('helpPage.stillNeedHelp.desc')}</p>
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl p-6 transition-colors duration-300">
+          <h3 className="text-xl font-semibold text-green-900 dark:text-green-100 mb-4">{t('returnsPage.process.needHelp')}</h3>
+          <p className="text-green-700 dark:text-green-200 mb-6">{t('helpPage.stillNeedHelp.desc')}</p>
           <Link
             to="/contact"
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
@@ -245,15 +245,35 @@ const ReturnsPage: React.FC = () => {
       </div>
 
       {/* Return Reasons */}
-      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">Common Return Reasons</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Common Return Reasons</h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {returnReasons.map((reason) => {
             const colorClasses = {
-              red: { border: 'border-red-200', bg: 'bg-red-50', icon: 'text-red-600', text: 'text-red-900' },
-              blue: { border: 'border-blue-200', bg: 'bg-blue-50', icon: 'text-blue-600', text: 'text-blue-900' },
-              yellow: { border: 'border-yellow-200', bg: 'bg-yellow-50', icon: 'text-yellow-600', text: 'text-yellow-900' },
-              green: { border: 'border-green-200', bg: 'bg-green-50', icon: 'text-green-600', text: 'text-green-900' }
+              red: { 
+                border: 'border-red-200 dark:border-red-800', 
+                bg: 'bg-red-50 dark:bg-red-900/20', 
+                icon: 'text-red-600 dark:text-red-400', 
+                text: 'text-red-900 dark:text-red-300' 
+              },
+              blue: { 
+                border: 'border-blue-200 dark:border-blue-800', 
+                bg: 'bg-blue-50 dark:bg-blue-900/20', 
+                icon: 'text-blue-600 dark:text-blue-400', 
+                text: 'text-blue-900 dark:text-blue-300' 
+              },
+              yellow: { 
+                border: 'border-yellow-200 dark:border-yellow-800', 
+                bg: 'bg-yellow-50 dark:bg-yellow-900/20', 
+                icon: 'text-yellow-600 dark:text-yellow-400', 
+                text: 'text-yellow-900 dark:text-yellow-300' 
+              },
+              green: { 
+                border: 'border-green-200 dark:border-green-800', 
+                bg: 'bg-green-50 dark:bg-green-900/20', 
+                icon: 'text-green-600 dark:text-green-400', 
+                text: 'text-green-900 dark:text-green-300' 
+              }
             };
             const colors = colorClasses[reason.color as keyof typeof colorClasses];
             
@@ -271,11 +291,11 @@ const ReturnsPage: React.FC = () => {
 
   const renderTrackingTab = () => (
     <div className="space-y-8">
-      <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
         <div className="text-center mb-8">
-          <TruckIcon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-          <h3 className="text-2xl font-semibold text-gray-900 mb-4">{t('returnsPage.tracking.title')}</h3>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <TruckIcon className="h-16 w-16 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
+          <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t('returnsPage.tracking.title')}</h3>
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             {t('returnsPage.tracking.desc')}
           </p>
         </div>
@@ -287,7 +307,7 @@ const ReturnsPage: React.FC = () => {
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
               placeholder={t('returnsPage.tracking.placeholder')}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
             />
             <button
               onClick={handleTrackReturn}
@@ -299,9 +319,9 @@ const ReturnsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-4">{t('returnsPage.tracking.tips')}:</h4>
-           <ul className="space-y-2 text-gray-600">
+        <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-300">
+          <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t('returnsPage.tracking.tips')}:</h4>
+           <ul className="space-y-2 text-gray-600 dark:text-gray-300">
              {(t('returnsPage.tracking.tipsList', { returnObjects: true }) as string[]).map((item, index) => (
               <li key={index}>• {item}</li>
             ))}
@@ -309,32 +329,32 @@ const ReturnsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">{t('shippingPage.domestic.options.standard.name')}</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">{t('shippingPage.domestic.options.standard.name')}</h3>
         <div className="grid md:grid-cols-3 gap-4">
           <Link
             to="/orders"
-            className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-center"
+            className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-center"
           >
-            <DocumentTextIcon className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900">{t('returnsPage.process.viewOrders')}</h4>
-            <p className="text-sm text-gray-600">{t('returnsPage.process.startDesc')}</p>
+            <DocumentTextIcon className="h-8 w-8 text-blue-600 dark:text-blue-400 mx-auto mb-2" />
+            <h4 className="font-semibold text-gray-900 dark:text-white">{t('returnsPage.process.viewOrders')}</h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('returnsPage.process.startDesc')}</p>
           </Link>
           <Link
             to="/contact"
-            className="p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors text-center"
+            className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors text-center"
           >
-            <ChatBubbleLeftEllipsisIcon className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900">{t('returnsPage.process.contactSupport')}</h4>
-            <p className="text-sm text-gray-600">{t('helpPage.stillNeedHelp.desc')}</p>
+            <ChatBubbleLeftEllipsisIcon className="h-8 w-8 text-green-600 dark:text-green-400 mx-auto mb-2" />
+            <h4 className="font-semibold text-gray-900 dark:text-white">{t('returnsPage.process.contactSupport')}</h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('helpPage.stillNeedHelp.desc')}</p>
           </Link>
           <a
             href="tel:1-800-746-7482"
-            className="p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors text-center"
+            className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors text-center"
           >
-            <PhoneIcon className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900">{t('returnsPage.footer.phone')}</h4>
-            <p className="text-sm text-gray-600">1-800-SHOPHUB</p>
+            <PhoneIcon className="h-8 w-8 text-purple-600 dark:text-purple-400 mx-auto mb-2" />
+            <h4 className="font-semibold text-gray-900 dark:text-white">{t('returnsPage.footer.phone')}</h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">1-800-SHOPHUB</p>
           </a>
         </div>
       </div>
@@ -344,37 +364,37 @@ const ReturnsPage: React.FC = () => {
   const renderFaqTab = () => (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <QuestionMarkCircleIcon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-        <h3 className="text-2xl font-semibold text-gray-900 mb-4">{t('returnsPage.faq.title')}</h3>
-        <p className="text-gray-600">{t('helpPage.subtitle')}</p>
+        <QuestionMarkCircleIcon className="h-16 w-16 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
+        <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t('returnsPage.faq.title')}</h3>
+        <p className="text-gray-600 dark:text-gray-300">{t('helpPage.subtitle')}</p>
       </div>
 
       <div className="space-y-4">
         {faqs.map((faq, index) => (
-          <div key={index} className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+          <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
             <button
               onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-              className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              <h4 className="font-semibold text-gray-900 pr-4">{faq.question}</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-white pr-4">{faq.question}</h4>
               {expandedFaq === index ? (
-                <ChevronUpIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                <ChevronUpIcon className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
               ) : (
-                <ChevronDownIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                <ChevronDownIcon className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
               )}
             </button>
             {expandedFaq === index && (
               <div className="px-6 pb-6">
-                <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{faq.answer}</p>
               </div>
             )}
           </div>
         ))}
       </div>
 
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
-        <h4 className="text-xl font-semibold text-gray-900 mb-4">{t('helpPage.stillNeedHelp.title')}</h4>
-        <p className="text-gray-600 mb-6">{t('helpPage.stillNeedHelp.desc')}</p>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl p-8 text-center transition-colors duration-300">
+        <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('helpPage.stillNeedHelp.title')}</h4>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">{t('helpPage.stillNeedHelp.desc')}</p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             to="/contact"
@@ -396,13 +416,13 @@ const ReturnsPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Returns & Refunds</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Returns & Refunds</h1>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               {t('returnsPage.hero.subtitle')}
             </p>
           </div>
@@ -412,15 +432,15 @@ const ReturnsPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tab Navigation */}
         <div className="mb-8">
-          <div className="flex flex-wrap justify-center gap-2 p-1 bg-gray-100 rounded-xl">
+          <div className="flex flex-wrap justify-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl transition-colors duration-300">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'bg-white text-blue-600 shadow-md'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-white shadow-md'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 <tab.icon className="h-5 w-5 mr-2" />

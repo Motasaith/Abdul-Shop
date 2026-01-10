@@ -126,19 +126,19 @@ const VendorDashboard: React.FC = () => {
   if (user?.vendorStatus === 'rejected') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center">
-        <div className="bg-red-50 border-l-4 border-red-400 p-8 rounded-lg shadow-sm max-w-2xl">
+        <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-400 p-8 rounded-lg shadow-sm max-w-2xl">
           <div className="flex justify-center mb-4">
              <svg className="h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Application Rejected</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Application Rejected</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             We regret to inform you that your vendor application has been rejected. 
             This may be due to incomplete information or not meeting our seller strict criteria.
           </p>
-          <div className="text-sm text-gray-500">
-             Please contact <Link to="/contact" className="text-blue-600 hover:text-blue-800 underline">support</Link> for more details.
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+             Please contact <Link to="/contact" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">support</Link> for more details.
           </div>
         </div>
       </div>
@@ -167,9 +167,9 @@ const VendorDashboard: React.FC = () => {
     <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Vendor Dashboard</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">
-            Shop: <span className="font-semibold text-blue-600">{user?.vendorDetails?.shopName || 'My Shop'}</span>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Vendor Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+            Shop: <span className="font-semibold text-blue-600 dark:text-blue-400">{user?.vendorDetails?.shopName || 'My Shop'}</span>
             <Link 
               to={`/products?vendor=${user?.id}`}
               className="ml-4 text-sm text-blue-600 hover:text-blue-800 underline"
@@ -210,77 +210,77 @@ const VendorDashboard: React.FC = () => {
         </div>
 
         {/* Total Revenue */}
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 transition-colors duration-300">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Earnings</p>
-              <p className="text-2xl font-bold text-gray-900">{formatPrice(stats.totalRevenue)}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Earnings</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatPrice(stats.totalRevenue)}</p>
             </div>
           </div>
         </div>
 
         {/* Total Products */}
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 transition-colors duration-300">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">My Products</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalProducts}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">My Products</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalProducts}</p>
             </div>
           </div>
         </div>
 
         {/* Total Orders */}
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 transition-colors duration-300">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Orders</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Orders</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalOrders}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* My Listed Products */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-900">My Listed Products</h3>
-          <Link to="/products/new" className="text-sm text-blue-600 hover:text-blue-800">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-300">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">My Listed Products</h3>
+          <Link to="/products/new" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
             View All / Manage
           </Link>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Product</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stock</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {products.length > 0 ? (
                 products.slice(0, 5).map((product) => (
                   <tr key={product._id}>
@@ -290,33 +290,33 @@ const VendorDashboard: React.FC = () => {
                           <img className="h-10 w-10 rounded-full object-cover" src={product.images[0]?.url || 'https://via.placeholder.com/40'} alt="" />
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900 truncate max-w-[200px]">{product.name}</div>
-                          <div className="text-sm text-gray-500">{product.category}</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{product.name}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">{product.category}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {formatPrice(product.price)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {product.countInStock}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        product.countInStock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        product.countInStock > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
                       }`}>
                         {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link to={`/products/edit/${product._id}`} className="text-indigo-600 hover:text-indigo-900 mr-4">Edit</Link>
+                      <Link to={`/products/edit/${product._id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-4">Edit</Link>
                       <button 
                         onClick={() => handleDeleteClick(product._id)}
-                        className="text-red-600 hover:text-red-900 mr-4"
+                        className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 mr-4"
                       >
                         Delete
                       </button>
-                      <Link to={`/products/${product._id}`} className="text-gray-600 hover:text-gray-900">View</Link>
+                      <Link to={`/products/${product._id}`} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">View</Link>
                     </td>
                   </tr>
                 ))
@@ -333,23 +333,23 @@ const VendorDashboard: React.FC = () => {
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-300">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Orders</h3>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {stats.recentOrders.length > 0 ? (
             stats.recentOrders.map((order) => (
-              <div key={order._id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+              <div key={order._id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{order.user?.name || 'Unknown User'}</p>
-                    <p className="text-xs text-gray-500">Order #{order._id.slice(-8)}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{order.user?.name || 'Unknown User'}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Order #{order._id.slice(-8)}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-sm font-medium text-gray-900">{formatPrice(order.totalPrice)}</p>
-                      <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{formatPrice(order.totalPrice)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(order.createdAt)}</p>
                     </div>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.orderStatus)}`}>
                       {order.orderStatus}
@@ -359,7 +359,7 @@ const VendorDashboard: React.FC = () => {
               </div>
             ))
           ) : (
-            <div className="p-6 text-center text-gray-500">
+            <div className="p-6 text-center text-gray-500 dark:text-gray-400">
               No orders yet.
             </div>
           )}

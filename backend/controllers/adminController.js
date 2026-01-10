@@ -465,11 +465,37 @@ const getAdminOrders = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const status = req.query.status || '';
+    const search = req.query.search || '';
     
     const query = {};
     
     if (status && status !== 'all') {
       query.orderStatus = status;
+    }
+
+    if (search) {
+      const searchRegex = new RegExp(search, 'i');
+      
+      // Find users matching the search term
+      const matchingUsers = await User.find({
+        $or: [
+          { name: searchRegex },
+          { email: searchRegex }
+        ]
+      }).select('_id');
+      
+      const matchingUserIds = matchingUsers.map(user => user._id);
+      
+      const orConditions = [
+        { user: { $in: matchingUserIds } }
+      ];
+
+      // If search term is a valid ObjectId, search by order ID
+      if (search.match(/^[0-9a-fA-F]{24}$/)) {
+        orConditions.push({ _id: search });
+      }
+
+      query.$or = orConditions;
     }
 
     const orders = await Order.find(query)

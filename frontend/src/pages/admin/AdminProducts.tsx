@@ -3,6 +3,7 @@ import { useAppDispatch } from '../../hooks/redux';
 import adminService from '../../services/adminService';
 import { toast } from 'react-hot-toast';
 import AddProductModal from '../../components/admin/AddProductModal';
+import ConfirmationModal from '../../components/common/ConfirmationModal';
 import { usePrice } from '../../hooks/usePrice';
 import { Product } from '../../types';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
@@ -60,15 +61,26 @@ const AdminProducts: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleDeleteProduct = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        await adminService.deleteProduct(id);
-        toast.success('Product deleted successfully');
-        fetchProducts();
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || 'Failed to delete product');
-      }
+  /* Delete Modal State */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<{ id: string, name: string } | null>(null);
+
+  const confirmDelete = (product: Product) => {
+    setProductToDelete({ id: product._id, name: product.name });
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteProduct = async () => {
+    if (!productToDelete) return;
+
+    try {
+      await adminService.deleteProduct(productToDelete.id);
+      toast.success('Product deleted successfully');
+      setDeleteModalOpen(false);
+      setProductToDelete(null);
+      fetchProducts();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to delete product');
     }
   };
 
@@ -334,7 +346,7 @@ const AdminProducts: React.FC = () => {
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDeleteProduct(product._id)}
+                          onClick={() => confirmDelete(product)}
                           className="p-2 text-red-600 hover:bg-red-50 rounded-lg dark:text-red-400 dark:hover:bg-red-900/30 transition-colors"
                           title="Delete"
                         >
@@ -384,6 +396,18 @@ const AdminProducts: React.FC = () => {
         }}
         onProductAdded={fetchProducts}
         product={editingProduct}
+      />
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteProduct}
+        title="Delete Product"
+        message={`Are you sure you want to delete "${productToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete Product"
+        cancelText="Cancel"
+        variant="danger"
       />
     </div>
   );

@@ -16,6 +16,7 @@ import {
   Filter
 } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
+import ConfirmationModal from '../../components/common/ConfirmationModal';
 
 interface User {
   _id: string;
@@ -81,6 +82,15 @@ const AdminUsers: React.FC = () => {
     }
   }));
 
+  /* Delete Modal State */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<{ id: string, name: string } | null>(null);
+
+  const confirmDelete = (user: User) => {
+    setUserToDelete({ id: user._id, name: user.name });
+    setDeleteModalOpen(true);
+  };
+
   const handleToggleStatus = async (id: string) => {
     const user = users.find(u => u._id === id);
     if (!user) return;
@@ -97,18 +107,15 @@ const AdminUsers: React.FC = () => {
     }
   };
 
-  const handleDeleteUser = async (id: string) => {
-    const user = users.find(u => u._id === id);
-    if (!user) return;
-    
-    if (!window.confirm(`Are you sure you want to delete user "${user.name}"? This action cannot be undone.`)) {
-      return;
-    }
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
     
     try {
-      await adminService.deleteUser(id);
-      setUsers(users.filter(u => u._id !== id));
+      await adminService.deleteUser(userToDelete.id);
+      setUsers(users.filter(u => u._id !== userToDelete.id));
       toast.success('User deleted successfully');
+      setDeleteModalOpen(false);
+      setUserToDelete(null);
     } catch (error) {
       console.error('Error deleting user:', error);
       toast.error('Failed to delete user');
@@ -334,7 +341,7 @@ const AdminUsers: React.FC = () => {
                            <Power className="w-4 h-4" />
                         </button>
                         <button 
-                          onClick={() => handleDeleteUser(user._id)}
+                          onClick={() => confirmDelete(user)}
                           className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                           title="Delete User"
                         >
@@ -349,6 +356,18 @@ const AdminUsers: React.FC = () => {
           </table>
         </div>
       </div>
+      
+      {/* Confirmation Modal */}
+      <ConfirmationModal 
+         isOpen={deleteModalOpen}
+         onClose={() => setDeleteModalOpen(false)}
+         onConfirm={handleDeleteUser}
+         title="Delete User"
+         message={`Are you sure you want to delete user "${userToDelete?.name}"? This action cannot be undone and will remove all their data.`}
+         confirmText="Delete User"
+         cancelText="Cancel"
+         variant="danger"
+      />
     </div>
   );
 };

@@ -82,6 +82,33 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="bg-[#F2F4F8] dark:bg-gray-900 min-h-screen p-4 md:p-6 lg:p-8 font-sans">
+      
+       {/* "THE LOOKBOOK" (Slideshow) - Top Banner */}
+       <div className="max-w-[1600px] mx-auto mb-8">
+        <div className="relative rounded-[48px] overflow-hidden bg-gray-900 h-[400px] group shadow-xl">
+            {/* Slideshow Background Component */}
+            <SlideshowBackground />
+
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex items-center pointer-events-none">
+                <div className="max-w-2xl px-12 md:px-24 pointer-events-auto">
+                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white mb-6 uppercase tracking-wider">
+                        Season 2024
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                        The Lookbook. <br/> Define Your Style.
+                    </h2>
+                    <p className="text-lg text-gray-200 mb-8 leading-relaxed max-w-lg">
+                        Explore our curated gallery of seasonal favorites. From street style to elegant evenings, find the look that speaks to you.
+                    </p>
+                    <Link to="/products" className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all transform hover:scale-105 inline-flex items-center gap-2">
+                        View Collection
+                        <ArrowUpRight className="w-5 h-5" />
+                    </Link>
+                </div>
+            </div>
+        </div>
+      </div>
+
       <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-auto">
         
         {/* HERO SECTION - Large Bento Card (2x2) */}
@@ -301,31 +328,7 @@ const HomePage: React.FC = () => {
 
       </div>
 
-       {/* "THE LOOKBOOK" (Slideshow) - Moved to Top (Below Bento Grid) */}
-      <div className="max-w-[1600px] mx-auto mt-12 mb-12">
-        <div className="relative rounded-[48px] overflow-hidden bg-gray-900 h-[400px] group">
-            {/* Slideshow Background Component */}
-            <SlideshowBackground />
 
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex items-center pointer-events-none">
-                <div className="max-w-2xl px-12 md:px-24 pointer-events-auto">
-                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white mb-6 uppercase tracking-wider">
-                        Season 2024
-                    </span>
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-                        The Lookbook. <br/> Define Your Style.
-                    </h2>
-                    <p className="text-lg text-gray-200 mb-8 leading-relaxed max-w-lg">
-                        Explore our curated gallery of seasonal favorites. From street style to elegant evenings, find the look that speaks to you.
-                    </p>
-                    <Link to="/products" className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all transform hover:scale-105 inline-flex items-center gap-2">
-                        View Collection
-                        <ArrowUpRight className="w-5 h-5" />
-                    </Link>
-                </div>
-            </div>
-        </div>
-      </div>
       
       {/* Featured Products Grid - Keeping your requested product cards below */}
       <div className="max-w-[1600px] mx-auto mt-12">

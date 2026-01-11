@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCartIcon, StarIcon } from '@heroicons/react/24/outline';
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { ShoppingBag, Star, Heart, Plus } from 'lucide-react';
 import { usePrice } from '../../hooks/usePrice';
 import { Product } from '../../types';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProductCardProps {
   product: Product;
@@ -13,89 +13,137 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showNewBadge }) => {
   const { formatPrice } = usePrice();
+  const [currentImage, setCurrentImage] = useState(product.images?.[0]?.url || 'https://via.placeholder.com/400x400?text=No+Image');
+
+  // Discount Calculation
+  const hasDiscount = product.comparePrice && product.comparePrice > product.price;
+  const discountPercentage = hasDiscount 
+    ? Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100) 
+    : 0;
+
+  // Use up to 4 images for the preview row, ensuring we have at least the main image
+  const previewImages = product.images?.slice(0, 4) || [];
 
   return (
-    <div className="group bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in">
-      <Link to={`/products/${product._id}`} className="block relative overflow-hidden">
-        <div className="aspect-w-1 aspect-h-1 bg-gray-200">
-          <img
-            src={product.images?.[0]?.url || 'https://via.placeholder.com/300x300?text=No+Image'}
-            alt={product.name}
-            className="w-full h-48 object-cover transform transition-transform duration-500 group-hover:scale-110"
-            onError={(e) => {
-              e.currentTarget.src = 'https://via.placeholder.com/300x300?text=No+Image';
-            }}
-          />
-        </div>
-        
-        {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
-          {(showNewBadge || product.isNewArrival) && (
-            <div className="bg-teal-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm animate-scale-in">
-              NEW
-            </div>
-          )}
-          {product.onSale && (
-            <div className="bg-pink-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm animate-scale-in" style={{ animationDelay: '0.1s' }}>
-              SALE
-            </div>
-          )}
-          {/* Discount Badge */}
-          {product.comparePrice && product.comparePrice > product.price && (
-             <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm animate-scale-in" style={{ animationDelay: '0.2s' }}>
-               -{Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%
-             </div>
-          )}
-        </div>
-      </Link>
-
-      <div className="p-4">
-        <Link to={`/products/${product._id}`}>
-          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-            {product.name}
-          </h3>
-        </Link>
-        
-        <div className="flex items-center mb-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              i < Math.floor(product.rating) ? (
-                <StarIconSolid key={i} className="h-4 w-4 text-yellow-400" />
-              ) : (
-                <StarIcon key={i} className="h-4 w-4 text-gray-300" />
-              )
-            ))}
-          </div>
-          <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">({product.numReviews})</span>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="group relative bg-white dark:bg-[#1A1A1A] rounded-[20px] p-4 flex flex-col justify-between hover:shadow-2xl transition-all duration-500 border border-transparent dark:border-gray-800 hover:border-gray-100 dark:hover:border-gray-700 h-full"
+    >
+        {/* Top Section: Wishlist & Badge */}
+        <div className="flex justify-between items-start mb-4 relative z-10">
+           <div className="flex gap-2">
+              {(showNewBadge || product.isNewArrival) && (
+                <span className="bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  New
+                </span>
+              )}
+              {hasDiscount && (
+                <span className="bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  {discountPercentage}% OFF
+                </span>
+              )}
+           </div>
+           
+           <button 
+             className="text-gray-400 hover:text-red-500 transition-colors"
+             title="Add to Wishlist"
+           >
+             <Heart className="w-5 h-5" />
+           </button>
         </div>
 
-        <div className="flex items-center justify-between mt-3">
-          <div className="flex flex-col">
-             {product.comparePrice && product.comparePrice > product.price && (
-               <span className="text-xs text-gray-500 line-through">
-                 {formatPrice(product.comparePrice)}
-               </span>
-             )}
-            <span className="text-lg font-bold text-gray-900 dark:text-white">{formatPrice(product.price)}</span>
-          </div>
-          
-          {onAddToCart && (
-            <button
-              onClick={() => onAddToCart(product)}
-              disabled={product.countInStock === 0}
-              className={`p-2 rounded-full transition-all duration-200 active:scale-95 ${
-                product.countInStock > 0
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-              title="Add to Cart"
-            >
-              <ShoppingCartIcon className="h-5 w-5" />
-            </button>
-          )}
+        {/* Main Image Area */}
+        <div className="relative aspect-square mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-800">
+            <Link to={`/products/${product._id}`} className="w-full h-full flex items-center justify-center">
+              <motion.img
+                key={currentImage}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                src={currentImage}
+                alt={product.name}
+                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/400x400?text=No+Image';
+                }}
+              />
+            </Link>
         </div>
-      </div>
-    </div>
+
+        {/* Thumbnails Row */}
+        {previewImages.length > 1 && (
+            <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-1">
+                {previewImages.map((img, idx) => (
+                    <button
+                        key={idx}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentImage(img.url);
+                        }}
+                        className={`w-12 h-12 rounded-lg flex-shrink-0 border p-0.5 bg-gray-50 dark:bg-gray-800 flex items-center justify-center overflow-hidden transition-all ${
+                            currentImage === img.url 
+                            ? 'border-black dark:border-white opacity-100 ring-1 ring-black dark:ring-white' 
+                            : 'border-transparent opacity-60 hover:opacity-100 hover:border-gray-300 dark:hover:border-gray-600'
+                        }`}
+                    >
+                        <img src={img.url} alt="" className="w-full h-full object-cover rounded-md" />
+                    </button>
+                ))}
+            </div>
+        )}
+
+        {/* Product Info */}
+        <div className="mt-auto">
+            <div className="text-xs font-bold text-orange-500 mb-1 uppercase tracking-wide">
+                {product.brand || 'Collection'}
+            </div>
+            
+            <Link to={`/products/${product._id}`}>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                    {product.name}
+                </h3>
+            </Link>
+
+            <div className="flex items-center justify-between mt-4">
+                <div className="flex flex-col">
+                   {hasDiscount && (
+                      <span className="text-xs text-gray-400 line-through font-medium mb-0.5">
+                        {formatPrice(product.comparePrice!)}
+                      </span>
+                   )}
+                   <span className="text-xl font-bold text-gray-900 dark:text-white">
+                      {formatPrice(product.price)}
+                   </span>
+                </div>
+
+                {onAddToCart && (
+                    <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (product.countInStock > 0) onAddToCart(product);
+                        }}
+                        disabled={product.countInStock === 0}
+                        className={`h-10 px-4 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all shadow-sm ${
+                            product.countInStock > 0
+                            ? 'bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-black hover:scale-105 active:scale-95'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        }`}
+                    >
+                        {product.countInStock > 0 ? (
+                            <>
+                              <span className="hidden sm:inline">Add</span>
+                              <Plus className="w-5 h-5 sm:hidden" />
+                              <ShoppingBag className="w-4 h-4 hidden sm:block" />
+                            </>
+                         ) : (
+                            'Sold'
+                         )}
+                    </button>
+                )}
+            </div>
+        </div>
+    </motion.div>
   );
 };
 

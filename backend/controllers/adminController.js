@@ -1,38 +1,8 @@
 const Product = require('../models/Product');
 const User = require('../models/User');
 const Order = require('../models/Order');
-const cloudinary = require('../config/cloudinary');
+const { uploadToCloudinary } = require('../utils/cloudinary');
 const { Readable } = require('stream');
-
-// Helper function to upload file to Cloudinary
-const uploadToCloudinary = (buffer, resourceType = 'image') => {
-  return new Promise((resolve, reject) => {
-    // Check if Cloudinary is configured
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      reject(new Error('Cloudinary not configured. Please set up your Cloudinary credentials.'));
-      return;
-    }
-    
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: resourceType,
-        folder: 'products',
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      }
-    );
-    
-    const bufferStream = new Readable();
-    bufferStream.push(buffer);
-    bufferStream.push(null);
-    bufferStream.pipe(stream);
-  });
-};
 
 // @desc    Get dashboard stats
 // @route   GET /api/admin/dashboard
@@ -225,7 +195,7 @@ const createProduct = async (req, res) => {
     if (req.files && req.files.images) {
       for (const file of req.files.images) {
         try {
-          const result = await uploadToCloudinary(file.buffer, 'image');
+          const result = await uploadToCloudinary(file.buffer, 'products', 'image');
           processedImages.push({
             url: result.secure_url,
             public_id: result.public_id
@@ -242,7 +212,7 @@ const createProduct = async (req, res) => {
     if (req.files && req.files.videos) {
       for (const file of req.files.videos) {
         try {
-          const result = await uploadToCloudinary(file.buffer, 'video');
+          const result = await uploadToCloudinary(file.buffer, 'products', 'video');
           processedVideos.push({
             url: result.secure_url,
             public_id: result.public_id
@@ -309,7 +279,8 @@ const createProduct = async (req, res) => {
       tags: tags ? (Array.isArray(tags) ? tags : [tags]) : [],
       seoTitle,
       seoDescription,
-      createdBy: req.user.id
+      createdBy: req.user.id,
+      owner: req.user.id
     });
 
     const savedProduct = await product.save();
@@ -320,8 +291,9 @@ const createProduct = async (req, res) => {
     // Handle validation errors
     if (error.name === 'ValidationError') {
       const errorMessages = Object.values(error.errors).map(err => err.message);
+      console.error('Validation Error Details:', errorMessages);
       return res.status(400).json({ 
-        message: 'Validation failed', 
+        message: 'Validation failed: ' + errorMessages.join(', '), 
         errors: errorMessages 
       });
     }

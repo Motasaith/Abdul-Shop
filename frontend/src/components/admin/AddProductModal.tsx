@@ -28,6 +28,26 @@ interface AddProductModalProps {
   product?: Product | null;
 }
 
+// Helper Input Component defined outside to prevent focus loss
+const InputField = ({ label, icon: Icon, fullWidth = false, ...props }: any) => (
+  <div className={`${fullWidth ? 'col-span-full' : ''}`}>
+    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+      {label}
+    </label>
+    <div className="relative group">
+      {Icon && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
+              <Icon className="w-4 h-4" />
+          </div>
+      )}
+      <input
+        {...props}
+        className={`w-full ${Icon ? 'pl-9' : 'pl-4'} pr-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder-gray-400 dark:text-white dark:placeholder-gray-500 text-sm`}
+      />
+    </div>
+  </div>
+);
+
 const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onProductAdded, product }) => {
   interface Media {
     url: string;
@@ -264,25 +284,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
     }));
   };
 
-  // Helper Input Component
-  const InputField = ({ label, icon: Icon, fullWidth = false, ...props }: any) => (
-    <div className={`${fullWidth ? 'col-span-full' : ''}`}>
-      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
-        {label}
-      </label>
-      <div className="relative group">
-        {Icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                <Icon className="w-4 h-4" />
-            </div>
-        )}
-        <input
-          {...props}
-          className={`w-full ${Icon ? 'pl-9' : 'pl-4'} pr-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder-gray-400 dark:text-white dark:placeholder-gray-500 text-sm`}
-        />
-      </div>
-    </div>
-  );
+
 
   return (
     <AnimatePresence>

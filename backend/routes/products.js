@@ -237,7 +237,7 @@ router.post(
       let reviewImages = [];
       if (req.files && req.files.images) {
         const uploadPromises = req.files.images.map(file => 
-          uploadToCloudinary(file.buffer)
+          uploadToCloudinary(file.buffer, 'reviews', 'image')
         );
         const results = await Promise.all(uploadPromises);
         reviewImages = results.map(result => ({
@@ -502,7 +502,7 @@ router.post('/', [
       
       for (const file of imageFiles) {
         try {
-          const result = await uploadToCloudinary(file.buffer, 'image');
+          const result = await uploadToCloudinary(file.buffer, 'products', 'image');
           processedImages.push({
             url: result.secure_url,
             public_id: result.public_id
@@ -521,7 +521,7 @@ router.post('/', [
       
       for (const file of videoFiles) {
         try {
-          const result = await uploadToCloudinary(file.buffer, 'video');
+          const result = await uploadToCloudinary(file.buffer, 'products', 'video');
           processedVideos.push({
             url: result.secure_url,
             public_id: result.public_id

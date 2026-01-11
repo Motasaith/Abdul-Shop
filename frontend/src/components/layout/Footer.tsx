@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast';
 import { useTranslation } from '../../hooks/useTranslation';
 import { 
   Facebook, 
-  Twitter, 
   Instagram, 
   Linkedin, 
   Send,
@@ -108,8 +107,10 @@ const Footer: React.FC = () => {
               <a href="#" className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all transform hover:-translate-y-1">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white transition-all transform hover:-translate-y-1">
-                <Twitter className="h-5 w-5" />
+              <a href="#" className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all transform hover:-translate-y-1">
+                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
               </a>
               <a href="#" className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-pink-600 hover:text-white dark:hover:bg-pink-600 dark:hover:text-white transition-all transform hover:-translate-y-1">
                 <Instagram className="h-5 w-5" />

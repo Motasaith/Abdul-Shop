@@ -4,18 +4,26 @@ import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { logout } from '../../store/slices/authSlice';
 import { fetchWishlist, selectWishlistItemCount } from '../../store/slices/wishlistSlice';
 import { 
-  ShoppingCartIcon, 
-  UserIcon, 
-  MagnifyingGlassIcon,
-  Bars3Icon,
-  XMarkIcon,
-  HeartIcon
-} from '@heroicons/react/24/outline';
+  ShoppingBag, 
+  User, 
+  Search, 
+  Menu, 
+  X, 
+  Heart, 
+  LogOut, 
+  Settings, 
+  LayoutDashboard, 
+  Package, 
+  MessageSquare, 
+  Star,
+  ChevronDown
+} from 'lucide-react';
 import CurrencySelector from '../common/CurrencySelector';
 import LanguageSelector from '../common/LanguageSelector';
 import ThemeToggle from '../common/ThemeToggle';
 import { usePrice } from '../../hooks/usePrice';
 import { useTranslation } from '../../hooks/useTranslation';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Header: React.FC = () => {
   const { formatPrice } = usePrice();
@@ -30,9 +38,19 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [scrolled, setScrolled] = useState(false);
 
   /* Animation State */
   const [isBumping, setIsBumping] = useState(false);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Fetch wishlist when user is authenticated
   useEffect(() => {
@@ -52,6 +70,7 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/');
+    setIsProfileMenuOpen(false);
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -59,6 +78,7 @@ const Header: React.FC = () => {
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
       setSearchQuery('');
+      setIsMenuOpen(false);
     }
   };
 
@@ -75,22 +95,32 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-md fixed w-full top-0 z-50 transition-colors duration-300">
-      {/* Top bar */}
-      <div className="bg-blue-600 text-white py-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-end sm:justify-between items-center text-sm">
-            <span className="hidden sm:block">{t('common.freeShipping')} {formatPrice(50)}</span>
-            <div className="flex justify-end w-full sm:w-auto items-center space-x-2 sm:space-x-4">
-              <Link to="/help" className="hidden sm:inline hover:text-blue-200">{t('common.help')}</Link>
-              <Link to="/register/vendor" className="hidden sm:inline hover:text-blue-200 font-medium">Sell on ShopHub</Link>
-              <Link to="/track" className="hidden sm:inline hover:text-blue-200">{t('common.trackOrder')}</Link>
-              <div className="flex items-center sm:border-l sm:border-blue-400 sm:pl-4 sm:ml-2 space-x-2">
+    <header 
+      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50' 
+          : 'bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800'
+      }`}
+    >
+      {/* Top bar - Consolidated & Sleek */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-1.5 relative z-[60]">
+        <div className="absolute inset-0 bg-white/5 pattern-grid-lg opacity-10" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex justify-between items-center text-xs font-medium tracking-wide">
+            <span className="hidden sm:flex items-center gap-2">
+              <span className="bg-white/20 px-2 py-0.5 rounded-full">Free Shipping</span>
+              <span className="opacity-90">On orders over {formatPrice(50)}</span>
+            </span>
+            <div className="flex justify-end w-full sm:w-auto items-center gap-4">
+              <div className="hidden sm:flex items-center gap-4 border-r border-white/20 pr-4">
+                <Link to="/help" className="hover:text-blue-100 transition-colors">{t('common.help')}</Link>
+                <Link to="/register/vendor" className="hover:text-blue-100 transition-colors">Sell on ShopHub</Link>
+                <Link to="/track" className="hover:text-blue-100 transition-colors">{t('common.trackOrder')}</Link>
+              </div>
+              <div className="flex items-center gap-3">
                 <CurrencySelector variant="header" />
                 <LanguageSelector />
-                <div className="ml-2 pl-2 border-l border-blue-400">
-                  <ThemeToggle />
-                </div>
+                <ThemeToggle />
               </div>
             </div>
           </div>
@@ -99,196 +129,207 @@ const Header: React.FC = () => {
 
       {/* Main header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-16 lg:h-20 gap-8">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-all duration-300 transform hover:scale-105">
+          <Link to="/" className="flex-shrink-0 group">
+            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 leading-none group-hover:scale-105 transition-transform duration-200">
               {publicSettings?.siteName || 'ShopHub'}
-            </Link>
-          </div>
+            </h1>
+          </Link>
 
-          {/* Search bar - Hidden on mobile, shown below */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <form onSubmit={handleSearch} className="relative w-full group">
+          {/* Search bar - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-2xl relative z-20">
+            <form onSubmit={handleSearch} className="w-full relative group">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+              </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('common.searchPlaceholder')}
-                className="w-full px-4 py-2 pl-10 pr-16 text-gray-900 bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-transparent rounded-full focus:outline-none focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:shadow-lg transition-all duration-300 ease-in-out"
+                className="block w-full pl-11 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 border-none rounded-full text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white dark:focus:bg-gray-900 transition-all shadow-sm group-hover:shadow-md"
               />
-              <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 group-hover:text-blue-500 transition-colors duration-300" />
               <button
                 type="submit"
-                className="absolute right-2 top-1.5 bg-blue-600 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-700 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="absolute right-1.5 top-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-all shadow-sm active:scale-95"
               >
                 {t('common.search')}
               </button>
             </form>
           </div>
 
-          {/* Right side icons */}
-          <div className="flex items-center space-x-4">
-            {/* Wishlist - Hidden on mobile */}
-            <Link to="/wishlist" className="hidden sm:flex p-2 text-gray-700 dark:text-gray-200 hover:text-red-500 transition-colors duration-300 transform hover:scale-110 relative" title={t('common.wishlist')}>
-              <HeartIcon className="h-6 w-6" />
-              {isAuthenticated && wishlistItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-scale-in shadow-sm">
-                  {wishlistItemCount}
-                </span>
-              )}
+          {/* Actions */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Wishlist */}
+            <Link 
+              to="/wishlist" 
+              className="hidden sm:flex relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:text-red-500 dark:hover:text-red-400 group"
+              title={t('common.wishlist')}
+            >
+              <Heart className="h-5 w-5 transition-transform group-hover:scale-110" />
+              <AnimatePresence>
+                {isAuthenticated && wishlistItemCount > 0 && (
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900"
+                  >
+                    {wishlistItemCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </Link>
 
             {/* Cart */}
             <Link 
               to="/cart" 
-              className={`p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors duration-300 transform hover:scale-110 relative ${isBumping ? 'animate-shake' : ''}`} 
+              className="relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:text-blue-600 dark:hover:text-blue-400 group"
               title={t('common.cart')}
             >
-              <ShoppingCartIcon className="h-6 w-6" />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-scale-in shadow-sm">
-                  {totalItems}
-                </span>
-              )}
+              <motion.div
+                animate={isBumping ? { rotate: [0, -10, 10, -10, 10, 0] } : {}}
+              >
+                <ShoppingBag className="h-5 w-5 transition-transform group-hover:scale-110" />
+              </motion.div>
+              <AnimatePresence>
+                {totalItems > 0 && (
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="absolute top-1.5 right-1.5 bg-blue-600 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900"
+                  >
+                    {totalItems}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </Link>
 
-            {/* User menu */}
+            {/* Profile Dropdown */}
             <div className="relative hidden md:block">
               {isAuthenticated ? (
                 <div className="relative">
                   <button 
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                    className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors focus:outline-none group"
+                    className="flex items-center gap-2 p-1.5 pr-3 rounded-full border border-gray-200 dark:border-gray-700 hover:border-blue-500/50 hover:shadow-sm transition-all ml-2 group"
                   >
-                    <UserIcon className="h-6 w-6 transform group-hover:scale-110 transition-transform duration-300" />
-                    <span className="hidden lg:block font-medium group-hover:underline decoration-blue-500 underline-offset-4 decoration-2">{user?.name}</span>
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-inner">
+                      {user?.name?.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-200 max-w-[100px] truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {user?.name}
+                    </span>
+                    <ChevronDown className={`h-3 w-3 text-gray-400 transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* Dropdown Menu */}
-                  {isProfileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50 animate-fade-in origin-top-right">
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 transition-colors"
-                        onClick={() => setIsProfileMenuOpen(false)}
+                  <AnimatePresence>
+                    {isProfileMenuOpen && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 py-2 z-50 overflow-hidden"
                       >
-                        {t('common.profile')}
-                      </Link>
-                      {/* ... other links ... */}
-                      <Link
-                        to="/orders"
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 transition-colors"
-                        onClick={() => setIsProfileMenuOpen(false)}
-                      >
-                        {t('common.myOrders')}
-                      </Link>
-                      <Link
-                        to="/profile/tickets"
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 transition-colors"
-                        onClick={() => setIsProfileMenuOpen(false)}
-                      >
-                        {t('support.myTickets')}
-                      </Link>
-                      <Link
-                        to="/reviews"
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 transition-colors"
-                        onClick={() => setIsProfileMenuOpen(false)}
-                      >
-                        {t('common.myReviews')}
-                      </Link>
-                      {user?.role === 'vendor' && (
-                        <Link
-                          to="/vendor/dashboard"
-                          className="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-700 transition-colors"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                        >
-                          Vendor Dashboard
-                        </Link>
-                      )}
-                      {user?.role === 'admin' && (
-                        <Link
-                          to="/admin"
-                          className="block px-4 py-2 text-sm text-purple-600 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-purple-700 transition-colors"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                        >
-                          {t('common.adminDashboard')}
-                        </Link>
-                      )}
-                      <button
-                        onClick={() => {
-                          handleLogout();
-                          setIsProfileMenuOpen(false);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-600 transition-colors"
-                      >
-                        {t('common.logout')}
-                      </button>
-                    </div>
-                  )}
+                         <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Signed in as</p>
+                          <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user?.email}</p>
+                        </div>
+                        
+                        <div className="p-2">
+                           {user?.role === 'admin' && (
+                            <Link to="/admin" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors mb-1">
+                              <LayoutDashboard className="h-4 w-4" />
+                              Admin Dashboard
+                            </Link>
+                          )}
+                          {user?.role === 'vendor' && (
+                            <Link to="/vendor/dashboard" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 rounded-xl hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors mb-1">
+                              <LayoutDashboard className="h-4 w-4" />
+                              Vendor Dashboard
+                            </Link>
+                          )}
+                          
+                          <Link to="/profile" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
+                            <User className="h-4 w-4" />
+                            {t('common.profile')}
+                          </Link>
+                          <Link to="/orders" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
+                            <Package className="h-4 w-4" />
+                            {t('common.myOrders')}
+                          </Link>
+                           <Link to="/wishlist" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
+                            <Heart className="h-4 w-4" />
+                            {t('common.wishlist')}
+                          </Link>
+                          <Link to="/profile/tickets" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
+                            <MessageSquare className="h-4 w-4" />
+                            {t('support.myTickets')}
+                          </Link>
+                          <Link to="/reviews" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
+                            <Star className="h-4 w-4" />
+                            {t('common.myReviews')}
+                          </Link>
+                        </div>
+
+                        <div className="border-t border-gray-100 dark:border-gray-700 p-2">
+                          <button
+                            onClick={handleLogout}
+                            className="flex w-full items-center gap-3 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            {t('common.logout')}
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <Link to="/login" className="text-gray-700 hover:text-blue-600 transition-colors font-medium hover:underline decoration-2 underline-offset-4">
+                <div className="flex items-center gap-3 ml-4">
+                  <Link to="/login" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     {t('common.login')}
                   </Link>
-                  <span className="text-gray-300">|</span>
-                  <Link to="/register" className="text-gray-700 hover:text-blue-600 transition-colors font-medium hover:underline decoration-2 underline-offset-4">
+                  <Link to="/register" className="px-4 py-2 text-sm font-bold text-white bg-blue-600 rounded-full hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-95">
                     {t('common.register')}
                   </Link>
                 </div>
               )}
             </div>
-            
-            {/* Mobile User Icon */}
-            <div className="md:hidden">
-              {isAuthenticated ? (
-                <Link to="/profile" className="p-2 text-gray-700 hover:text-blue-600 transition-colors">
-                  <UserIcon className="h-6 w-6" />
-                </Link>
-              ) : (
-                <Link to="/login" className="p-2 text-gray-700 hover:text-blue-600 transition-colors">
-                  <UserIcon className="h-6 w-6" />
-                </Link>
-              )}
-            </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-blue-600 transition-colors"
+              className="md:hidden p-2 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
-              {isMenuOpen ? (
-                <XMarkIcon className="h-6 w-6" />
-              ) : (
-                <Bars3Icon className="h-6 w-6" />
-              )}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Categories navigation */}
-      <div className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+      {/* Navigation Categories */}
+      <div className="hidden md:block border-t border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
-            <nav className="hidden md:flex space-x-8">
+            <nav className="flex space-x-8">
               {categories.map((category) => (
                 <Link
                   key={category}
                   to={`/products?category=${category}`}
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors text-sm font-medium relative group"
+                  className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-3 border-b-2 border-transparent hover:border-blue-600"
                 >
                   {t(`categories.${category}`)}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center space-x-4 text-sm">
-              <Link to="/sales" className="text-red-600 font-medium hover:text-red-700 hover:underline decoration-2 underline-offset-4 transition-all">
+            <div className="flex items-center gap-6 text-sm font-medium">
+              <Link to="/sales" className="text-rose-500 hover:text-rose-600 transition-colors flex items-center gap-1">
                 {t('common.todaysDeals')}
               </Link>
-              <Link to="/new-arrivals" className="text-green-600 font-medium hover:text-green-700 hover:underline decoration-2 underline-offset-4 transition-all">
+              <Link to="/new-arrivals" className="text-emerald-500 hover:text-emerald-600 transition-colors">
                 {t('common.newArrivals')}
               </Link>
             </div>
@@ -296,159 +337,91 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          {/* Mobile search */}
-          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('common.searchPlaceholder')}
-                className="w-full px-4 py-2 pl-10 pr-16 text-gray-900 bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              <button
-                type="submit"
-                className="absolute right-2 top-1.5 bg-blue-600 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-700 transition-colors"
-              >
-                {t('common.search')}
-              </button>
-            </form>
-          </div>
-          
-          {/* Mobile General Links (Added Help/Track here for mobile) */}
-          <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-             <Link
-               to="/help"
-               className="block py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-blue-600"
-               onClick={() => setIsMenuOpen(false)}
-             >
-               {t('common.help')}
-             </Link>
-             <Link
-               to="/track"
-               className="block py-2 text-sm text-gray-700 hover:text-blue-600"
-               onClick={() => setIsMenuOpen(false)}
-             >
-               {t('common.trackOrder')}
-             </Link>
-          </div>
-          
-          {/* Mobile user menu */}
-          {isAuthenticated && (
-            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-              <div className="flex items-center space-x-2 mb-2">
-                <UserIcon className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                <span className="font-medium text-gray-900 dark:text-white">{user?.name}</span>
-              </div>
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-4">
+              {/* Mobile Search */}
+              <form onSubmit={handleSearch} className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('common.searchPlaceholder')}
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/50 dark:text-white"
+                />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              </form>
+
+              {/* Mobile Profile Link */}
+              {isAuthenticated ? (
+                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3 flex items-center gap-3" onClick={() => {
+                  navigate('/profile');
+                  setIsMenuOpen(false);
+                }}>
+                  <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-900 dark:text-white">{user?.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex justify-center py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
+                    {t('common.login')}
+                  </Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="flex justify-center py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700">
+                    {t('common.register')}
+                  </Link>
+                </div>
+              )}
+
+              {/* Mobile Links */}
               <div className="space-y-1">
-                <Link
-                  to="/profile"
-                  className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('common.profile')}
-                </Link>
-                <Link
-                  to="/orders"
-                  className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('common.myOrders')}
-                </Link>
-                <Link
-                  to="/profile/tickets"
-                  className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('support.myTickets')}
-                </Link>
-                <Link
-                  to="/wishlist"
-                  className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('common.wishlist')}
-                </Link>
-                <Link
-                  to="/reviews"
-                  className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('common.myReviews')}
-                </Link>
-                {user?.role === 'vendor' && (
+                <p className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Shop</p>
+                {categories.map((category) => (
                   <Link
-                    to="/vendor/dashboard"
-                    className="block py-1 text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium"
+                    key={category}
+                    to={`/products?category=${category}`}
                     onClick={() => setIsMenuOpen(false)}
+                    className="block px-2 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg text-sm font-medium"
                   >
-                    Vendor Dashboard
+                    {t(`categories.${category}`)}
                   </Link>
-                )}
-                {user?.role === 'admin' && (
-                  <Link
-                    to="/admin"
-                    className="block py-1 text-sm text-purple-600 hover:text-purple-700 transition-colors font-medium"
-                    onClick={() => setIsMenuOpen(false)}
+                ))}
+              </div>
+
+              <div className="border-t border-gray-100 dark:border-gray-800 pt-4 space-y-1">
+                <Link to="/sales" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-rose-500 font-medium text-sm">
+                  {t('common.todaysDeals')}
+                </Link>
+                <Link to="/help" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-gray-600 dark:text-gray-300 font-medium text-sm">
+                  {t('common.help')}
+                </Link>
+                <Link to="/track" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-gray-600 dark:text-gray-300 font-medium text-sm">
+                  {t('common.trackOrder')}
+                </Link>
+                {isAuthenticated && (
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full text-left px-2 py-2 text-red-600 font-medium text-sm"
                   >
-                    {t('common.adminDashboard')}
-                  </Link>
+                    {t('common.logout')}
+                  </button>
                 )}
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="block py-1 text-sm text-gray-700 hover:text-blue-600 transition-colors"
-                >
-                  {t('common.logout')}
-                </button>
               </div>
             </div>
-          )}
-          
-          {/* Mobile auth links for non-authenticated users */}
-          {!isAuthenticated && (
-            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-              <div className="flex space-x-4">
-                <Link
-                  to="/login"
-                  className="block py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('common.login')}
-                </Link>
-                <Link
-                  to="/register"
-                  className="block py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('common.register')}
-                </Link>
-              </div>
-            </div>
-          )}
-          
-          {/* Mobile categories */}
-          <div className="px-4 py-2 space-y-2">
-            <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">{t('common.categories')}</div>
-            {categories.map((category) => (
-              <Link
-                key={category}
-                to={`/products?category=${category}`}
-                className="block py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t(`categories.${category}`)}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

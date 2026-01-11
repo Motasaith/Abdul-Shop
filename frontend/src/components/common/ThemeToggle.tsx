@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../context/ThemeProvider';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
+import { Sun, Moon } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -9,21 +10,27 @@ const ThemeToggle: React.FC = () => {
     <button
       onClick={toggleTheme}
       className={`
-        p-2 rounded-full transition-all duration-300 ease-in-out
+        relative p-1.5 rounded-full transition-all duration-300 ease-in-out ml-2
         ${theme === 'dark' 
-          ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700 hover:text-yellow-300' 
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-blue-600'
+          ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' 
+          : 'bg-white/20 text-blue-50 hover:bg-white/30'
         }
-        hover:shadow-md focus:outline-none ring-2 ring-transparent focus:ring-blue-500
+        hover:shadow-sm focus:outline-none active:scale-95
       `}
       title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
       aria-label="Toggle Dark Mode"
     >
-      {theme === 'dark' ? (
-        <SunIcon className="h-5 w-5 transform transition-transform duration-500 hover:rotate-90" />
-      ) : (
-        <MoonIcon className="h-5 w-5 transform transition-transform duration-500 hover:-rotate-12" />
-      )}
+      <motion.div
+        initial={false}
+        animate={{ rotate: theme === 'dark' ? 180 : 0 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+      >
+        {theme === 'dark' ? (
+          <Sun className="h-4 w-4" />
+        ) : (
+          <Moon className="h-4 w-4" />
+        )}
+      </motion.div>
     </button>
   );
 };

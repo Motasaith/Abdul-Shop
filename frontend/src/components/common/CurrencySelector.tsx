@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { setCurrency } from '../../store/slices/preferenceSlice';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDownIcon, BanknotesIcon } from '@heroicons/react/24/outline';
+import { ChevronDown, Check } from 'lucide-react';
 
 const currencies = [
   { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸' },
@@ -42,24 +42,24 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
   // Header Variant (Minimal)
   if (variant === 'header') {
     return (
-      <div className="relative z-50" ref={dropdownRef}>
+      <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1.5 text-sm font-medium text-white hover:text-white/80 transition-colors"
+          className="flex items-center gap-1.5 text-xs font-medium text-white/90 hover:text-white transition-colors py-1 px-2 rounded-lg hover:bg-white/10"
         >
-          <span className="text-lg leading-none">{selectedCurrency.flag}</span>
+          <span className="text-base leading-none">{selectedCurrency.flag}</span>
           <span>{selectedCurrency.code}</span>
-          <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
         </button>
 
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: 8, scale: 0.95 }}
+              initial={{ opacity: 0, y: 4, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden"
+              exit={{ opacity: 0, y: 4, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[60]"
             >
                <div className="py-1">
                 {currencies.map((c) => (
@@ -69,16 +69,16 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
                     className={`
                       w-full flex items-center justify-between px-3 py-2 text-sm transition-colors
                       ${currency.code === c.code 
-                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold' 
+                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' 
                         : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50'}
                     `}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg">{c.flag}</span>
+                      <span className="text-lg leading-none">{c.flag}</span>
                       <span>{c.name}</span>
                     </div>
                     {currency.code === c.code && (
-                       <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                       <Check className="h-3.5 w-3.5" />
                     )}
                   </button>
                 ))}
@@ -90,12 +90,12 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
     );
   }
 
-  // Admin Variant (Full Card) - Default
+  // Admin Variant (Full Card)
   return (
-    <div className="relative w-full z-50" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
         onClick={() => setIsOpen(!isOpen)}
         className={`
           w-full flex items-center justify-between px-4 py-3 rounded-xl
@@ -119,7 +119,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
           </div>
         </div>
         <div className={`p-1 rounded-md transition-colors flex-shrink-0 ${isOpen ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600' : 'text-gray-400 group-hover:text-blue-500'}`}>
-          <ChevronDownIcon 
+          <ChevronDown 
             className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
           />
         </div>
@@ -132,7 +132,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-full left-0 w-full mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden"
+            className="absolute bottom-full left-0 w-full mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50"
             style={{ maxHeight: '250px', overflowY: 'auto' }}
           >
             <div className="p-1.5 space-y-0.5">
@@ -149,14 +149,16 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
                   `}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-lg">{c.flag}</span>
+                    <span className="text-lg leading-none">{c.flag}</span>
                     <div className="flex flex-col items-start">
                       <span>{c.name}</span>
                       <span className="text-[10px] opacity-70">{c.code}</span>
                     </div>
                   </div>
                   {currency.code === c.code && (
-                    <motion.div layoutId="activeCheck" className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                    <motion.div layoutId="activeCheck">
+                      <Check className="h-4 w-4 text-blue-500" />
+                    </motion.div>
                   )}
                 </motion.button>
               ))}

@@ -396,6 +396,7 @@ const AdminProducts: React.FC = () => {
         }}
         onProductAdded={fetchProducts}
         product={editingProduct}
+        service={adminService}
       />
 
       {/* Confirmation Modal */}

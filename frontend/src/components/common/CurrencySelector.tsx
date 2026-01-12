@@ -45,7 +45,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1.5 text-xs font-medium text-white/90 hover:text-white transition-colors py-1 px-2 rounded-lg hover:bg-white/10"
+          className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50"
         >
           <span className="text-base leading-none">{selectedCurrency.flag}</span>
           <span>{selectedCurrency.code}</span>
@@ -59,7 +59,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ variant = 'admin' }
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 4, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[60]"
+              className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[100]"
             >
                <div className="py-1">
                 {currencies.map((c) => (

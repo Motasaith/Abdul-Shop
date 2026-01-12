@@ -648,6 +648,56 @@ export const translations = {
       title: "Today's Deals",
       subtitle: 'Huge Savings on Top Brands!',
       offerText: 'Up to 40% OFF Selected Items'
+    },
+    vendor: {
+        dashboard: 'Vendor Dashboard',
+        shop: 'Shop',
+        viewLiveShop: 'View Live Shop',
+        addNewProduct: 'Add New Product',
+        walletBalance: 'Wallet Balance',
+        withdrawFunds: 'Withdraw Funds',
+        processing: 'Processing...',
+        totalEarnings: 'Total Earnings',
+        myProducts: 'My Products',
+        totalOrders: 'Total Orders',
+        myListedProducts: 'My Listed Products',
+        viewAllManaged: 'View All / Manage',
+        product: 'Product',
+        price: 'Price',
+        stock: 'Stock',
+        status: 'Status',
+        actions: 'Actions',
+        edit: 'Edit',
+        delete: 'Delete',
+        view: 'View',
+        inStock: 'In Stock',
+        outOfStock: 'Out of Stock',
+        recentOrders: 'Recent Orders',
+        unknownUser: 'Unknown User',
+        order: 'Order',
+        noProductsFound: 'No products found. Start selling by adding a product!',
+        noOrdersYet: 'No orders yet.',
+        applicationPending: {
+            title: 'Application Under Review',
+            message: 'Thank you for registering as a vendor. Your application is currently pending approval from our administrators. You will receive an email notification once your shop has been approved.',
+            contactSupport: 'For questions, please contact'
+        },
+        applicationRejected: {
+            title: 'Application Rejected',
+            message: 'We regret to inform you that your vendor application has been rejected. This may be due to incomplete information or not meeting our seller strict criteria.',
+            contactSupport: 'Please contact'
+        },
+        deleteModal: {
+            title: 'Delete Product',
+            message: 'Are you sure you want to delete this product? This action cannot be undone.',
+            confirm: 'Delete',
+            cancel: 'Cancel'
+        },
+        payoutSuccess: 'Payout requested successfully!',
+        payoutError: 'Failed to request payout',
+        deleteSuccess: 'Product deleted successfully',
+        deleteError: 'Failed to delete product',
+        loadError: 'Failed to load dashboard data'
     }
   },
   es: {

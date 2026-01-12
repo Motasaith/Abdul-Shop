@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import adminService from '../../services/adminService';
+
 import { Product } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -26,6 +26,7 @@ interface AddProductModalProps {
   onClose: () => void;
   onProductAdded: () => void;
   product?: Product | null;
+  service: any; // Allow injecting adminService or productService
 }
 
 // Helper Input Component defined outside to prevent focus loss
@@ -48,7 +49,7 @@ const InputField = ({ label, icon: Icon, fullWidth = false, ...props }: any) => 
   </div>
 );
 
-const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onProductAdded, product }) => {
+const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onProductAdded, product, service }) => {
   interface Media {
     url: string;
     public_id: string;
@@ -173,7 +174,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
             weight: formData.weight ? parseFloat(formData.weight) : undefined
          };
          
-         await adminService.updateProduct(product._id, updateData);
+         await service.updateProduct(product._id, updateData);
          
          if(imageFiles.length > 0) {
              toast('Note: New file uploads during quick-update are strictly text/url based in this version.', { icon: 'ℹ️'});
@@ -182,7 +183,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       } else {
         // Create Logic
         if (imageFiles.length === 0 && videoFiles.length === 0) {
-            await adminService.createProduct({
+            await service.createProduct({
                 ...formData,
                 price: parseFloat(formData.price),
                 comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
@@ -190,7 +191,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                 weight: formData.weight ? parseFloat(formData.weight) : undefined
             });
         } else {
-            await adminService.createProductWithFiles(formDataToSend);
+            await service.createProductWithFiles(formDataToSend);
         }
         toast.success('Product created successfully!');
       }
@@ -331,11 +332,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                       General Information
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                      <InputField fullWidth label="Product Name *" name="name" value={formData.name} onChange={handleInputChange} required placeholder="e.g., Wireless Headphones" />
+                      <InputField fullWidth label="Product Name *" name="name" value={formData.name} onChange={handleInputChange} required placeholder="e.g., Wireless Headphones" maxLength={100} />
                       
                       <div className="col-span-full">
                          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
-                            Description *
+                            Description * (Max 2000 chars)
                          </label>
                          <textarea
                            name="description"
@@ -343,6 +344,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                            onChange={handleInputChange}
                            rows={4}
                            required
+                           maxLength={2000}
                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder-gray-400 dark:text-white dark:placeholder-gray-500 text-sm resize-none"
                            placeholder="Describe your product..."
                          />

@@ -217,6 +217,7 @@ const AdminDashboard: React.FC = () => {
            };
            fetchDashboardStats();
         }} 
+        service={adminService}
       />
 
       {/* Stats Grid */}

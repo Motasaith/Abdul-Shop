@@ -4,39 +4,49 @@ import vendorService, { VendorStats } from '../../services/vendorService';
 import productService from '../../services/productService';
 import { Product } from '../../types';
 import { toast } from 'react-hot-toast';
-import { formatPrice } from '../../utils/currency';
+import { usePrice } from '../../hooks/usePrice';
 import { Link } from 'react-router-dom';
 import Modal from '../../components/common/Modal';
+import AddProductModal from '../../components/admin/AddProductModal';
+import CurrencySelector from '../../components/common/CurrencySelector';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const VendorDashboard: React.FC = () => {
+  const { t } = useTranslation();
+  const { formatPrice } = usePrice();
   const [stats, setStats] = useState<VendorStats | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [withdrawing, setWithdrawing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const { user } = useAppSelector((state) => state.auth);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [statsData, productsResponse] = await Promise.all([
-          vendorService.getVendorStats(),
-          productService.getVendorProducts()
-        ]);
-        
-        setStats(statsData);
-        setProducts(productsResponse.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        toast.error('Failed to load dashboard data');
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const [statsData, productsResponse] = await Promise.all([
+        vendorService.getVendorStats(),
+        productService.getVendorProducts()
+      ]);
+      
+      setStats(statsData);
+      setProducts(productsResponse.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      toast.error('Failed to load dashboard data');
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleProductAdded = () => {
+    fetchData();
+  };
 
   const handleWithdraw = async () => {
     if (!stats || stats.walletBalance <= 0) {
@@ -45,12 +55,13 @@ const VendorDashboard: React.FC = () => {
     }
     
     setWithdrawing(true);
+    setWithdrawing(true);
     try {
       await vendorService.requestPayout(stats.walletBalance);
-      toast.success('Payout requested successfully!');
+      toast.success(t('vendor.payoutSuccess', { defaultValue: 'Payout requested successfully!' }));
       // Refresh stats?
     } catch (error) {
-       toast.error('Failed to request payout');
+       toast.error(t('vendor.payoutError', { defaultValue: 'Failed to request payout' }));
     } finally {
       setWithdrawing(false);
     }
@@ -84,7 +95,7 @@ const VendorDashboard: React.FC = () => {
     if (productToDelete) {
       try {
         await productService.deleteProduct(productToDelete);
-        toast.success('Product deleted successfully');
+        toast.success(t('vendor.deleteSuccess', { defaultValue: 'Product deleted successfully' }));
         // Refresh list
         const productsResponse = await productService.getVendorProducts();
         setProducts(productsResponse.data);
@@ -93,7 +104,7 @@ const VendorDashboard: React.FC = () => {
         setStats(statsData);
       } catch (error) {
         console.error('Error deleting product:', error);
-        toast.error('Failed to delete product');
+        toast.error(t('vendor.deleteError', { defaultValue: 'Failed to delete product' }));
       } finally {
         setIsDeleteModalOpen(false);
         setProductToDelete(null);
@@ -110,13 +121,12 @@ const VendorDashboard: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Application Under Review</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('vendor.applicationPending.title')}</h2>
           <p className="text-gray-600 mb-6">
-            Thank you for registering as a vendor. Your application is currently pending approval from our administrators.
-            You will receive an email notification once your shop has been approved.
+            {t('vendor.applicationPending.message')}
           </p>
           <div className="text-sm text-gray-500">
-            For questions, please contact <Link to="/contact" className="text-blue-600 hover:text-blue-800 underline">support</Link>.
+            {t('vendor.applicationPending.contactSupport')} <Link to="/contact" className="text-blue-600 hover:text-blue-800 underline">support</Link>.
           </div>
         </div>
       </div>
@@ -132,13 +142,12 @@ const VendorDashboard: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Application Rejected</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('vendor.applicationRejected.title')}</h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            We regret to inform you that your vendor application has been rejected. 
-            This may be due to incomplete information or not meeting our seller strict criteria.
+            {t('vendor.applicationRejected.message')}
           </p>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-             Please contact <Link to="/contact" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">support</Link> for more details.
+             {t('vendor.applicationRejected.contactSupport')} <Link to="/contact" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">support</Link> for more details.
           </div>
         </div>
       </div>
@@ -167,21 +176,25 @@ const VendorDashboard: React.FC = () => {
     <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Vendor Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{t('vendor.dashboard')}</h1>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
-            Shop: <span className="font-semibold text-blue-600 dark:text-blue-400">{user?.vendorDetails?.shopName || 'My Shop'}</span>
+            {t('vendor.shop')}: <span className="font-semibold text-blue-600 dark:text-blue-400">{user?.vendorDetails?.shopName || 'My Shop'}</span>
             <Link 
               to={`/products?vendor=${user?.id}`}
               className="ml-4 text-sm text-blue-600 hover:text-blue-800 underline"
             >
-              View Live Shop
+              {t('vendor.viewLiveShop')}
             </Link>
           </p>
         </div>
-        <div>
-           <Link to="/products/new" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-             + Add New Product
-           </Link>
+        <div className="flex items-center gap-3">
+           <CurrencySelector variant="header" />
+           <button 
+             onClick={() => setIsAddProductModalOpen(true)}
+             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+           >
+             + {t('vendor.addNewProduct')}
+           </button>
         </div>
       </div>
 
@@ -205,7 +218,7 @@ const VendorDashboard: React.FC = () => {
             disabled={withdrawing || stats.walletBalance <= 0}
             className="mt-4 w-full bg-white/20 hover:bg-white/30 text-white text-sm font-medium py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {withdrawing ? 'Processing...' : 'Withdraw Funds'}
+            {withdrawing ? t('vendor.processing') : t('vendor.withdrawFunds')}
           </button>
         </div>
 
@@ -220,7 +233,7 @@ const VendorDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Earnings</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('vendor.totalEarnings')}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatPrice(stats.totalRevenue)}</p>
             </div>
           </div>
@@ -237,7 +250,7 @@ const VendorDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">My Products</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('vendor.myProducts')}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalProducts}</p>
             </div>
           </div>
@@ -254,7 +267,7 @@ const VendorDashboard: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Orders</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('vendor.totalOrders')}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalOrders}</p>
             </div>
           </div>
@@ -264,20 +277,20 @@ const VendorDashboard: React.FC = () => {
       {/* My Listed Products */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-300">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">My Listed Products</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('vendor.myListedProducts')}</h3>
           <Link to="/products/new" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-            View All / Manage
+            {t('vendor.viewAllManaged')}
           </Link>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Product</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stock</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('vendor.product')}</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('vendor.price')}</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('vendor.stock')}</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('vendor.status')}</th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('vendor.actions')}</th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -305,25 +318,25 @@ const VendorDashboard: React.FC = () => {
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         product.countInStock > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
                       }`}>
-                        {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+                        {product.countInStock > 0 ? t('vendor.inStock') : t('vendor.outOfStock')}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link to={`/products/edit/${product._id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-4">Edit</Link>
+                      <Link to={`/products/edit/${product._id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-4">{t('vendor.edit')}</Link>
                       <button 
                         onClick={() => handleDeleteClick(product._id)}
                         className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 mr-4"
                       >
-                        Delete
+                        {t('vendor.delete')}
                       </button>
-                      <Link to={`/products/${product._id}`} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">View</Link>
+                      <Link to={`/products/${product._id}`} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">{t('vendor.view')}</Link>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
-                    No products found. Start selling by adding a product!
+                    {t('vendor.noProductsFound')}
                   </td>
                 </tr>
               )}
@@ -335,7 +348,7 @@ const VendorDashboard: React.FC = () => {
       {/* Recent Orders */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-300">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Orders</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('vendor.recentOrders')}</h3>
         </div>
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {stats.recentOrders.length > 0 ? (
@@ -343,8 +356,8 @@ const VendorDashboard: React.FC = () => {
               <div key={order._id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{order.user?.name || 'Unknown User'}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Order #{order._id.slice(-8)}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{order.user?.name || t('vendor.unknownUser')}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('vendor.order')} #{order._id.slice(-8)}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
@@ -360,7 +373,7 @@ const VendorDashboard: React.FC = () => {
             ))
           ) : (
             <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-              No orders yet.
+              {t('vendor.noOrdersYet')}
             </div>
           )}
         </div>
@@ -369,22 +382,29 @@ const VendorDashboard: React.FC = () => {
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Product"
+        title={t('vendor.deleteModal.title')}
         actionButton={
           <button
             onClick={confirmDelete}
             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
           >
-            Delete
+            {t('vendor.deleteModal.confirm')}
           </button>
         }
       >
         <div className="mt-2">
           <p className="text-sm text-gray-500">
-            Are you sure you want to delete this product? This action cannot be undone.
+            {t('vendor.deleteModal.message')}
           </p>
         </div>
       </Modal>
+
+      <AddProductModal 
+        isOpen={isAddProductModalOpen}
+        onClose={() => setIsAddProductModalOpen(false)}
+        onProductAdded={handleProductAdded}
+        service={productService}
+      />
     </div>
   );
 };

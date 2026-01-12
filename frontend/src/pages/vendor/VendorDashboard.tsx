@@ -220,6 +220,9 @@ const VendorDashboard: React.FC = () => {
             <div>
               <p className="text-blue-100 text-sm font-medium">Wallet Balance</p>
               <h3 className="text-3xl font-bold mt-1">{formatPrice(stats.walletBalance)}</h3>
+              <p className="text-xs text-blue-100 mt-1 opacity-80">
+                * Net earnings after {stats.commissionRate || 0}% platform tax (Admin Commission)
+              </p>
             </div>
             <div className="p-2 bg-white/20 rounded-lg">
                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

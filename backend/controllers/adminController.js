@@ -13,8 +13,42 @@ const getDashboardStats = async (req, res) => {
     const totalProducts = await Product.countDocuments();
     const totalOrders = await Order.countDocuments();
     
-    const orders = await Order.find({ orderStatus: { $ne: 'Cancelled' } });
-    const totalRevenue = orders.reduce((sum, order) => sum + order.totalPrice, 0);
+    const orders = await Order.find({ orderStatus: { $ne: 'Cancelled' } })
+      .populate({
+        path: 'orderItems.product',
+        populate: {
+          path: 'owner',
+          select: 'vendorDetails role'
+        }
+      });
+
+    let totalRevenue = 0;
+    let netRevenue = 0; // Admin's share (Profit)
+
+    orders.forEach(order => {
+      totalRevenue += order.totalPrice;
+      
+      order.orderItems.forEach(item => {
+         const product = item.product;
+         const itemTotal = item.price * item.quantity;
+         
+         if (product && product.owner) {
+           if (product.owner.role === 'admin') {
+             // Admin gets 100% of their own products
+             netRevenue += itemTotal;
+           } else {
+             // For vendors, Admin gets commission
+             const commissionRate = product.owner.vendorDetails?.commissionRate || 0;
+             const commissionAmount = itemTotal * (commissionRate / 100);
+             netRevenue += commissionAmount;
+           }
+         } else {
+             // Fallback: If product deleted or owner missing, count as 0 or full?
+             // Let's assume standard commission 5% if missing details? Or 0 to be safe
+             // netRevenue += 0; 
+         }
+      });
+    });
 
     const cancelledOrders = await Order.find({ orderStatus: 'Cancelled' });
     const lostRevenue = cancelledOrders.reduce((sum, order) => sum + order.totalPrice, 0);
@@ -96,6 +130,7 @@ const getDashboardStats = async (req, res) => {
       totalProducts,
       totalOrders,
       totalRevenue,
+      netRevenue, // Admin Profit
       lostRevenue,
       recentOrders,
       recentOrders,

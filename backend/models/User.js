@@ -36,7 +36,8 @@ const userSchema = new mongoose.Schema({
     storeLogo: { type: String }, // URL
     storeBanner: { type: String }, // URL
     walletBalance: { type: Number, default: 0 },
-    bankDetails: { type: String, trim: true }
+    bankDetails: { type: String, trim: true },
+    commissionRate: { type: Number, default: 0, min: 0, max: 100 } // Percentage 0-100
   },
   vendorStatus: {
     type: String,

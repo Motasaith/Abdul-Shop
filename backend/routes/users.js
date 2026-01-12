@@ -428,5 +428,94 @@ router.post('/become-vendor', [
   }
 });
 
+// @route    PUT api/users/vendor/:id/commission
+// @desc     Update vendor commission rate (Admin only)
+// @access   Private/Admin
+router.put('/vendor/:id/commission', [
+  auth, 
+  admin,
+  [
+    check('commissionRate', 'Commission rate is required and must be between 0 and 100')
+      .isFloat({ min: 0, max: 100 })
+  ]
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { commissionRate } = req.body;
+
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    if (user.role !== 'vendor') {
+      return res.status(400).json({ msg: 'User is not a vendor' });
+    }
+
+    // Initialize vendorDetails if it doesn't exist
+    if (!user.vendorDetails) {
+      user.vendorDetails = {};
+    }
+
+    user.vendorDetails.commissionRate = commissionRate;
+    await user.save();
+
+    res.json({ 
+      msg: 'Commission rate updated successfully', 
+      user 
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    PUT api/users/vendor/:id/status
+// @desc     Update vendor status (approve/reject/ban) (Admin only)
+// @access   Private/Admin
+router.put('/vendor/:id/status', [
+  auth, 
+  admin,
+  [
+    check('status', 'Status is required').isIn(['approved', 'rejected', 'pending', 'banned'])
+  ]
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { status } = req.body;
+
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // If approving, ensure role is vendor
+    if (status === 'approved' && user.role !== 'vendor') {
+      user.role = 'vendor';
+    }
+
+    user.vendorStatus = status;
+    await user.save();
+
+    res.json({ 
+      msg: `Vendor status updated to ${status}`, 
+      user 
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
 

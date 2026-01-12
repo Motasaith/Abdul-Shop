@@ -467,8 +467,8 @@ router.put('/:id/pay', auth, async (req, res) => {
       return res.status(404).json({ msg: 'Order not found' });
     }
 
-    // Check if user owns this order
-    if (order.user.toString() !== req.user.id) {
+    // Check if user owns this order or is admin
+    if (order.user.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
@@ -485,25 +485,42 @@ router.put('/:id/pay', auth, async (req, res) => {
     
     // Commission & Wallet Logic: Distribute funds to vendors
     try {
-      // Re-fetch order with populated product details to access owner
-      const populatedOrder = await Order.findById(order._id).populate('orderItems.product');
+      // Re-fetch order with populated product details AND owner to access commission rate
+      const populatedOrder = await Order.findById(order._id)
+        .populate({
+          path: 'orderItems.product',
+          populate: {
+            path: 'owner',
+            model: 'User',
+            select: 'vendorDetails email name'
+          }
+        });
       
       const vendorEarningsMap = {}; // vendorId -> amount to credit
+      const vendorCommissionMap = {}; // vendorId -> commission amount (for logging/notification)
 
       populatedOrder.orderItems.forEach(item => {
-        // Ensure product still exists and has an owner
+        // Ensure product still exists, has an owner, and owner is a vendor
         if (item.product && item.product.owner) {
-          const vendorId = item.product.owner.toString();
+          const vendor = item.product.owner;
+          const vendorId = vendor._id.toString();
           
-          // Calculate earnings (deduct 5% commission)
+          // Calculate earnings
           const itemTotal = item.quantity * item.price;
-          const commissionRate = 0.05; // Platform fee
-          const earning = itemTotal * (1 - commissionRate);
+          
+          // Get dynamic commission rate (default to 0 if not set)
+          // stored as percentage (0-100)
+          const commissionRate = vendor.vendorDetails?.commissionRate || 0;
+          
+          const commissionAmount = itemTotal * (commissionRate / 100);
+          const earning = itemTotal - commissionAmount;
 
           if (vendorEarningsMap[vendorId]) {
             vendorEarningsMap[vendorId] += earning;
+            vendorCommissionMap[vendorId] += commissionAmount;
           } else {
             vendorEarningsMap[vendorId] = earning;
+            vendorCommissionMap[vendorId] = commissionAmount;
           }
         }
       });
@@ -514,11 +531,11 @@ router.put('/:id/pay', auth, async (req, res) => {
           $inc: { 'vendorDetails.walletBalance': amount }
         });
         
-        // Optional: Create a transaction record or notification for the vendor
-        // For now, just updating balance is sufficient for MVP
+        // Log the commission (console for now, ideally separate collection)
+        console.log(`Credited Vendor ${vendorId}: $${amount.toFixed(2)} (Tax: $${vendorCommissionMap[vendorId]?.toFixed(2)})`);
       }
       
-      console.log('Commission distributed successfully:', vendorEarningsMap);
+      console.log('Commission distributed successfully');
 
     } catch (commissionError) {
       console.error('Commission calculation error:', commissionError);
@@ -902,7 +919,8 @@ router.get('/vendor/stats', auth, async (req, res) => {
       totalOrders,
       totalRevenue,
       recentOrders,
-      walletBalance: req.user.vendorDetails?.walletBalance || 0
+      walletBalance: req.user.vendorDetails?.walletBalance || 0,
+      commissionRate: req.user.vendorDetails?.commissionRate || 0
     });
 
   } catch (err) {

@@ -93,11 +93,11 @@ const AdminLayout: React.FC = () => {
       description: 'User accounts'
     },
     { 
-      name: 'Vendor Requests', 
-      href: '/admin/vendors/requests', 
+      name: 'Vendors', 
+      href: '/admin/vendors', 
       icon: BuildingStorefrontIcon, 
       iconSolid: BuildingStorefrontIconSolid,
-      description: 'Approve new vendors'
+      description: 'Manage vendors & payouts'
     },
     { 
       name: 'Newsletter', 

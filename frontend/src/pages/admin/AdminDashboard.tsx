@@ -20,6 +20,7 @@ interface DashboardStats {
   totalProducts: number;
   totalOrders: number;
   totalRevenue: number;
+  netRevenue: number;
   lostRevenue: number;
   recentOrders: Array<{
     _id: string;
@@ -137,11 +138,20 @@ const AdminDashboard: React.FC = () => {
 
   const statCards = [
     { 
-      title: 'Total Revenue', 
-      value: formatPrice(stats.totalRevenue), 
+      title: 'Net Profit', 
+      value: formatPrice(stats.netRevenue), 
       icon: DollarSign, 
-      color: 'text-green-500', 
-      bg: 'bg-green-500/10',
+      color: 'text-emerald-500', 
+      bg: 'bg-emerald-500/10',
+      trend: '+12.5%', 
+      trendUp: true 
+    },
+    { 
+      title: 'Gross Revenue', 
+      value: formatPrice(stats.totalRevenue), 
+      icon: Activity, 
+      color: 'text-blue-500', 
+      bg: 'bg-blue-500/10',
       trend: '+12.5%', 
       trendUp: true 
     },
@@ -163,15 +173,15 @@ const AdminDashboard: React.FC = () => {
       trend: '+8.1%', 
       trendUp: true 
     },
-    { 
-      title: 'Total Products', 
-      value: stats.totalProducts.toLocaleString(), 
-      icon: Package, 
-      color: 'text-orange-500', 
-      bg: 'bg-orange-500/10',
-      trend: '0%', 
-      trendUp: true 
-    },
+    // { 
+    //   title: 'Total Products', 
+    //   value: stats.totalProducts.toLocaleString(), 
+    //   icon: Package, 
+    //   color: 'text-orange-500', 
+    //   bg: 'bg-orange-500/10',
+    //   trend: '0%', 
+    //   trendUp: true 
+    // },
   ];
 
   return (

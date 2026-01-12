@@ -4,7 +4,7 @@ export interface User {
   name: string;
   email: string;
   role: 'user' | 'admin' | 'vendor';
-  vendorStatus?: 'none' | 'pending' | 'approved' | 'rejected';
+  vendorStatus?: 'none' | 'pending' | 'approved' | 'rejected' | 'banned';
   vendorDetails?: {
     shopName: string;
     storeDescription?: string;
@@ -12,6 +12,7 @@ export interface User {
     storeBanner?: string;
     walletBalance: number;
     bankDetails?: string;
+    commissionRate?: number;
   };
   avatar?: {
     public_id: string;

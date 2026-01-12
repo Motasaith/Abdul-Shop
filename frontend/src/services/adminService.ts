@@ -58,6 +58,11 @@ const adminService = {
   updateOrderStatus: async (id: string, orderStatus: string) => {
     const response = await apiService.put(`/admin/orders/${id}/status`, { orderStatus });
     return response.data;
+  },
+
+  markOrderAsPaid: async (id: string, paymentResult: any) => {
+    const response = await apiService.put(`/orders/${id}/pay`, paymentResult);
+    return response.data;
   }
 };
 

@@ -92,6 +92,15 @@ class ApiService {
   getShopProfile(shopId: string) {
     return this.axiosInstance.get(`/shop/${shopId}`);
   }
+
+  // Admin Vendor Management
+  updateVendorCommission(userId: string, commissionRate: number) {
+    return this.axiosInstance.put(`/users/vendor/${userId}/commission`, { commissionRate });
+  }
+
+  updateVendorStatus(userId: string, status: 'approved' | 'rejected' | 'pending' | 'banned') {
+    return this.axiosInstance.put(`/users/vendor/${userId}/status`, { status });
+  }
 }
 
 export const apiService = new ApiService();

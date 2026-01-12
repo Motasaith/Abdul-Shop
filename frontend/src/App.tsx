@@ -67,6 +67,7 @@ import AdminNotifications from './pages/admin/AdminNotifications';
 import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminSupportDetailPage from './pages/admin/AdminSupportDetailPage';
 import AdminVendorRequests from './pages/admin/AdminVendorRequests';
+import AdminVendorsPage from './pages/admin/AdminVendorsPage';
 
 // User Support Pages
 import SupportTicketListPage from './pages/profile/SupportTicketListPage';
@@ -181,7 +182,8 @@ function AppContent() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="users" element={<AdminUsers />} />
-            <Route path="vendors/requests" element={<AdminVendorRequests />} />
+            <Route path="vendors" element={<AdminVendorsPage />} />
+            <Route path="vendors/requests" element={<AdminVendorRequests />} /> {/* Keeping for backward compat if needed, but UI links to /vendors */}
             <Route path="newsletter" element={<AdminNewsletter />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />

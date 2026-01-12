@@ -5,6 +5,7 @@ export interface VendorStats {
   totalOrders: number;
   totalRevenue: number;
   walletBalance: number;
+  commissionRate?: number;
   recentOrders: Array<{
     _id: string;
     user: { name: string };

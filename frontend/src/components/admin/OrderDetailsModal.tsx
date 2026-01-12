@@ -19,6 +19,7 @@ import {
 import { usePrice } from '../../hooks/usePrice';
 import adminService from '../../services/adminService';
 import toast from 'react-hot-toast';
+import ConfirmationModal from '../common/ConfirmationModal';
 
 interface OrderDetailsModalProps {
   isOpen: boolean;
@@ -32,6 +33,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   
+  // Confirmation Modal state
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => Promise<void>) | null>(null);
+
   // Tracking info state
   const [trackingNumber, setTrackingNumber] = useState('');
   const [carrier, setCarrier] = useState('');
@@ -213,6 +218,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
   if (!isOpen || !order) return null;
 
   return (
+    <>
     <AnimatePresence>
       {isOpen && (
         <>
@@ -449,6 +455,37 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
                             {order.isPaid ? 'Paid' : 'Unpaid'}
                           </span>
                         </div>
+                        
+                        {!order.isPaid && (
+                          <button
+                            onClick={() => {
+                              setPendingAction(() => async () => {
+                                try {
+                                  setLoading(true);
+                                  await adminService.markOrderAsPaid(order._id, {
+                                    id: 'MANUAL_ADMIN',
+                                    status: 'COMPLETED',
+                                    update_time: new Date().toISOString(),
+                                    payer: { email_address: 'admin@manual.com' }
+                                  });
+                                  toast.success('Order marked as paid & payouts processed');
+                                  onUpdate();
+                                  onClose();
+                                } catch (err) {
+                                  toast.error('Failed to mark as paid');
+                                  console.error(err);
+                                } finally {
+                                  setLoading(false);
+                                  setIsConfirmModalOpen(false);
+                                }
+                              });
+                              setIsConfirmModalOpen(true);
+                            }}
+                            className="w-full mt-2 py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition-colors"
+                          >
+                            Mark as Paid (Manual)
+                          </button>
+                        )}
                         {order.isPaid && order.paidAt && (
                            <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-500 dark:text-gray-400">Paid On</span>
@@ -467,6 +504,19 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
         </>
       )}
     </AnimatePresence>
+    
+    <ConfirmationModal
+      isOpen={isConfirmModalOpen}
+      onClose={() => setIsConfirmModalOpen(false)}
+      onConfirm={() => {
+        if (pendingAction) pendingAction();
+      }}
+      title="Confirm Manual Payment"
+      message="Are you sure you want to mark this order as PAID manually? This will immediately trigger vendor payouts and update their wallet balances. This action is irreversible."
+      confirmText="Yes, Mark as Paid"
+      variant="warning"
+    />
+    </>
   );
 };
 

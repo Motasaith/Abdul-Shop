@@ -72,7 +72,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
     images: [] as Media[],
     videos: [] as Media[],
     specifications: [] as { name: string; value: string }[],
-    whatsInBox: [] as { item: string; quantity: number }[]
+    whatsInBox: [] as { item: string; quantity: number }[],
+    deliveryInfo: {
+        standardDelivery: { cost: 135, days: '5-7 days' },
+        cashOnDelivery: { available: true }
+    },
+    returnPolicy: { available: true, days: 14 },
+    warranty: { available: false, duration: '', type: 'Seller' }
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
@@ -104,7 +110,25 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
         images: product.images || [],
         videos: product.videos || [],
         specifications: product.specifications || [],
-        whatsInBox: product.whatsInBox || []
+        whatsInBox: product.whatsInBox || [],
+        deliveryInfo: {
+            standardDelivery: { 
+                cost: product.deliveryInfo?.standardDelivery?.cost ?? 135, 
+                days: product.deliveryInfo?.standardDelivery?.days || '5-7 days' 
+            },
+            cashOnDelivery: { 
+                available: product.deliveryInfo?.cashOnDelivery?.available ?? true 
+            }
+        },
+        returnPolicy: { 
+            available: product.returnPolicy?.available ?? true, 
+            days: product.returnPolicy?.days ?? 14 
+        },
+        warranty: { 
+            available: product.warranty?.available ?? false, 
+            duration: product.warranty?.duration || '', 
+            type: product.warranty?.type || 'Seller' 
+        }
       });
     } else if (!product && isOpen) {
         resetForm();
@@ -149,6 +173,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
         formDataToSend.append(`videoUrls[${index}][public_id]`, video.public_id);
       });
 
+      
       // Complex objects
       formData.specifications.forEach((spec, index) => {
         if (spec.name && spec.value) {
@@ -163,6 +188,20 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
           formDataToSend.append(`whatsInBox[${index}][quantity]`, item.quantity.toString());
         }
       });
+      
+      // Delivery Info
+      formDataToSend.append('deliveryInfo[standardDelivery][cost]', formData.deliveryInfo.standardDelivery.cost.toString());
+      formDataToSend.append('deliveryInfo[standardDelivery][days]', formData.deliveryInfo.standardDelivery.days);
+      formDataToSend.append('deliveryInfo[cashOnDelivery][available]', formData.deliveryInfo.cashOnDelivery.available.toString());
+      
+      // Return Policy
+      formDataToSend.append('returnPolicy[available]', formData.returnPolicy.available.toString());
+      formDataToSend.append('returnPolicy[days]', formData.returnPolicy.days.toString());
+      
+      // Warranty
+      formDataToSend.append('warranty[available]', formData.warranty.available.toString());
+      formDataToSend.append('warranty[duration]', formData.warranty.duration);
+      formDataToSend.append('warranty[type]', formData.warranty.type);
 
       if (product) {
          // Update Logic
@@ -224,7 +263,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       images: [],
       videos: [],
       specifications: [],
-      whatsInBox: []
+      whatsInBox: [],
+      deliveryInfo: {
+          standardDelivery: { cost: 135, days: '5-7 days' },
+          cashOnDelivery: { available: true }
+      },
+      returnPolicy: { available: true, days: 14 },
+      warranty: { available: false, duration: '', type: 'Seller' }
     });
     setImageFiles([]);
     setVideoFiles([]);
@@ -378,6 +423,111 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                        <InputField label="Stock *" type="number" name="countInStock" value={formData.countInStock} onChange={handleInputChange} min="0" required icon={Package} />
                        <InputField label="SKU" name="sku" value={formData.sku} onChange={handleInputChange} placeholder="Stock Keeping Unit" />
                        <InputField label="Weight (kg)" type="number" name="weight" value={formData.weight} onChange={handleInputChange} step="0.01" min="0" />
+                    </div>
+                  </section>
+
+                  {/* Delivery & Warranty */}
+                  <section>
+                    <h3 className="flex items-center text-sm font-semibold text-gray-900 dark:text-white mb-4">
+                       <Check className="w-4 h-4 mr-2 text-orange-500" />
+                       Delivery & Services
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 dark:bg-gray-900/30 p-5 rounded-xl border border-gray-100 dark:border-gray-700/50">
+                        {/* Delivery Info */}
+                        <div className="space-y-4">
+                            <h4 className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Delivery</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputField 
+                                  label="Cost" 
+                                  type="number" 
+                                  value={formData.deliveryInfo.standardDelivery.cost} 
+                                  onChange={(e: any) => setFormData(p => ({...p, deliveryInfo: {...p.deliveryInfo, standardDelivery: {...p.deliveryInfo.standardDelivery, cost: parseFloat(e.target.value)||0}} }))} 
+                                />
+                                <InputField 
+                                  label="Time (e.g. 5-7 days)" 
+                                  value={formData.deliveryInfo.standardDelivery.days} 
+                                  onChange={(e: any) => setFormData(p => ({...p, deliveryInfo: {...p.deliveryInfo, standardDelivery: {...p.deliveryInfo.standardDelivery, days: e.target.value}} }))} 
+                                />
+                            </div>
+                            <label className="flex items-center cursor-pointer group">
+                                <input 
+                                  type="checkbox" 
+                                  checked={formData.deliveryInfo.cashOnDelivery.available} 
+                                  onChange={(e) => setFormData(p => ({...p, deliveryInfo: {...p.deliveryInfo, cashOnDelivery: { available: e.target.checked }} }))}
+                                  className="sr-only" 
+                                />
+                                <div className={`w-9 h-5 rounded-full transition-colors ${formData.deliveryInfo.cashOnDelivery.available ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
+                                <div className={`absolute ml-1 mt-1 bg-white w-3 h-3 rounded-full transition-transform ${formData.deliveryInfo.cashOnDelivery.available ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                                <span className="ml-3 text-sm text-gray-700 dark:text-gray-300">Cash on Delivery</span>
+                            </label>
+                        </div>
+
+                        {/* Returns & Warranty */}
+                        <div className="space-y-4 border-l border-gray-200 dark:border-gray-700/50 pl-0 md:pl-6">
+                            <h4 className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Services</h4>
+                            
+                            {/* Return Policy */}
+                            <div className="space-y-3">
+                                <label className="flex items-center cursor-pointer group">
+                                    <input 
+                                      type="checkbox" 
+                                      checked={formData.returnPolicy.available} 
+                                      onChange={(e) => setFormData(p => ({...p, returnPolicy: {...p.returnPolicy, available: e.target.checked }}))}
+                                      className="sr-only" 
+                                    />
+                                    <div className={`w-9 h-5 rounded-full transition-colors ${formData.returnPolicy.available ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
+                                    <div className={`absolute ml-1 mt-1 bg-white w-3 h-3 rounded-full transition-transform ${formData.returnPolicy.available ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                                    <span className="ml-3 text-sm text-gray-700 dark:text-gray-300">Return Policy</span>
+                                </label>
+                                {formData.returnPolicy.available && (
+                                   <InputField 
+                                     label="Return Days" 
+                                     type="number" 
+                                     fullWidth 
+                                     value={formData.returnPolicy.days} 
+                                     onChange={(e: any) => setFormData(p => ({...p, returnPolicy: {...p.returnPolicy, days: parseInt(e.target.value)||0 }}))} 
+                                   />
+                                )}
+                            </div>
+
+                            {/* Warranty */}
+                            <div className="space-y-3 pt-2 border-t border-gray-200 dark:border-gray-700/50">
+                                <label className="flex items-center cursor-pointer group">
+                                    <input 
+                                      type="checkbox" 
+                                      checked={formData.warranty.available} 
+                                      onChange={(e) => setFormData(p => ({...p, warranty: {...p.warranty, available: e.target.checked }}))}
+                                      className="sr-only" 
+                                    />
+                                    <div className={`w-9 h-5 rounded-full transition-colors ${formData.warranty.available ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
+                                    <div className={`absolute ml-1 mt-1 bg-white w-3 h-3 rounded-full transition-transform ${formData.warranty.available ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                                    <span className="ml-3 text-sm text-gray-700 dark:text-gray-300">Warranty</span>
+                                </label>
+                                {formData.warranty.available && (
+                                   <div className="grid grid-cols-2 gap-3">
+                                       <InputField 
+                                          label="Duration" 
+                                          placeholder="e.g. 1 Year"
+                                          value={formData.warranty.duration} 
+                                          onChange={(e: any) => setFormData(p => ({...p, warranty: {...p.warranty, duration: e.target.value }}))} 
+                                       />
+                                       <div>
+                                          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">Type</label>
+                                          <select 
+                                            value={formData.warranty.type} 
+                                            onChange={(e) => setFormData(p => ({...p, warranty: {...p.warranty, type: e.target.value }}))}
+                                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white text-sm"
+                                          >
+                                              <option value="Seller">Seller</option>
+                                              <option value="Manufacturer">Manufacturer</option>
+                                              <option value="Brand">Brand</option>
+                                          </select>
+                                       </div>
+                                   </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                   </section>
 

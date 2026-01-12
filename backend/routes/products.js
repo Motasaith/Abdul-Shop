@@ -181,7 +181,9 @@ router.get('/vendor/my', auth, async (req, res) => {
 // @access   Public
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('category', 'name');
+    const product = await Product.findById(req.params.id)
+      .populate('category', 'name')
+      .populate('owner', 'name vendorDetails role');
 
     if (!product) {
       return res.status(404).json({ msg: 'Product not found' });

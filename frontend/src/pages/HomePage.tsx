@@ -297,7 +297,7 @@ const HomePage: React.FC = () => {
            <p className="text-indigo-200 text-xs">Premium products only.</p>
         </motion.div>
 
-        {/* PRODUCT TILE 4 - Medium Card (Replaces Release Card) */}
+        {/* PRODUCT TILE 4 - Medium Card (Replaces Release Card) - COMMENTED OUT AS PER USER REQUEST
         {displayProducts[3] && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -325,6 +325,7 @@ const HomePage: React.FC = () => {
              </Link>
           </motion.div>
         )}
+        */}
 
       </div>
 

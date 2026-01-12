@@ -64,6 +64,7 @@ export interface Product {
   isActive: boolean;
   isNewArrival?: boolean;
   onSale?: boolean;
+  owner?: User | string; // Populated in details, string ID otherwise
   createdBy: string;
   createdAt: string;
   updatedAt: string;

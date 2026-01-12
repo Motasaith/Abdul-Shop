@@ -19,8 +19,11 @@ import {
   UserCircleIcon,
   PencilIcon,
   CheckBadgeIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  XMarkIcon,
+  MagnifyingGlassPlusIcon
 } from '@heroicons/react/24/outline';
+import { motion, AnimatePresence } from 'framer-motion';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import WishlistButton from '../components/common/WishlistButton';
 import toast from 'react-hot-toast';
@@ -51,6 +54,8 @@ const ProductDetailPage: React.FC = () => {
   // Admin answer state
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
   const [answeringId, setAnsweringId] = useState<string | null>(null);
+  
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const handleReviewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -245,16 +250,26 @@ const ProductDetailPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 p-4 sm:p-6">
             {/* Product Images */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="aspect-w-1 aspect-h-1 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+              <div 
+                className="aspect-w-1 aspect-h-1 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden relative group cursor-zoom-in"
+                onClick={() => setIsLightboxOpen(true)}
+              >
                 {allMedia.length > 0 ? (
-                  <img
-                    src={allMedia[selectedImage]?.url || 'https://via.placeholder.com/600x600?text=No+Image'}
-                    alt={product.name}
-                    className="w-full h-64 sm:h-80 lg:h-96 object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://via.placeholder.com/600x600?text=No+Image';
-                    }}
-                  />
+                  <>
+                    <img
+                      src={allMedia[selectedImage]?.url || 'https://via.placeholder.com/600x600?text=No+Image'}
+                      alt={product.name}
+                      className="w-full h-64 sm:h-80 lg:h-96 object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://via.placeholder.com/600x600?text=No+Image';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-300">
+                       <div className="bg-white/80 dark:bg-black/60 p-3 rounded-full backdrop-blur-sm shadow-sm">
+                          <MagnifyingGlassPlusIcon className="w-6 h-6 text-gray-800 dark:text-white" />
+                       </div>
+                    </div>
+                  </>
                 ) : (
                   <div className="w-full h-64 sm:h-80 lg:h-96 flex items-center justify-center bg-gray-200 dark:bg-gray-700">
                     <span className="text-gray-400">No image available</span>
@@ -294,6 +309,13 @@ const ProductDetailPage: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-400 mt-2">{product.category}</p>
                 {product.brand && (
                   <p className="text-blue-600 font-medium mt-1">By {product.brand}</p>
+                )}
+                {product.owner && typeof product.owner !== 'string' && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Sold by: <span className="font-semibold text-gray-700 dark:text-gray-300">
+                      {product.owner.vendorDetails?.shopName || product.owner.name || 'ShopHub'}
+                    </span>
+                  </p>
                 )}
               </div>
 
@@ -886,6 +908,56 @@ const ProductDetailPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            <button
+              className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+              onClick={() => setIsLightboxOpen(false)}
+            >
+              <XMarkIcon className="w-8 h-8" />
+            </button>
+
+            <div className="relative w-full h-full flex flex-col items-center justify-center p-4">
+              <motion.img
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                src={allMedia[selectedImage]?.url}
+                alt={product.name}
+                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              {allMedia.length > 1 && (
+                 <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 p-4 overflow-x-auto" onClick={(e) => e.stopPropagation()}>
+                    {allMedia.map((media, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedImage(index)}
+                        className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                          selectedImage === index 
+                            ? 'border-white scale-110 shadow-lg' 
+                            : 'border-white/30 opacity-60 hover:opacity-100 hover:border-white/60'
+                        }`}
+                      >
+                        <img src={media.url} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                 </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -7,7 +7,9 @@ import {
   resendEmailVerification, 
   changePassword,
   forgotPassword,
-  updateEmail
+
+  updateEmail,
+  becomeVendor
 } from '../store/slices/authSlice';
 import authService from '../services/authService';
 import PhoneInput from '../components/common/PhoneInput';
@@ -34,8 +36,13 @@ const ProfilePage: React.FC = () => {
     confirmPassword: ''
   });
   
+
   // Email verification states
   const [resendingEmail, setResendingEmail] = useState(false);
+
+  // Vendor application states
+  const [showVendorForm, setShowVendorForm] = useState(false);
+  const [shopName, setShopName] = useState('');
 
   const handlePhoneChange = (phoneValue: string, countryCode?: string) => {
     setPhoneNumber(phoneValue);
@@ -156,6 +163,7 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+
   const handleUpdateEmail = async () => {
     if (!emailAddress || !emailAddress.includes('@')) {
       toast.error('Please enter a valid email address');
@@ -168,6 +176,23 @@ const ProfilePage: React.FC = () => {
       setEditingEmail(false);
     } catch (error: any) {
       toast.error(error.message || 'Failed to update email address');
+    }
+  };
+
+  const handleBecomeVendor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!shopName.trim()) {
+      toast.error('Shop name is required');
+      return;
+    }
+
+    try {
+      await dispatch(becomeVendor(shopName)).unwrap();
+      toast.success('Vendor application submitted successfully!');
+      setShowVendorForm(false);
+      setShopName('');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to submit application');
     }
   };
 
@@ -601,6 +626,165 @@ const ProfilePage: React.FC = () => {
                 )}
               </div>
             </div>
+
+            {/* Vendor Application Section */}
+            {user.role === 'user' && (
+              <div className="border-t pt-6 border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Vendor Status</h2>
+                
+                {user.vendorStatus === 'none' && (
+                  <div className="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-md p-4">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0">
+                        <svg className="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <div className="ml-3 flex-1">
+                        <h3 className="text-sm font-medium text-purple-800 dark:text-purple-200">
+                          Become a Seller
+                        </h3>
+                        <div className="mt-2 text-sm text-purple-700 dark:text-purple-300">
+                          <p>Start selling your products on our platform today! Apply for a vendor account to get started.</p>
+                        </div>
+                        
+                        {!showVendorForm ? (
+                          <div className="mt-4">
+                            <button
+                              onClick={() => setShowVendorForm(true)}
+                              className="bg-purple-600 px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-purple-700"
+                            >
+                              Apply Now
+                            </button>
+                          </div>
+                        ) : (
+                          <form onSubmit={handleBecomeVendor} className="mt-4 space-y-3">
+                            <div>
+                              <label className="block text-sm font-medium text-purple-800 dark:text-purple-200 mb-1">
+                                Shop Name
+                              </label>
+                              <input
+                                type="text"
+                                value={shopName}
+                                onChange={(e) => setShopName(e.target.value)}
+                                placeholder="Enter your shop name"
+                                className="block w-full px-3 py-2 border border-purple-300 dark:border-purple-700 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                required
+                              />
+                            </div>
+                            
+                            <div className="flex space-x-2">
+                              <button
+                                type="submit"
+                                disabled={loading}
+                                className="bg-purple-600 px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-50"
+                              >
+                                {loading ? 'Submitting...' : 'Submit Application'}
+                              </button>
+                              
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowVendorForm(false);
+                                  setShopName('');
+                                }}
+                                className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-purple-800 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-900/30 border border-purple-300 dark:border-purple-700"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {user.vendorStatus === 'pending' && (
+                  <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-md p-4">
+                    <div className="flex items-center">
+                      <svg className="h-5 w-5 text-blue-400 dark:text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                      </svg>
+                      <div>
+                        <span className="text-sm text-blue-800 dark:text-blue-200 font-medium block">
+                          Vendor Application Pending
+                        </span>
+                        <span className="text-xs text-blue-600 dark:text-blue-300">
+                          Your application for shop "{user.vendorDetails?.shopName}" is under review.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {user.vendorStatus === 'rejected' && (
+                  <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-4">
+                    <div className="flex items-center">
+                      <svg className="h-5 w-5 text-red-400 dark:text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                      <div>
+                        <span className="text-sm text-red-800 dark:text-red-200 font-medium block">
+                          Application Rejected
+                        </span>
+                        <span className="text-xs text-red-600 dark:text-red-300">
+                          Your vendor application was not approved. Please contact support for more details.
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                        <button
+                          onClick={() => {
+                             setShowVendorForm(true); 
+                          }}
+                           className="text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200 underline"
+                        >
+                          Try Again
+                        </button>
+                    </div>
+                    {showVendorForm && (
+                         <form onSubmit={handleBecomeVendor} className="mt-4 space-y-3">
+                            <div>
+                              <label className="block text-sm font-medium text-red-800 dark:text-red-200 mb-1">
+                                New Shop Name
+                              </label>
+                              <input
+                                type="text"
+                                value={shopName}
+                                onChange={(e) => setShopName(e.target.value)}
+                                placeholder="Enter your shop name"
+                                className="block w-full px-3 py-2 border border-red-300 dark:border-red-700 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                required
+                              />
+                            </div>
+                            
+                            <div className="flex space-x-2">
+                              <button
+                                type="submit"
+                                disabled={loading}
+                                className="bg-red-600 px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                              >
+                                {loading ? 'Submitting...' : 'Submit New Application'}
+                              </button>
+                              
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowVendorForm(false);
+                                  setShopName('');
+                                }}
+                                className="bg-transparent px-4 py-2 rounded-md text-sm font-medium text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-300 dark:border-red-700"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

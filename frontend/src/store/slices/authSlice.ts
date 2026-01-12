@@ -123,6 +123,21 @@ export const resendEmailVerification = createAsyncThunk(
   }
 );
 
+export const resendEmailVerificationPublic = createAsyncThunk(
+  'auth/resendEmailVerificationPublic',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await authService.resendVerificationEmailPublic(email);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.errors?.[0]?.msg || 
+                          error.response?.data?.message || 
+                          'Failed to resend email verification';
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async (email: string, { rejectWithValue }) => {
@@ -168,6 +183,7 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+
 export const updateEmail = createAsyncThunk(
   'auth/updateEmail',
   async ({ newEmail }: { newEmail: string }, { rejectWithValue }) => {
@@ -178,6 +194,21 @@ export const updateEmail = createAsyncThunk(
       const errorMessage = error.response?.data?.errors?.[0]?.msg || 
                           error.response?.data?.message || 
                           'Email update failed';
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const becomeVendor = createAsyncThunk(
+  'auth/becomeVendor',
+  async (shopName: string, { rejectWithValue }) => {
+    try {
+      const response = await authService.becomeVendor(shopName);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.errors?.[0]?.msg || 
+                          error.response?.data?.message || 
+                          'Failed to submit vendor application';
       return rejectWithValue(errorMessage);
     }
   }
@@ -345,6 +376,19 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      // Public Resend email verification
+      .addCase(resendEmailVerificationPublic.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resendEmailVerificationPublic.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(resendEmailVerificationPublic.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       // Forgot password
       .addCase(forgotPassword.pending, (state) => {
         state.loading = true;
@@ -393,7 +437,28 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null;
       })
+
       .addCase(updateEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Become vendor
+      .addCase(becomeVendor.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(becomeVendor.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.user) {
+          state.user.vendorStatus = 'pending';
+          state.user.vendorDetails = {
+            shopName: action.meta.arg,
+            walletBalance: 0
+          };
+        }
+        state.error = null;
+      })
+      .addCase(becomeVendor.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

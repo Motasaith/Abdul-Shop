@@ -5,6 +5,7 @@ import { registerUser, clearError } from '../../store/slices/authSlice';
 import PhoneInput from '../../components/common/PhoneInput';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../../hooks/useTranslation';
+import PasswordStrengthIndicator from '../../components/common/PasswordStrengthIndicator';
 
 const VendorRegisterPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -68,6 +69,19 @@ const VendorRegisterPage: React.FC = () => {
       return;
     }
 
+    // Password strength validation
+    const isStrongPassword = 
+      formData.password.length >= 8 &&
+      /[A-Z]/.test(formData.password) &&
+      /[a-z]/.test(formData.password) &&
+      /[0-9]/.test(formData.password) &&
+      /[^A-Za-z0-9]/.test(formData.password);
+
+    if (!isStrongPassword) {
+      toast.error('Please choose a stronger password');
+      return;
+    }
+
     try {
       // Dispatch register with vendor specific data
       // Note: We need to ensure the authSlice/registerUser action supports these extra fields
@@ -95,6 +109,12 @@ const VendorRegisterPage: React.FC = () => {
          return;
       }
 
+      if (result.emailVerificationRequired) {
+        toast.success('Registration successful! Please check your email for verification link.');
+        navigate('/email-verification', { state: { email: formData.email } });
+        return;
+      }
+
       if (result.phoneVerificationRequired) {
         if (result.smsSuccess) {
           toast.success('Registration successful! SMS sent to your phone.');
@@ -107,10 +127,12 @@ const VendorRegisterPage: React.FC = () => {
             devCode: result.devCode 
           }
         });
-      } else {
-        toast.success('Vendor Registration Successful!');
-        navigate('/vendor/dashboard');
-      }
+        return; // Add return to prevent fall-through
+      } 
+      
+      // Default success case
+      toast.success('Vendor Registration Successful!');
+      navigate('/vendor/dashboard');
     } catch (error) {
       // Error is handled by the useEffect above
     }
@@ -204,6 +226,7 @@ const VendorRegisterPage: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                 />
+                <PasswordStrengthIndicator password={formData.password} />
               </div>
               
               <div>

@@ -5,6 +5,7 @@ import { registerUser, clearError } from '../../store/slices/authSlice';
 import PhoneInput from '../../components/common/PhoneInput';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../../hooks/useTranslation';
+import PasswordStrengthIndicator from '../../components/common/PasswordStrengthIndicator';
 
 const RegisterPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -68,6 +69,19 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
+    // Password strength validation
+    const isStrongPassword = 
+      formData.password.length >= 8 &&
+      /[A-Z]/.test(formData.password) &&
+      /[a-z]/.test(formData.password) &&
+      /[0-9]/.test(formData.password) &&
+      /[^A-Za-z0-9]/.test(formData.password);
+
+    if (!isStrongPassword) {
+      toast.error('Please choose a stronger password');
+      return;
+    }
+
     try {
       const result = await dispatch(registerUser({
         name: formData.name,
@@ -91,7 +105,7 @@ const RegisterPage: React.FC = () => {
         });
       } else if (result.emailVerificationRequired) {
         toast.success('Registration successful! Please check your email for verification link.');
-        navigate('/email-verification');
+        navigate('/email-verification', { state: { email: formData.email } });
       } else {
         toast.success(t('auth.registerSuccess'));
         navigate('/');
@@ -176,6 +190,7 @@ const RegisterPage: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                 />
+                <PasswordStrengthIndicator password={formData.password} />
               </div>
               
               <div>

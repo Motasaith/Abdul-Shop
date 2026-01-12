@@ -404,6 +404,12 @@ router.post('/login', [
 
     // Update last login
     user.lastLogin = new Date();
+    
+    // Clear email verification token if it exists (cleanup)
+    if (user.emailVerificationToken) {
+      user.emailVerificationToken = undefined;
+    }
+    
     await user.save();
 
     const payload = {
@@ -631,7 +637,12 @@ router.post('/resend-verification', require('../middleware/auth'), async (req, r
 router.post('/verify-email', async (req, res) => {
   const { token } = req.body;
   
+  console.log('--- Email Verification Debug ---');
+  console.log('Body:', req.body);
+  console.log(`Token received: '${token}'`);
+  
   if (!token) {
+    console.log('Token is missing/undefined/null');
     return res.status(400).json({ errors: [{ msg: 'Verification token is required' }] });
   }
   
@@ -640,13 +651,21 @@ router.post('/verify-email', async (req, res) => {
     let user = await User.findOne({ emailVerificationToken: token });
     let isNewEmail = false;
     
+    console.log(`User lookup by regular token result: ${user ? user.email : 'null'}`);
+    
     // If not found, check for new email verification
     if (!user) {
       user = await User.findOne({ newEmailVerificationToken: token });
       isNewEmail = true;
+      console.log(`User lookup by new email token result: ${user ? user.email : 'null'}`);
     }
     
     if (!user) {
+      console.log('User not found with this token via findOne');
+      // Debug: Checking if token exists at all (maybe modified?)
+      const allUsersWithTokens = await User.countDocuments({ emailVerificationToken: { $exists: true, $ne: null } });
+      console.log(`Total users with pending verification tokens: ${allUsersWithTokens}`);
+      
       return res.status(400).json({ errors: [{ msg: 'Invalid or expired verification token' }] });
     }
     
@@ -667,15 +686,58 @@ router.post('/verify-email', async (req, res) => {
     } else {
       // Handle regular email verification
       if (user.emailVerified) {
-        return res.status(400).json({ errors: [{ msg: 'Email already verified' }] });
+        // Idempotency: If already verified, return success instead of error
+        // This handles cases where email scanners hit the link before the user
+        return res.json({ msg: 'Email already verified' });
       }
       
       user.emailVerified = true;
-      user.emailVerificationToken = undefined;
+      // Do NOT clear the token yet to allow for idempotency (scanner + user click)
+      // The token will be cleared upon first login
       await user.save();
       
+      console.log(`User ${user.email} verified successfully!`);
       res.json({ msg: 'Email verified successfully' });
     }
+  } catch (err) {
+    console.error('Verify Email Error:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route    POST api/auth/resend-verification-email
+// @desc     Resend email verification (Public version - requires email)
+// @access   Public
+router.post('/resend-verification-email', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ errors: [{ msg: 'Email is required' }] });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({ errors: [{ msg: 'User not found' }] });
+    }
+    
+    if (user.emailVerified) {
+      return res.status(200).json({ msg: 'Email already verified' });
+    }
+    
+    // Generate new verification token
+    const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+    user.emailVerificationToken = emailVerificationToken;
+    await user.save();
+    
+    // Send verification email
+    const emailResult = await emailService.sendEmailVerification(user, emailVerificationToken);
+    
+    res.json({ 
+      msg: 'Verification email sent successfully',
+      emailSent: emailResult.success
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -683,7 +745,7 @@ router.post('/verify-email', async (req, res) => {
 });
 
 // @route    POST api/auth/resend-email-verification
-// @desc     Resend email verification
+// @desc     Resend email verification (Authenticated version)
 // @access   Private
 router.post('/resend-email-verification', require('../middleware/auth'), async (req, res) => {
   try {
@@ -694,7 +756,7 @@ router.post('/resend-email-verification', require('../middleware/auth'), async (
     }
     
     if (user.emailVerified) {
-      return res.status(400).json({ errors: [{ msg: 'Email already verified' }] });
+      return res.status(200).json({ msg: 'Email already verified' });
     }
     
     // Generate new verification token

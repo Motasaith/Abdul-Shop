@@ -51,9 +51,14 @@ class AuthService {
     return apiService.post('/auth/verify-email', { token });
   }
 
-  // Resend verification email
+  // Resend verification email (Public)
+  async resendVerificationEmailPublic(email: string) {
+    return apiService.post('/auth/resend-verification-email', { email });
+  }
+
+  // Resend verification email (Authenticated)
   async resendVerificationEmail() {
-    return apiService.post('/users/send-email-verification');
+    return apiService.post('/auth/resend-email-verification');
   }
 
   // Send phone verification
@@ -74,6 +79,11 @@ class AuthService {
   // Test phone validation
   async testPhoneValidation(phone: string, countryCode?: string) {
     return apiService.post('/auth/test-phone-validation', { phone, countryCode });
+  }
+
+  // Become a vendor
+  async becomeVendor(shopName: string) {
+    return apiService.post('/users/become-vendor', { shopName });
   }
 }
 

@@ -360,4 +360,73 @@ router.delete('/:id', [auth, admin], async (req, res) => {
   }
 });
 
+
+// @route    POST api/users/become-vendor
+// @desc     Request to become a vendor
+// @access   Private
+router.post('/become-vendor', [
+  auth,
+  [
+    check('shopName', 'Shop name is required').not().isEmpty()
+  ]
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { shopName } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role === 'vendor') {
+      return res.status(400).json({ message: 'You are already a vendor' });
+    }
+
+    if (user.vendorStatus === 'pending') {
+      return res.status(400).json({ message: 'Your vendor application is already pending' });
+    }
+
+    // Update user with vendor details and pending status
+    user.vendorDetails = {
+      shopName,
+      walletBalance: 0
+    };
+    user.vendorStatus = 'pending';
+    
+    await user.save();
+
+    // Create system notification for admin
+    try {
+      const notificationService = require('../services/notificationService');
+      await notificationService.createNotification(
+        'user',
+        `New Vendor Application: ${user.name} (${user.email}) - Shop: ${shopName}`,
+        {
+          userId: user.id,
+          name: user.name,
+          email: user.email,
+          type: 'vendor_application'
+        }
+      );
+    } catch (notifyError) {
+      console.error('Failed to create admin notification:', notifyError);
+    }
+
+    res.json({ 
+      message: 'Vendor application submitted successfully', 
+      user 
+    });
+  } catch (err) {
+    console.error('Become vendor error:', err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
+

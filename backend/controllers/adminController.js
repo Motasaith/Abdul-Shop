@@ -621,10 +621,15 @@ const deleteUser = async (req, res) => {
     // Log the deletion for security audit
     console.log(`Admin ${req.user.id} is deleting user ${user._id} (${user.email})`);
     
+    // Delete all products created by this user (Cascade Delete)
+    const productDeletionResult = await Product.deleteMany({ createdBy: user._id });
+    console.log(`Deleted ${productDeletionResult.deletedCount} products associated with user ${user._id}`);
+
     await User.findByIdAndDelete(req.params.id);
     
     res.json({ 
-      message: 'User deleted successfully',
+      message: 'User and associated products deleted successfully',
+      deletedProductsCount: productDeletionResult.deletedCount,
       deletedUser: {
         id: user._id,
         name: user.name,

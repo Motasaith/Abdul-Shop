@@ -70,7 +70,7 @@ const AdminDashboard: React.FC = () => {
     const headers = ['Order ID', 'Customer', 'Date', 'Total', 'Status'];
     const rows = stats.recentOrders.map(order => [
       order._id,
-      order.user.name,
+      order.user?.name || 'Deleted User',
       new Date(order.createdAt).toLocaleDateString(),
       order.totalPrice,
       order.orderStatus
@@ -335,11 +335,11 @@ const AdminDashboard: React.FC = () => {
                   <tr key={order._id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                          {order.user.name.charAt(0)}
+                        <div className={`h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-bold ${order.user ? 'bg-gradient-to-tr from-blue-500 to-purple-500' : 'bg-gray-400'}`}>
+                          {order.user?.name ? order.user.name.charAt(0) : '?'}
                         </div>
                         <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{order.user.name}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{order.user?.name || 'Deleted User'}</p>
                           <p className="text-xs text-gray-500">{order._id.slice(-6)}</p>
                         </div>
                       </div>

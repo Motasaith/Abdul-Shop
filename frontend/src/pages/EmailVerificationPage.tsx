@@ -1,54 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../hooks/redux';
-import { resendEmailVerification } from '../store/slices/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { resendEmailVerification, resendEmailVerificationPublic } from '../store/slices/authSlice';
+import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const EmailVerificationPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading } = useAppSelector((state) => state.auth);
   const [isResending, setIsResending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  
+  // Get email from router state (passed from register page) or from logged in user
+  const stateEmail = location.state?.email;
+  const displayEmail = user?.email || stateEmail;
 
   useEffect(() => {
-    // Redirect if user is not logged in
-    if (!user) {
+    // If no email available at all, redirect to login
+    if (!displayEmail) {
       navigate('/login');
       return;
     }
 
-    // Redirect if email is already verified
-    if (user.emailVerified) {
+    // Redirect if user is logged in and already verified
+    if (user?.emailVerified) {
       toast.success('Your email address is already verified!');
       navigate('/profile');
       return;
     }
 
-    // Send initial verification email
-    handleSendEmail();
-  }, [user, navigate]);
+    // Only auto-send email if user is logged in AND we didn't come from registration (stateEmail)
+    // If stateEmail exists, it means we just registered, so backend already sent one.
+    if (user && !stateEmail && !emailSent) {
+      handleSendEmail();
+    } else if (stateEmail) {
+      // Just set sent to true so we show the "Email Sent" UI immediately
+      setEmailSent(true);
+    }
+  }, [user, navigate, displayEmail, stateEmail, emailSent]);
 
   const handleSendEmail = async () => {
-    if (!user?.email) {
-      toast.error('No email address found. Please update your profile.');
-      navigate('/profile');
-      return;
-    }
-
+    if (!user) return;
+    
     try {
       await dispatch(resendEmailVerification()).unwrap();
       setEmailSent(true);
       toast.success('Verification email sent to your inbox!');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to send verification email');
+      // toast.error(error.message || 'Failed to send verification email');
     }
   };
 
   const handleResendEmail = async () => {
+    if (!displayEmail) {
+      toast.error('Please log in to resend verification email');
+      navigate('/login');
+      return;
+    }
+    
     setIsResending(true);
     try {
-      await dispatch(resendEmailVerification()).unwrap();
+      if (user) {
+        await dispatch(resendEmailVerification()).unwrap();
+      } else {
+        await dispatch(resendEmailVerificationPublic(displayEmail)).unwrap();
+      }
       setEmailSent(true);
       toast.success('New verification email sent to your inbox!');
     } catch (error: any) {
@@ -58,14 +75,8 @@ const EmailVerificationPage: React.FC = () => {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Please log in to continue</h2>
-        </div>
-      </div>
-    );
+  if (!displayEmail) {
+    return null; // Will redirect in useEffect
   }
 
   return (
@@ -85,7 +96,7 @@ const EmailVerificationPage: React.FC = () => {
           We've sent a verification link to
         </p>
         <p className="text-center text-sm font-medium text-gray-900 dark:text-white">
-          {user.email}
+          {displayEmail}
         </p>
       </div>
 
@@ -149,7 +160,7 @@ const EmailVerificationPage: React.FC = () => {
             <div className="flex flex-col space-y-3">
               <button
                 onClick={handleResendEmail}
-                disabled={isResending || loading}
+                disabled={isResending || loading || !displayEmail}
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
               >
                 {isResending ? 'Sending...' : 'Resend Verification Email'}

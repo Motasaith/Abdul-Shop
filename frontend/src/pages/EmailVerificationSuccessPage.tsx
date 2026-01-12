@@ -11,6 +11,7 @@ const EmailVerificationSuccessPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const [verificationStatus, setVerificationStatus] = React.useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = React.useState('');
+  const processingRef = React.useRef(false);
 
   useEffect(() => {
     const verifyEmailToken = async () => {
@@ -20,10 +21,12 @@ const EmailVerificationSuccessPage: React.FC = () => {
         return;
       }
 
+      if (processingRef.current) return;
+      processingRef.current = true;
+
       try {
         await dispatch(verifyEmail(token)).unwrap();
-        // Refresh user data to get updated verification status
-        await dispatch(getCurrentUser()).unwrap();
+        // Verification successful
         setVerificationStatus('success');
         toast.success('Email verified successfully!');
       } catch (error: any) {
@@ -176,10 +179,10 @@ const EmailVerificationSuccessPage: React.FC = () => {
 
             <div className="flex flex-col space-y-3">
               <button
-                onClick={handleGoToProfile}
+                onClick={handleGoToLogin}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
-                Go to Profile
+                Go to Login
               </button>
               
               <button

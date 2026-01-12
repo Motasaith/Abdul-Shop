@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { clearCart } from '../store/slices/cartSlice';
 import { createOrder } from '../store/slices/orderSlice';
 import toast from 'react-hot-toast';
-import { formatPrice } from '../utils/currency';
+import { usePrice } from '../hooks/usePrice';
 import {
   TruckIcon,
   ShieldCheckIcon,
@@ -35,6 +35,7 @@ const CheckoutPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { items, totalItems, totalPrice } = useAppSelector((state) => state.cart);
   const { user } = useAppSelector((state) => state.auth);
+  const { formatPrice } = usePrice();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: user?.name || '',

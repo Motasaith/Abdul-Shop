@@ -4,6 +4,9 @@ import { ShoppingBag, Star, Heart, Plus } from 'lucide-react';
 import { usePrice } from '../../hooks/usePrice';
 import { Product } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { toggleWishlistItem, selectIsInWishlist } from '../../store/slices/wishlistSlice';
+import { toast } from 'react-hot-toast';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +17,28 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showNewBadge }) => {
   const { formatPrice } = usePrice();
   const [currentImage, setCurrentImage] = useState(product.images?.[0]?.url || 'https://via.placeholder.com/400x400?text=No+Image');
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+  const isInWishlist = useAppSelector(selectIsInWishlist(product._id));
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error('Please login to add items to wishlist');
+      return;
+    }
+
+    dispatch(toggleWishlistItem(product._id)).unwrap()
+      .then((res: any) => {
+        const isAdded = res.wishlist.items.some((item: any) => item.product._id === product._id);
+        toast.success(isAdded ? 'Added to wishlist' : 'Removed from wishlist');
+      })
+      .catch((err) => {
+        toast.error('Failed to update wishlist');
+      });
+  };
 
   // Discount Calculation
   const hasDiscount = product.comparePrice && product.comparePrice > product.price;
@@ -46,10 +71,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, showNew
            </div>
            
            <button 
-             className="text-gray-400 hover:text-red-500 transition-colors"
-             title="Add to Wishlist"
+             className={`transition-colors ${isInWishlist ? 'text-red-500 hover:text-red-600' : 'text-gray-400 hover:text-red-500'}`}
+             title={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+             onClick={handleWishlist}
            >
-             <Heart className="w-5 h-5" />
+             <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-current' : ''}`} />
            </button>
         </div>
 

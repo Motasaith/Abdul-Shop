@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import vendorService, { VendorStats } from '../../services/vendorService';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+import vendorService, { VendorStats, VendorAnalyticsData } from '../../services/vendorService';
 import productService from '../../services/productService';
 import { Product } from '../../types';
 import { toast } from 'react-hot-toast';
@@ -15,6 +16,7 @@ const VendorDashboard: React.FC = () => {
   const { t } = useTranslation();
   const { formatPrice } = usePrice();
   const [stats, setStats] = useState<VendorStats | null>(null);
+  const [analytics, setAnalytics] = useState<VendorAnalyticsData | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [withdrawing, setWithdrawing] = useState(false);
@@ -25,13 +27,15 @@ const VendorDashboard: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const [statsData, productsResponse] = await Promise.all([
+      const [statsData, productsResponse, analyticsData] = await Promise.all([
         vendorService.getVendorStats(),
-        productService.getVendorProducts()
+        productService.getVendorProducts(),
+        vendorService.getVendorAnalytics('30days')
       ]);
       
       setStats(statsData);
       setProducts(productsResponse.data);
+      setAnalytics(analyticsData);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -180,7 +184,7 @@ const VendorDashboard: React.FC = () => {
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
             {t('vendor.shop')}: <span className="font-semibold text-blue-600 dark:text-blue-400">{user?.vendorDetails?.shopName || 'My Shop'}</span>
             <Link 
-              to={`/products?vendor=${user?.id}`}
+              to={`/shop/${user?._id || user?.id}`}
               className="ml-4 text-sm text-blue-600 hover:text-blue-800 underline"
             >
               {t('vendor.viewLiveShop')}
@@ -188,6 +192,16 @@ const VendorDashboard: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-3">
+           <Link
+             to="/vendor/settings"
+             className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+             title={t('vendor.settings', { defaultValue: "Settings" })}
+           >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+           </Link>
            <CurrencySelector variant="header" />
            <button 
              onClick={() => setIsAddProductModalOpen(true)}
@@ -274,6 +288,74 @@ const VendorDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Analytics Section */}
+      {analytics && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Sales Chart */}
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-300">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales Overview (Last 30 Days)</h3>
+            <div className="h-80 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={analytics.salesGraph} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs text-gray-500" 
+                    tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                  />
+                  <YAxis className="text-xs text-gray-500" />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                    formatter={(value: any) => [`$${value}`, 'Revenue']}
+                    labelFormatter={(label) => new Date(label).toLocaleDateString()}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    stroke="#3B82F6" 
+                    fillOpacity={1} 
+                    fill="url(#colorRevenue)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Top Selling Products */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-300">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Selling Products</h3>
+            <div className="space-y-4">
+              {analytics.topProducts.map((product) => (
+                <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="flex-1 min-w-0 mr-4">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {product.name}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {product.sold} sold
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                      {formatPrice(product.revenue)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {analytics.topProducts.length === 0 && (
+                <p className="text-gray-500 text-sm text-center py-4">No sales data yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* My Listed Products */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-300">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -347,8 +429,11 @@ const VendorDashboard: React.FC = () => {
 
       {/* Recent Orders */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-300">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('vendor.recentOrders')}</h3>
+          <Link to="/vendor/orders" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+            View All Orders
+          </Link>
         </div>
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {stats.recentOrders.length > 0 ? (

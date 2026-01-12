@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// Force HMR update 2
+// Force HMR update 3
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -52,6 +52,7 @@ import BlogPage from './pages/BlogPage';
 import CareersPage from './pages/CareersPage';
 import NewArrivalsPage from './pages/NewArrivalsPage';
 import SalesPage from './pages/SalesPage';
+import ShopPage from './pages/ShopPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -72,6 +73,8 @@ import SupportTicketListPage from './pages/profile/SupportTicketListPage';
 import SupportTicketDetailPage from './pages/profile/SupportTicketDetailPage';
 import VendorDashboard from './pages/vendor/VendorDashboard';
 import VendorProductForm from './pages/vendor/VendorProductForm';
+import VendorOrdersPage from './pages/vendor/VendorOrdersPage';
+import VendorSettingsPage from './pages/vendor/VendorSettingsPage';
 
 // Loading component
 const LoadingSpinner = () => (
@@ -138,6 +141,7 @@ function AppContent() {
             <Route path="careers" element={<CareersPage />} />
             <Route path="new-arrivals" element={<NewArrivalsPage />} />
             <Route path="sales" element={<SalesPage />} />
+            <Route path="shop/:id" element={<ShopPage />} />
           </Route>
 
           {/* Protected Routes */}
@@ -158,7 +162,8 @@ function AppContent() {
             <Route path="profile/tickets" element={<SupportTicketListPage />} />
             <Route path="profile/tickets/:id" element={<SupportTicketDetailPage />} />
             <Route path="vendor/dashboard" element={<VendorDashboard />} />
-            <Route path="vendor/dashboard" element={<VendorDashboard />} />
+            <Route path="vendor/orders" element={<VendorOrdersPage />} />
+            <Route path="vendor/settings" element={<VendorSettingsPage />} />
             <Route path="products/new" element={<VendorProductForm />} />
             <Route path="products/edit/:id" element={<VendorProductForm />} />
           </Route>

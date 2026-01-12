@@ -418,8 +418,34 @@ router.get('/:id', auth, async (req, res) => {
 
     // Check if user owns this order or is admin
     // Note: order.user is populated, so we need to check order.user._id or order.user.id
+    // Check if user owns this order or is admin or is a vendor involved in the order
     const orderUserId = order.user._id ? order.user._id.toString() : order.user.toString();
-    if (orderUserId !== req.user.id && req.user.role !== 'admin') {
+    
+    let isAuthorized = false;
+
+    // 1. Buyer
+    if (orderUserId === req.user.id) isAuthorized = true;
+    
+    // 2. Admin
+    if (req.user.role === 'admin') isAuthorized = true;
+
+    // 3. Vendor (check if they own any product in the order)
+    if (!isAuthorized && req.user.role === 'vendor') {
+       const Product = require('../models/Product');
+       // This might be expensive if many items, but necessary security check
+       // Get user's product IDs
+       const vendorProducts = await Product.find({ owner: req.user.id }).select('_id');
+       const vendorProductIds = vendorProducts.map(p => p._id.toString());
+       
+       // Check if order contains any of these
+       const hasVendorProduct = order.orderItems.some(item => 
+         vendorProductIds.includes(item.product.toString())
+       );
+       
+       if (hasVendorProduct) isAuthorized = true;
+    }
+
+    if (!isAuthorized) {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 

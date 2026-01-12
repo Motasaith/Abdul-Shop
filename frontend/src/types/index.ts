@@ -7,6 +7,9 @@ export interface User {
   vendorStatus?: 'none' | 'pending' | 'approved' | 'rejected';
   vendorDetails?: {
     shopName: string;
+    storeDescription?: string;
+    storeLogo?: string;
+    storeBanner?: string;
     walletBalance: number;
     bankDetails?: string;
   };
@@ -269,4 +272,14 @@ export interface PaymentIntent {
   clientSecret: string;
   amount: number;
   currency: string;
+}
+
+export interface Shop {
+  _id: string;
+  name: string;
+  shopName: string;
+  description?: string;
+  logo?: string;
+  banner?: string;
+  joinedAt: string;
 }

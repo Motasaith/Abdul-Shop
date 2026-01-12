@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
   },
   vendorDetails: {
     shopName: { type: String, trim: true },
+    storeDescription: { type: String, trim: true },
+    storeLogo: { type: String }, // URL
+    storeBanner: { type: String }, // URL
     walletBalance: { type: Number, default: 0 },
     bankDetails: { type: String, trim: true }
   },

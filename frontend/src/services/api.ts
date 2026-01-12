@@ -87,6 +87,11 @@ class ApiService {
       },
     });
   }
+
+  // Shop Profile
+  getShopProfile(shopId: string) {
+    return this.axiosInstance.get(`/shop/${shopId}`);
+  }
 }
 
 export const apiService = new ApiService();

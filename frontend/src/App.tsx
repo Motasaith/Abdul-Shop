@@ -53,6 +53,9 @@ import CareersPage from './pages/CareersPage';
 import NewArrivalsPage from './pages/NewArrivalsPage';
 import SalesPage from './pages/SalesPage';
 import ShopPage from './pages/ShopPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
+import CookiePolicyPage from './pages/CookiePolicyPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -143,6 +146,9 @@ function AppContent() {
             <Route path="new-arrivals" element={<NewArrivalsPage />} />
             <Route path="sales" element={<SalesPage />} />
             <Route path="shop/:id" element={<ShopPage />} />
+            <Route path="privacy" element={<PrivacyPolicyPage />} />
+            <Route path="terms" element={<TermsPage />} />
+            <Route path="cookies" element={<CookiePolicyPage />} />
           </Route>
 
           {/* Protected Routes */}

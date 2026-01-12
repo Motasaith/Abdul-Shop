@@ -4,14 +4,15 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fetchProducts } from '../store/slices/productSlice';
 import { addToCart } from '../store/slices/cartSlice';
 import { 
-  StarIcon, 
-  ShoppingCartIcon,
   FunnelIcon,
-  XMarkIcon
+  XMarkIcon,
+  StarIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 
 import { usePrice } from '../hooks/usePrice';
+import ProductCard from '../components/common/ProductCard';
+import { motion } from 'framer-motion';
 
 const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -145,7 +146,7 @@ const ProductsPage: React.FC = () => {
       countInStock: product.countInStock
     }));
   };
-  
+
   const renderStars = (rating: number) => {
     return (
       <div className="flex items-center">
@@ -159,10 +160,10 @@ const ProductsPage: React.FC = () => {
       </div>
     );
   };
-  
+
   return (
-    <div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="bg-[#F2F4F8] dark:bg-gray-900 min-h-screen font-sans transition-colors duration-300">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -324,54 +325,19 @@ const ProductsPage: React.FC = () => {
             ) : (
               <>
                 {/* Products Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {products.map((product) => (
-                    <div key={product._id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                      <Link to={`/products/${product._id}`}>
-                        <div className="aspect-w-1 aspect-h-1 bg-gray-200">
-                          <img
-                            src={product.images?.[0]?.url || '/api/placeholder/300/300'}
-                            alt={product.name}
-                            className="w-full h-48 object-cover"
-                          />
-                        </div>
-                      </Link>
-                      <div className="p-4">
-                        <Link to={`/products/${product._id}`}>
-                          <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                            {product.name}
-                          </h3>
-                        </Link>
-                        <div className="flex items-center mb-2">
-                          {renderStars(product.rating)}
-                          <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">({product.numReviews})</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-lg font-bold text-gray-900 dark:text-white">{formatPrice(product.price)}</span>
-                            {product.comparePrice && (
-                              <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                                {formatPrice(product.comparePrice)}
-                              </span>
-                            )}
-                          </div>
-                          <button
-                            onClick={() => handleAddToCart(product)}
-                            disabled={product.countInStock === 0}
-                            className={`p-2 rounded-full transition-colors ${
-                              product.countInStock > 0
-                                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
-                            }`}
-                          >
-                            <ShoppingCartIcon className="h-4 w-4" />
-                          </button>
-                        </div>
-                        {product.countInStock === 0 && (
-                          <p className="text-red-500 text-sm mt-2">Out of stock</p>
-                        )}
-                      </div>
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                  {products.map((product, index) => (
+                    <motion.div
+                      key={product._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <ProductCard 
+                        product={product} 
+                        onAddToCart={() => handleAddToCart(product)}
+                      />
+                    </motion.div>
                   ))}
                 </div>
                 

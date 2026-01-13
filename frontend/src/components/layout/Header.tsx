@@ -164,7 +164,7 @@ const Header: React.FC = () => {
             {/* Wishlist */}
             <Link 
               to="/wishlist" 
-              className="hidden sm:flex relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:text-red-500 dark:hover:text-red-400 group"
+              className="flex relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:text-red-500 dark:hover:text-red-400 group"
               title={t('common.wishlist')}
             >
               <Heart className="h-5 w-5 transition-transform group-hover:scale-110" />
@@ -344,7 +344,7 @@ const Header: React.FC = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden"
+            className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-xl overflow-y-auto max-h-[85vh]"
           >
             <div className="px-4 py-4 space-y-4">
               {/* Mobile Search */}
@@ -361,16 +361,54 @@ const Header: React.FC = () => {
 
               {/* Mobile Profile Link */}
               {isAuthenticated ? (
-                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3 flex items-center gap-3" onClick={() => {
-                  navigate('/profile');
-                  setIsMenuOpen(false);
-                }}>
-                  <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    {user?.name?.charAt(0).toUpperCase()}
+                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3">
+                  <div className="flex items-center gap-3 mb-3" onClick={() => {
+                    navigate('/profile');
+                    setIsMenuOpen(false);
+                  }}>
+                    <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                      {user?.name?.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900 dark:text-white">{user?.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-900 dark:text-white">{user?.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
+                  
+                  {/* Mobile Profile Links */}
+                  <div className="grid grid-cols-1 gap-1 pl-2">
+                     {user?.role === 'admin' && (
+                        <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-blue-600 dark:text-blue-400">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      {user?.role === 'vendor' && (
+                        <Link to="/vendor/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-purple-600 dark:text-purple-400">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Vendor Dashboard
+                        </Link>
+                      )}
+                      <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                        <User className="h-4 w-4" />
+                        {t('common.profile')}
+                      </Link>
+                      <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                        <Package className="h-4 w-4" />
+                        {t('common.myOrders')}
+                      </Link>
+                      <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                        <Heart className="h-4 w-4" />
+                        {t('common.wishlist')}
+                      </Link>
+                      <Link to="/profile/tickets" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                        <MessageSquare className="h-4 w-4" />
+                        {t('support.myTickets')}
+                      </Link>
+                      <Link to="/reviews" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                        <Star className="h-4 w-4" />
+                        {t('common.myReviews')}
+                      </Link>
                   </div>
                 </div>
               ) : (
@@ -402,6 +440,9 @@ const Header: React.FC = () => {
               <div className="border-t border-gray-100 dark:border-gray-800 pt-4 space-y-1">
                 <Link to="/sales" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-rose-500 font-medium text-sm">
                   {t('common.todaysDeals')}
+                </Link>
+                <Link to="/new-arrivals" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-emerald-500 font-medium text-sm">
+                  {t('common.newArrivals')}
                 </Link>
                 <Link to="/help" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-gray-600 dark:text-gray-300 font-medium text-sm">
                   {t('common.help')}

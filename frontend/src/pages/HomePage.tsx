@@ -85,16 +85,16 @@ const HomePage: React.FC = () => {
       
        {/* "THE LOOKBOOK" (Slideshow) - Top Banner */}
        <div className="max-w-[1600px] mx-auto mb-8">
-        <div className="relative rounded-[48px] overflow-hidden bg-gray-900 h-[400px] group shadow-xl">
+        <div className="relative rounded-[32px] md:rounded-[48px] overflow-hidden bg-gray-900 h-[400px] group shadow-xl">
             {/* Slideshow Background Component */}
             <SlideshowBackground />
 
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex items-center pointer-events-none">
-                <div className="max-w-2xl px-12 md:px-24 pointer-events-auto">
+                <div className="max-w-2xl px-6 md:px-24 pointer-events-auto">
                     <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white mb-6 uppercase tracking-wider">
                         Season 2024
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                    <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
                         The Lookbook. <br/> Define Your Style.
                     </h2>
                     <p className="text-lg text-gray-200 mb-8 leading-relaxed max-w-lg">
@@ -109,20 +109,20 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-auto">
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-auto">
         
         {/* HERO SECTION - Large Bento Card (2x2) */}
         {displayProducts[0] ? (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="col-span-1 md:col-span-2 lg:col-span-2 row-span-2 bg-[#F3F5F7] dark:bg-gray-800 rounded-[32px] p-8 md:p-12 relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow"
+            className="col-span-1 md:col-span-2 lg:col-span-2 row-span-2 bg-[#F3F5F7] dark:bg-gray-800 rounded-[32px] p-6 md:p-12 relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow min-h-[500px] md:min-h-0"
           >
             {/* Background Blur Blob */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
 
             {/* Text Protection Gradient */}
-            <div className="absolute inset-y-0 left-0 w-3/4 bg-gradient-to-r from-[#F3F5F7] via-[#F3F5F7]/95 to-transparent dark:from-gray-800 dark:via-gray-800/95 z-0 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-full md:w-3/4 bg-gradient-to-r from-[#F3F5F7] via-[#F3F5F7]/95 to-transparent dark:from-gray-800 dark:via-gray-800/95 z-0 pointer-events-none" />
             
             <div className="relative z-10 h-full flex flex-col justify-center max-w-xl pl-4">
               <span className="inline-flex items-center gap-2 px-3 py-1 bg-white dark:bg-gray-700 rounded-full w-fit mb-6 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300 shadow-sm border border-gray-100 dark:border-gray-600 backdrop-blur-md bg-opacity-80">
@@ -130,7 +130,7 @@ const HomePage: React.FC = () => {
                 Featured Collection
               </span>
               
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter text-gray-900 dark:text-white mb-6 leading-[1] line-clamp-2 drop-shadow-sm">
+              <h1 className="text-3xl md:text-5xl lg:text-7xl font-black tracking-tighter text-gray-900 dark:text-white mb-6 leading-[1] line-clamp-2 drop-shadow-sm">
                 {displayProducts[0].name}
               </h1>
               
@@ -171,7 +171,7 @@ const HomePage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-[32px] p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+          className="bg-white dark:bg-gray-800 rounded-[32px] p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden min-h-[180px]"
         >
           <div className="relative z-10">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">New Arrivals</h3>
@@ -190,7 +190,7 @@ const HomePage: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="col-span-1 row-span-1 bg-white dark:bg-gray-800 rounded-[32px] p-4 relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow"
+            className="col-span-1 row-span-1 bg-white dark:bg-gray-800 rounded-[32px] p-4 relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow min-h-[200px]"
           >
             <div className="flex justify-between items-start z-10 relative">
               <div className="max-w-[60%]">
@@ -215,7 +215,7 @@ const HomePage: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="col-span-1 row-span-2 bg-gray-900 rounded-[32px] overflow-hidden relative group shadow-sm hover:shadow-md transition-shadow"
+            className="col-span-1 row-span-2 bg-gray-900 rounded-[32px] overflow-hidden relative group shadow-sm hover:shadow-md transition-shadow h-[400px] md:h-auto"
           >
              <img 
                src={displayProducts[2].images?.[0]?.url || 'https://via.placeholder.com/400x600'} 
@@ -242,7 +242,7 @@ const HomePage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="bg-orange-500 rounded-[32px] p-6 flex flex-col items-start justify-between shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden group text-white"
+          className="bg-orange-500 rounded-[32px] p-6 flex flex-col items-start justify-between shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden group text-white min-h-[200px]"
         >
            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
            
@@ -262,7 +262,7 @@ const HomePage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="col-span-1 md:col-span-2 bg-[#1A1A1A] text-white rounded-[32px] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative overflow-hidden"
+          className="col-span-1 md:col-span-2 bg-[#1A1A1A] text-white rounded-[32px] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative overflow-hidden min-h-[200px]"
         >
           {/* Recent Products Three Column Fade */}
           <div className="absolute right-0 top-0 h-full w-2/3 pointer-events-none fade-mask-l">
@@ -289,7 +289,7 @@ const HomePage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-indigo-600 rounded-[32px] p-6 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden group"
+          className="bg-indigo-600 rounded-[32px] p-6 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden group min-h-[200px]"
         >
            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
            <Star className="w-8 h-8 text-yellow-300 mb-3 fill-current rotate-12 group-hover:rotate-45 transition-transform" />
@@ -407,21 +407,23 @@ const HomePage: React.FC = () => {
 
       {/* BRAND STORY SECTION - "The Craft" (Restored to Bottom) */}
       <div className="max-w-[1600px] mx-auto mb-24">
-        <div className="relative rounded-[48px] overflow-hidden bg-gray-900 h-[500px] group">
+        <div className="relative rounded-[32px] md:rounded-[48px] overflow-hidden bg-gray-900 min-h-[400px] md:min-h-[500px] group flex items-center">
             <img 
                 src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80" 
                 alt="Brand Story" 
                 className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent flex items-center">
-                <div className="max-w-2xl px-12 md:px-24">
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent pointer-events-none" />
+            
+            <div className="relative z-10 w-full py-12 md:py-0">
+                <div className="max-w-2xl px-6 md:px-24">
                     <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white mb-6 uppercase tracking-wider">
                         Our Mission
                     </span>
-                    <h2 className="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">
+                    <h2 className="text-3xl md:text-6xl font-black text-white mb-6 leading-tight">
                         Crafting Excellence <br/> Since 2024.
                     </h2>
-                    <p className="text-xl text-gray-300 mb-10 leading-relaxed">
+                    <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed">
                         We believe in quality that speaks for itself. Every product in our collection is handpicked, tested, and curated to ensure it adds genuine value to your life.
                     </p>
                     <Link to="/about" className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all transform hover:scale-105 inline-flex items-center gap-2">

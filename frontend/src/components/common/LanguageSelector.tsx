@@ -53,9 +53,9 @@ const LanguageSelector: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[100]"
+            className="absolute top-full right-0 mt-2 w-40 sm:w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[100]"
           >
-             <div className="py-1">
+             <div className="py-1 max-h-[60vh] overflow-y-auto custom-scrollbar">
               {languages.map((l) => (
                 <button
                   key={l.code}
@@ -67,12 +67,12 @@ const LanguageSelector: React.FC = () => {
                       : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50'}
                   `}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg leading-none">{l.flag}</span>
-                    <span>{l.name}</span>
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <span className="text-lg leading-none flex-shrink-0">{l.flag}</span>
+                    <span className="truncate">{l.name}</span>
                   </div>
                   {language === l.code && (
-                     <Check className="h-3.5 w-3.5" />
+                     <Check className="h-3.5 w-3.5 flex-shrink-0" />
                   )}
                 </button>
               ))}

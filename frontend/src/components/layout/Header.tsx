@@ -114,7 +114,7 @@ const Header: React.FC = () => {
             <div className="flex justify-end w-full sm:w-auto items-center gap-4">
               <div className="hidden sm:flex items-center gap-4 border-r border-white/20 pr-4">
                 <Link to="/help" className="hover:text-blue-100 transition-colors">{t('common.help')}</Link>
-                <Link to="/register/vendor" className="hover:text-blue-100 transition-colors">Sell on ShopHub</Link>
+                <Link to="/register/vendor" className="hidden lg:block hover:text-blue-100 transition-colors">Sell on ShopHub</Link>
                 <Link to="/track" className="hover:text-blue-100 transition-colors">{t('common.trackOrder')}</Link>
               </div>
               <div className="flex items-center gap-3">
@@ -446,6 +446,9 @@ const Header: React.FC = () => {
                 </Link>
                 <Link to="/help" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-gray-600 dark:text-gray-300 font-medium text-sm">
                   {t('common.help')}
+                </Link>
+                <Link to="/register/vendor" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-gray-600 dark:text-gray-300 font-medium text-sm">
+                  Sell on ShopHub
                 </Link>
                 <Link to="/track" onClick={() => setIsMenuOpen(false)} className="block px-2 py-2 text-gray-600 dark:text-gray-300 font-medium text-sm">
                   {t('common.trackOrder')}

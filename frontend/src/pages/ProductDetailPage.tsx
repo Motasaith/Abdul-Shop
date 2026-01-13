@@ -486,7 +486,7 @@ const ProductDetailPage: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-6 transition-colors duration-300">
           {/* Tab Navigation */}
           <div className="border-b border-gray-200 dark:border-gray-700">
-            <nav className="flex space-x-8 px-6">
+            <nav className="flex space-x-4 md:space-x-8 px-4 md:px-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
               {['description', 'specifications', 'whatsInBox', 'reviews', 'questions'].map((tab) => (
                 <button
                   key={tab}

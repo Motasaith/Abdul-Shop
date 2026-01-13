@@ -111,13 +111,13 @@ const CartPage: React.FC = () => {
               <div className="p-6">
                 <div className="space-y-6">
                   {items.map((item) => (
-                    <div key={item.product} className="flex items-center space-x-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow">
+                    <div key={item.product} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow">
                       {/* Product Image */}
-                      <div className="flex-shrink-0">
+                      <div className="flex-shrink-0 w-full sm:w-auto">
                         <img
                           src={item.image || 'https://via.placeholder.com/120x120?text=No+Image'}
                           alt={item.name}
-                          className="w-20 h-20 object-cover rounded-lg"
+                          className="w-full h-48 sm:w-24 sm:h-24 object-cover rounded-lg"
                           onError={(e) => {
                             e.currentTarget.src = 'https://via.placeholder.com/120x120?text=No+Image';
                           }}
@@ -125,8 +125,8 @@ const CartPage: React.FC = () => {
                       </div>
 
                       {/* Product Info */}
-                      <div className="flex-grow">
-                        <div className="flex justify-between items-start">
+                      <div className="flex-grow w-full">
+                        <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                           <div>
                             <h3 className="text-lg font-medium text-gray-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400">
                               <Link to={`/products/${item.product}`}>
@@ -152,31 +152,31 @@ const CartPage: React.FC = () => {
                         </div>
 
                         {/* Quantity Controls */}
-                        <div className="flex items-center justify-between mt-4">
+                        <div className="flex flex-wrap items-center justify-between mt-4 w-full gap-y-3">
                           <div className="flex items-center space-x-3">
-                            <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg">
-                              <button
-                                onClick={() => handleQuantityUpdate(item.product, item.quantity - 1)}
-                                disabled={item.quantity <= 1 || isUpdating === item.product}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
-                              >
-                                <MinusIcon className="h-4 w-4" />
-                              </button>
-                              <span className="px-4 py-2 font-medium text-gray-900 dark:text-white">
-                                {isUpdating === item.product ? '...' : item.quantity}
+                              <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg">
+                                <button
+                                  onClick={() => handleQuantityUpdate(item.product, item.quantity - 1)}
+                                  disabled={item.quantity <= 1 || isUpdating === item.product}
+                                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
+                                >
+                                  <MinusIcon className="h-4 w-4" />
+                                </button>
+                                <span className="px-3 py-2 font-medium text-gray-900 dark:text-white min-w-[2rem] text-center">
+                                  {isUpdating === item.product ? '...' : item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => handleQuantityUpdate(item.product, item.quantity + 1)}
+                                  disabled={item.quantity >= item.countInStock || isUpdating === item.product}
+                                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
+                                >
+                                  <PlusIcon className="h-4 w-4" />
+                                </button>
+                              </div>
+                              <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                                {item.countInStock} {t('cart.available')}
                               </span>
-                              <button
-                                onClick={() => handleQuantityUpdate(item.product, item.quantity + 1)}
-                                disabled={item.quantity >= item.countInStock || isUpdating === item.product}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
-                              >
-                                <PlusIcon className="h-4 w-4" />
-                              </button>
                             </div>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              {item.countInStock} {t('cart.available')}
-                            </span>
-                          </div>
 
                           <div className="flex items-center space-x-2">
                             <WishlistButton 

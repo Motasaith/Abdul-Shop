@@ -309,7 +309,7 @@ const ProfilePage: React.FC = () => {
                         required
                         label=""
                       />
-                      <div className="flex space-x-2">
+                      <div className="flex flex-col sm:flex-row gap-3">
                         <button
                           onClick={() => {
                             setEditingPhone(false);
@@ -364,7 +364,7 @@ const ProfilePage: React.FC = () => {
                         </div>
                         
                         {!showVerificationForm ? (
-                        <div className="mt-4 flex space-x-3">
+                        <div className="mt-4 flex flex-col sm:flex-row gap-3">
                           <button
                             onClick={handleSendVerification}
                             disabled={loading}
@@ -399,7 +399,7 @@ const ProfilePage: React.FC = () => {
                               </p>
                             </div>
                             
-                            <div className="flex space-x-2">
+                            <div className="flex flex-col sm:flex-row gap-3">
                               <button
                                 type="submit"
                                 disabled={loading || verificationCode.length !== 6}
@@ -496,7 +496,7 @@ const ProfilePage: React.FC = () => {
                           <p>Verify your email address to secure your account and receive important notifications.</p>
                         </div>
                         
-                        <div className="mt-4 flex space-x-3">
+                        <div className="mt-4 flex flex-col sm:flex-row gap-3">
                           <button
                             onClick={handleResendEmail}
                             disabled={resendingEmail || loading}

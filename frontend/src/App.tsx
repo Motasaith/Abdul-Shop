@@ -74,6 +74,7 @@ import AdminReviews from './pages/admin/AdminReviews';
 import AdminQnA from './pages/admin/AdminQnA';
 import AdminVendorsPage from './pages/admin/AdminVendorsPage';
 import AdminVendorRequests from './pages/admin/AdminVendorRequests';
+import AdminCMS from './pages/admin/AdminCMS';
 
 // User Support Pages
 import SupportTicketListPage from './pages/profile/SupportTicketListPage';
@@ -209,6 +210,7 @@ function AppContent() {
             <Route path="notifications" element={<AdminNotifications />} />
             <Route path="support" element={<AdminSupportPage />} />
             <Route path="support/:id" element={<AdminSupportDetailPage />} />
+            <Route path="content" element={<AdminCMS />} />
           </Route>
 
           {/* 404 Page */}

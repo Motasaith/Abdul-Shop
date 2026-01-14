@@ -89,6 +89,16 @@ const adminService = {
   // We can add specific admin endpoints or reuse product fetching.
   // Let's assume we use the product list to aggregate for now, or add specific routes later if performance requires.
   // For MVP, we will fetch all products and extract reviews/qna like we did for vendors, but for ALL products.
+  // Content Management
+  getPageContent: async (page: string) => {
+    const response = await apiService.get(`/content/${page}`);
+    return response.data;
+  },
+
+  updatePageContent: async (page: string, sections: any) => {
+    const response = await apiService.put(`/content/${page}`, { sections });
+    return response.data;
+  }
 };
 
 export default adminService;

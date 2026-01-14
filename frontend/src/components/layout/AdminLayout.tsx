@@ -17,7 +17,8 @@ import {
   UserIcon,
   ChatBubbleLeftRightIcon,
   BuildingStorefrontIcon,
-  GlobeAltIcon
+  GlobeAltIcon,
+  PencilSquareIcon
 } from '@heroicons/react/24/outline';
 import {
   HomeIcon as HomeIconSolid,
@@ -31,7 +32,8 @@ import {
   BuildingStorefrontIcon as BuildingStorefrontIconSolid,
   TagIcon,
   StarIcon,
-  QuestionMarkCircleIcon
+  QuestionMarkCircleIcon,
+  PencilSquareIcon as PencilSquareIconSolid
 } from '@heroicons/react/24/solid';
 import {
   TagIcon as TagIconOutline,
@@ -99,6 +101,13 @@ const AdminLayout: React.FC = () => {
       icon: UsersIcon, 
       iconSolid: UsersIconSolid,
       description: 'User accounts'
+    },
+    {
+      name: 'Content Manager',
+      href: '/admin/content',
+      icon: PencilSquareIcon,
+      iconSolid: PencilSquareIconSolid,
+      description: 'Edit page content'
     },
     { 
       name: 'Vendors', 

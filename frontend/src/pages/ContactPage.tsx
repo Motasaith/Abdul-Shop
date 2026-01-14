@@ -3,11 +3,36 @@ import { toast } from 'react-hot-toast';
 import contactService, { ContactFormData } from '../services/contactService';
 import { useTranslation } from '../hooks/useTranslation';
 import { Link, useSearchParams } from 'react-router-dom';
+import adminService from '../services/adminService';
 
 const ContactPage: React.FC = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams(); // Needs import
   
+  const [content, setContent] = useState({
+    info: {
+      address: '123 Shopping Street, Commerce City, CC 12345',
+      phone: '1-800-SHOPHUB',
+      email: 'support@shophub.com',
+      hours_mon_fri: '9:00 AM - 6:00 PM',
+      hours_sat_sun: '10:00 AM - 4:00 PM'
+    }
+  });
+
+  React.useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const data = await adminService.getPageContent('contact');
+        if (data.sections?.info) {
+          setContent(prev => ({ ...prev, info: { ...prev.info, ...data.sections.info } }));
+        }
+      } catch (err) {
+        console.error('Failed to load page content');
+      }
+    };
+    loadContent();
+  }, []);
+
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -158,7 +183,7 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.address')}</h3>
-                    <p className="text-gray-600 dark:text-gray-300">123 Shopping Street<br />Commerce City, CC 12345</p>
+                    <p className="text-gray-600 dark:text-gray-300">{content.info.address}</p>
                   </div>
                 </div>
                 
@@ -170,7 +195,11 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.phone')}</h3>
-                    <p className="text-gray-600 dark:text-gray-300">1-800-SHOPHUB<br />(1-800-746-7482)</p>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {content.info.phone}
+                      <br />
+                      (1-800-746-7482)
+                    </p>
                   </div>
                 </div>
                 
@@ -182,7 +211,11 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.email')}</h3>
-                    <p className="text-gray-600 dark:text-gray-300">support@shophub.com<br />info@shophub.com</p>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {content.info.email}
+                      <br />
+                      info@shophub.com
+                    </p>
                   </div>
                 </div>
                 
@@ -194,7 +227,11 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('contactPage.info.hours')}</h3>
-                    <p className="text-gray-600 dark:text-gray-300">{t('contactPage.info.days.monFri')}: 9:00 AM - 6:00 PM<br />{t('contactPage.info.days.satSun')}: 10:00 AM - 4:00 PM</p>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {t('contactPage.info.days.monFri')}: {content.info.hours_mon_fri}
+                      <br />
+                      {t('contactPage.info.days.satSun')}: {content.info.hours_sat_sun}
+                    </p>
                   </div>
                 </div>
               </div>

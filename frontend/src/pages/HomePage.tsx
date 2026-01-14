@@ -14,6 +14,7 @@ import { usePrice } from '../hooks/usePrice';
 import { useTranslation } from '../hooks/useTranslation';
 import ProductCard from '../components/common/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
+import adminService from '../services/adminService';
 
 const SlideshowBackground = () => {
   const [index, setIndex] = React.useState(0);
@@ -45,13 +46,100 @@ const SlideshowBackground = () => {
   );
 };
 
+// ... (previous imports)
+
 const HomePage: React.FC = () => {
   const { formatPrice } = usePrice();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { products, loading } = useAppSelector((state) => state.products);
+  
+  const [content, setContent] = React.useState<any>({
+    hero: {
+      show: true,
+      tagline: 'Season 2024',
+      headline: 'The Lookbook. Define Your Style.',
+      description: 'Discover the latest trends in fashion and explore our new collection.'
+    },
+    creative: {
+      show: true,
+      badge: 'Limited Offer',
+      title: 'Save 20%',
+      subtitle: 'On selected electronics',
+      buttonText: 'Grab it now'
+    },
+    discover: {
+      show: true,
+      title: 'Discover More.',
+      description: 'Browse our latest additions and curated collections just for you.',
+      buttonText: 'View Collection'
+    },
+    brand: {
+      show: true,
+      badge: 'Our Mission',
+      title: 'Crafting Excellence Since 2024.',
+      description: 'We believe in quality that speaks for itself. Every product in our collection is handpicked, tested, and curated to ensure it adds genuine value to your life.',
+      buttonText: 'Read our Story'
+    },
+    quality: {
+      show: true,
+      title: 'Quality Guaranteed',
+      subtitle: 'Premium products only.'
+    },
+    newArrivals: {
+      show: true,
+      title: 'New Arrivals',
+      linkText: 'Check them out'
+    },
+    testimonials: {
+      show: true,
+      title: 'Voices of Satisfaction.',
+      subtitle: 'Trusted by over 50,000 customers worldwide.',
+      items: [
+        {
+          name: "Sarah Jenkins",
+          role: "Fashion Enthusiast",
+          text: "Absolutely in love with the quality! The fabric feels premium and the fit is just perfect. Will definitely buy again.",
+          image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        },
+        {
+          name: "Michael Chen",
+          role: "Tech Reviewer",
+          text: "Fastest shipping I've ever experienced. The product arrived in pristine condition and works like a charm. 5 stars!",
+          image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        },
+        {
+          name: "Emma Wilson",
+          role: "Interior Designer",
+          text: "The customer service team went above and beyond to help me with my order. Truly a brand that cares about its people.",
+          image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        }
+      ]
+    }
+  });
 
   useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const data = await adminService.getPageContent('home');
+        if (data.sections) {
+          setContent((prev: any) => ({ 
+            ...prev, 
+            ...data.sections,
+            hero: { ...prev.hero, ...data.sections.hero },
+            creative: { ...prev.creative, ...data.sections.creative },
+            discover: { ...prev.discover, ...data.sections.discover },
+            brand: { ...prev.brand, ...data.sections.brand },
+            quality: { ...prev.quality, ...data.sections.quality },
+            newArrivals: { ...prev.newArrivals, ...data.sections.newArrivals },
+            testimonials: { ...prev.testimonials, ...data.sections.testimonials }
+          }));
+        }
+      } catch (err) {
+        console.error('Failed to load page content');
+      }
+    };
+    loadContent();
     dispatch(fetchProducts({ page: 1, limit: 8 }));
   }, [dispatch]);
 
@@ -84,6 +172,7 @@ const HomePage: React.FC = () => {
     <div className="bg-[#F2F4F8] dark:bg-gray-900 min-h-screen p-4 md:p-6 lg:p-8 font-sans">
       
        {/* "THE LOOKBOOK" (Slideshow) - Top Banner */}
+       {content.hero?.show !== false && (
        <div className="max-w-[1600px] mx-auto mb-8">
         <div className="relative rounded-[32px] md:rounded-[48px] overflow-hidden bg-gray-900 h-[400px] group shadow-xl">
             {/* Slideshow Background Component */}
@@ -92,13 +181,13 @@ const HomePage: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex items-center pointer-events-none">
                 <div className="max-w-2xl px-6 md:px-24 pointer-events-auto">
                     <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white mb-6 uppercase tracking-wider">
-                        Season 2024
+                        {content.hero.tagline}
                     </span>
                     <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
-                        The Lookbook. <br/> Define Your Style.
+                        {content.hero.headline}
                     </h2>
                     <p className="text-lg text-gray-200 mb-8 leading-relaxed max-w-lg">
-                        Explore our curated gallery of seasonal favorites. From street style to elegant evenings, find the look that speaks to you.
+                        {content.hero.description}
                     </p>
                     <Link to="/products" className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all transform hover:scale-105 inline-flex items-center gap-2">
                         View Collection
@@ -108,6 +197,7 @@ const HomePage: React.FC = () => {
             </div>
         </div>
       </div>
+       )}
 
       <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-auto">
         
@@ -167,6 +257,7 @@ const HomePage: React.FC = () => {
         )}
 
         {/* NEW ARRIVALS - Small Bento Card */}
+        {content.newArrivals?.show !== false && (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -174,15 +265,16 @@ const HomePage: React.FC = () => {
           className="bg-white dark:bg-gray-800 rounded-[32px] p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden min-h-[180px]"
         >
           <div className="relative z-10">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">New Arrivals</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{content.newArrivals?.title}</h3>
              <Link to="/products?sort=newest" className="text-sm text-gray-500 flex items-center gap-1 hover:text-blue-600 transition-colors">
-               Check them out <ArrowUpRight className="w-3 h-3" />
+               {content.newArrivals?.linkText} <ArrowUpRight className="w-3 h-3" />
              </Link>
           </div>
           <div className="absolute right-[-20px] bottom-[-20px] opacity-10 rotate-12">
             <Sparkles className="w-32 h-32" />
           </div>
         </motion.div>
+        )}
 
         {/* PRODUCT TILE 2 - Medium Card */}
         {displayProducts[1] && (
@@ -238,6 +330,7 @@ const HomePage: React.FC = () => {
         )}
         
         {/* NEW CREATIVE TILE - Filling the Gap */}
+        {content.creative?.show !== false && (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -256,8 +349,10 @@ const HomePage: React.FC = () => {
              Grab it now
            </Link>
         </motion.div>
+        )}
 
         {/* DISCOVER MORE - Wide Card (Restored to Transparent Collage - 3 Images) */}
+        {content.discover?.show !== false && (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -283,8 +378,10 @@ const HomePage: React.FC = () => {
             </Link>
           </div>
         </motion.div>
+        )}
 
         {/* CUSTOM CREATIVE TILE - Quality */}
+        {content.quality?.show !== false && (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -293,9 +390,10 @@ const HomePage: React.FC = () => {
         >
            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
            <Star className="w-8 h-8 text-yellow-300 mb-3 fill-current rotate-12 group-hover:rotate-45 transition-transform" />
-           <h3 className="text-white font-bold text-lg leading-tight mb-1">Quality <br/> Guaranteed</h3>
-           <p className="text-indigo-200 text-xs">Premium products only.</p>
+           <h3 className="text-white font-bold text-lg leading-tight mb-1" dangerouslySetInnerHTML={{ __html: content.quality?.title?.replace(/\n/g, '<br/>') || 'Quality <br/> Guaranteed' }}></h3>
+           <p className="text-indigo-200 text-xs">{content.quality?.subtitle}</p>
         </motion.div>
+        )}
 
         {/* PRODUCT TILE 4 - Medium Card (Replaces Release Card) - COMMENTED OUT AS PER USER REQUEST
         {displayProducts[3] && (
@@ -353,11 +451,12 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* TESTIMONIALS SECTION - "Voices of Satisfaction" */}
+      {content.testimonials?.show !== false && (
       <div className="max-w-[1600px] mx-auto mt-24 mb-16">
         <div className="flex items-center justify-between mb-10 px-2">
             <div>
-              <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Voices of Satisfaction.</h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-2">Trusted by over 50,000 customers worldwide.</p>
+              <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{content.testimonials?.title}</h2>
+              <p className="text-gray-500 dark:text-gray-400 mt-2">{content.testimonials?.subtitle}</p>
             </div>
             {/* Decorative Stars */}
             <div className="hidden md:flex gap-1">
@@ -368,26 +467,7 @@ const HomePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-                {
-                    name: "Sarah Jenkins",
-                    role: "Fashion Enthusiast",
-                    text: "Absolutely in love with the quality! The fabric feels premium and the fit is just perfect. Will definitely buy again.",
-                    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                },
-                {
-                    name: "Michael Chen",
-                    role: "Tech Reviewer",
-                    text: "Fastest shipping I've ever experienced. The product arrived in pristine condition and works like a charm. 5 stars!",
-                    image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                },
-                {
-                    name: "Emma Wilson",
-                    role: "Interior Designer",
-                    text: "The customer service team went above and beyond to help me with my order. Truly a brand that cares about its people.",
-                    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                }
-            ].map((testimonial, idx) => (
+            {content.testimonials?.items?.map((testimonial: any, idx: number) => (
                 <div key={idx} className="bg-white dark:bg-gray-800 p-8 rounded-[32px] shadow-sm hover:shadow-lg transition-shadow relative">
                     <Quote className="w-10 h-10 text-blue-100 dark:text-blue-900 absolute top-8 right-8" />
                     <div className="flex items-center gap-4 mb-6">
@@ -404,8 +484,10 @@ const HomePage: React.FC = () => {
             ))}
         </div>
       </div>
+      )}
 
       {/* BRAND STORY SECTION - "The Craft" (Restored to Bottom) */}
+      {content.brand?.show !== false && (
       <div className="max-w-[1600px] mx-auto mb-24">
         <div className="relative rounded-[32px] md:rounded-[48px] overflow-hidden bg-gray-900 min-h-[400px] md:min-h-[500px] group flex items-center">
             <img 
@@ -434,6 +516,7 @@ const HomePage: React.FC = () => {
             </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

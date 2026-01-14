@@ -292,13 +292,13 @@ const BlogPage: React.FC = () => {
           </p>
           
           <div className="max-w-md mx-auto">
-            <div className="flex">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-0">
               <input 
                 type="email" 
                 placeholder={t('blogPage.newsletter.placeholder') || ''}
-                className="flex-1 px-6 py-4 rounded-l-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                className="flex-1 px-6 py-4 rounded-full sm:rounded-r-none text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-300 w-full"
               />
-              <button className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-r-full font-bold hover:bg-yellow-300 transition duration-300">
+              <button className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-full sm:rounded-l-none font-bold hover:bg-yellow-300 transition duration-300 w-full sm:w-auto">
                 {t('blogPage.newsletter.subscribe')}
               </button>
             </div>

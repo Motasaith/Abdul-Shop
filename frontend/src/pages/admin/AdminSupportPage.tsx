@@ -186,16 +186,16 @@ const AdminSupportPage: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[800px]">
               <thead className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ticket ID</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Subject</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Priority</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                  <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ticket ID</th>
+                  <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">User</th>
+                  <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Subject</th>
+                  <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Priority</th>
+                  <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
+                  <th className="px-4 md:px-6 py-3 md:py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -213,50 +213,50 @@ const AdminSupportPage: React.FC = () => {
                         exit="hidden"
                         className="group hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
                       >
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-3 md:py-4">
                           <span className="font-mono text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md">
                             #{ticket._id.slice(-6).toUpperCase()}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-3 md:py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 flex-shrink-0">
                               <User className="w-4 h-4" />
                             </div>
-                            <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">{ticket.name}</div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                <Mail className="w-3 h-3" />
+                            <div className="min-w-0">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{ticket.name}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 truncate">
+                                <Mail className="w-3 h-3 flex-shrink-0" />
                                 {ticket.email}
                               </div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                        <td className="px-4 md:px-6 py-3 md:py-4">
+                          <span className="text-sm text-gray-700 dark:text-gray-300 font-medium line-clamp-1">
                             {ticket.subject}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${priorityConfig.bg} ${priorityConfig.color} border-current border-opacity-20`}>
+                        <td className="px-4 md:px-6 py-3 md:py-4">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${priorityConfig.bg} ${priorityConfig.color} border-current border-opacity-20 whitespace-nowrap`}>
                             {priorityConfig.label}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.color} border-current border-opacity-20`}>
+                        <td className="px-4 md:px-6 py-3 md:py-4">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.color} border-current border-opacity-20 whitespace-nowrap`}>
                             <statusConfig.icon className="w-3 h-3" />
                             {statusConfig.label}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <td className="px-4 md:px-6 py-3 md:py-4">
+                          <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
                             {new Date(ticket.createdAt).toLocaleDateString()}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-4 md:px-6 py-3 md:py-4 text-right">
                           <Link 
                             to={`/admin/support/${ticket._id}`}
-                            className="inline-flex items-center px-3 py-1.5 bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
+                            className="inline-flex items-center px-3 py-1.5 bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 shadow-sm whitespace-nowrap"
                           >
                             Manage
                             <ArrowRight className="w-3 h-3 ml-1.5" />

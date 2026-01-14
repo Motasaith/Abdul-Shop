@@ -142,7 +142,7 @@ const AdminVendorsPage: React.FC = () => {
 
       {/* Tabs & Search */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl p-2 rounded-2xl border border-white/20 dark:border-gray-700/30">
-        <div className="flex gap-2 p-1 bg-gray-100/50 dark:bg-gray-900/50 rounded-xl">
+        <div className="flex gap-2 p-1 bg-gray-100/50 dark:bg-gray-900/50 rounded-xl overflow-x-auto w-full md:w-auto custom-scrollbar">
           {[
             { id: 'active', label: 'Active Vendors', icon: Store },
             { id: 'requests', label: 'Requests', icon: Users, count: requests.length },
@@ -151,13 +151,13 @@ const AdminVendorsPage: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`}
             >
-              <tab.icon className="w-4 h-4" />
+              <tab.icon className="w-4 h-4 flex-shrink-0" />
               {tab.label}
               {tab.count !== undefined && tab.count > 0 && (
                 <span className="ml-1 px-1.5 py-0.5 text-[10px] bg-red-500 text-white rounded-full">
@@ -168,7 +168,7 @@ const AdminVendorsPage: React.FC = () => {
           ))}
         </div>
 
-        <div className="relative w-full md:w-64">
+        <div className="relative w-full md:w-64 flex-shrink-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
@@ -189,36 +189,36 @@ const AdminVendorsPage: React.FC = () => {
              {filteredRequests.length === 0 ? (
                 <div className="p-12 text-center text-gray-500">No pending vendor applications.</div>
              ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead className="bg-gray-50/50 dark:bg-gray-900/30">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Applicant</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Shop Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Date Applied</th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400">Actions</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Applicant</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Shop Name</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Date Applied</th>
+                    <th className="px-4 md:px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {filteredRequests.map((req) => (
                     <tr key={req._id} className="hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors">
-                      <td className="px-6 py-4">
+                      <td className="px-4 md:px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold">
+                          <div className="h-8 w-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold flex-shrink-0">
                             {req.name.charAt(0)}
                           </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900 dark:text-white">{req.name}</p>
-                            <p className="text-xs text-gray-500">{req.email}</p>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{req.name}</p>
+                            <p className="text-xs text-gray-500 truncate">{req.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                      <td className="px-4 md:px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                         {req.vendorDetails?.shopName}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-4 md:px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(req.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 md:px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
                           <button 
                             onClick={() => setConfirmModal({ isOpen: true, type: 'approve', id: req._id, name: req.name })}
@@ -248,40 +248,40 @@ const AdminVendorsPage: React.FC = () => {
              {filteredVendors.length === 0 ? (
                 <div className="p-12 text-center text-gray-500">No active vendors found.</div>
              ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead className="bg-gray-50/50 dark:bg-gray-900/30">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Vendor</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Shop</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Status</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Commission</th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400">Actions</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Vendor</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Shop</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Status</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Commission</th>
+                    <th className="px-4 md:px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {filteredVendors.map((vendor) => (
                     <tr key={vendor._id} className="hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors">
-                      <td className="px-6 py-4">
+                      <td className="px-4 md:px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                          <div className="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold flex-shrink-0">
                             {vendor.name.charAt(0)}
                           </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900 dark:text-white">{vendor.name}</p>
-                            <p className="text-xs text-gray-500">{vendor.email}</p>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{vendor.name}</p>
+                            <p className="text-xs text-gray-500 truncate">{vendor.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 md:px-6 py-4">
                         <Link to={`/shop/${vendor._id}`} className="flex items-center gap-2 group">
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors truncate max-w-[120px]">
                              {vendor.vendorDetails?.shopName}
                           </span>
-                          <Eye className="w-3 h-3 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <Eye className="w-3 h-3 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                         </Link>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${
+                      <td className="px-4 md:px-6 py-4">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border whitespace-nowrap ${
                           vendor.vendorStatus === 'banned'
                             ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400'
                             : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400'
@@ -289,21 +289,21 @@ const AdminVendorsPage: React.FC = () => {
                           {vendor.vendorStatus === 'banned' ? 'Banned' : 'Active'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                      <td className="px-4 md:px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                         {vendor.vendorDetails?.commissionRate || 0}%
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 md:px-6 py-4 text-right">
                         {vendor.vendorStatus === 'banned' ? (
                           <button
                             onClick={() => setConfirmModal({ isOpen: true, type: 'activate', id: vendor._id, name: vendor.name })}
-                            className="text-green-600 hover:text-green-800 text-xs font-medium px-3 py-1 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                            className="text-green-600 hover:text-green-800 text-xs font-medium px-3 py-1 bg-green-50 rounded-lg hover:bg-green-100 transition-colors whitespace-nowrap"
                           >
                             Unban
                           </button>
                         ) : (
                           <button
                             onClick={() => setConfirmModal({ isOpen: true, type: 'ban', id: vendor._id, name: vendor.name })}
-                            className="text-red-600 hover:text-red-800 text-xs font-medium px-3 py-1 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                            className="text-red-600 hover:text-red-800 text-xs font-medium px-3 py-1 bg-red-50 rounded-lg hover:bg-red-100 transition-colors whitespace-nowrap"
                           >
                             Ban Access
                           </button>
@@ -323,13 +323,13 @@ const AdminVendorsPage: React.FC = () => {
              {filteredVendors.length === 0 ? (
                 <div className="p-12 text-center text-gray-500">No active vendors found.</div>
              ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead className="bg-gray-50/50 dark:bg-gray-900/30">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Vendor Shop</th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-400">Current Tax %</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Earnings Split</th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400">Actions</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Vendor Shop</th>
+                    <th className="px-4 md:px-6 py-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-400">Current Tax %</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Earnings Split</th>
+                    <th className="px-4 md:px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -337,34 +337,34 @@ const AdminVendorsPage: React.FC = () => {
                     const rate = vendor.vendorDetails?.commissionRate || 0;
                     return (
                       <tr key={vendor._id} className="hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors">
-                        <td className="px-6 py-4">
-                          <div>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">{vendor.vendorDetails?.shopName}</p>
-                            <p className="text-xs text-gray-500">{vendor.name}</p>
+                        <td className="px-4 md:px-6 py-4">
+                          <div className="min-w-0">
+                            <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{vendor.vendorDetails?.shopName}</p>
+                            <p className="text-xs text-gray-500 truncate">{vendor.name}</p>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-4 md:px-6 py-4 text-center">
                           <span className="inline-flex items-center px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold text-sm">
                             {rate}%
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <div className="w-full max-w-xs bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 flex overflow-hidden">
                             <div className="bg-green-500 h-2.5" style={{ width: `${100 - rate}%` }} title={`Vendor Gets ${100 - rate}%`}></div>
                             <div className="bg-indigo-500 h-2.5" style={{ width: `${rate}%` }} title={`Admin Tax ${rate}%`}></div>
                           </div>
-                          <div className="flex justify-between text-[10px] mt-1 text-gray-500">
+                          <div className="flex justify-between text-[10px] mt-1 text-gray-500 min-w-[120px]">
                             <span>Vendor: {100 - rate}%</span>
                             <span>Admin: {rate}%</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-4 md:px-6 py-4 text-right">
                           <button
                             onClick={() => {
                               setNewCommissionRate(rate);
                               setCommissionModal({ isOpen: true, id: vendor._id, name: vendor.vendorDetails?.shopName || vendor.name, currentRate: rate });
                             }}
-                            className="flex items-center gap-1 ml-auto text-blue-600 hover:text-blue-800 text-xs font-medium px-3 py-1.5 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                            className="flex items-center gap-1 ml-auto text-blue-600 hover:text-blue-800 text-xs font-medium px-3 py-1.5 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors whitespace-nowrap"
                           >
                             <Percent className="w-3 h-3" />
                             Edit Rate

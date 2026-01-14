@@ -240,10 +240,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
               className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700 overflow-hidden flex flex-col"
             >
               {/* Header */}
-              <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-start bg-white/50 dark:bg-gray-800/50">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+              <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-start gap-4 bg-white/50 dark:bg-gray-800/50">
+                <div className="w-full sm:w-auto">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-2">
+                    <h2 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                       Order #{order._id.slice(-8)}
                     </h2>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1.5 ${getStatusColor(order.orderStatus)}`}>
@@ -256,7 +256,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
                     Placed on {formatDate(order.createdAt)}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto justify-end">
                    <button
                     onClick={handlePrintReceipt}
                     className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 transition-colors"
@@ -274,7 +274,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
               </div>
 
               {/* Content - Scrollable */}
-              <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   
                   {/* Left Column: Order Items & Customer */}

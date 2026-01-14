@@ -78,7 +78,7 @@ const SizeGuidePage: React.FC = () => {
               </thead>
               <tbody>
                 {clothingSizes.map((size, index) => (
-                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800'}>
+                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}>
                     <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{size.size}</td>
                     <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.chest}</td>
                     <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.waist}</td>
@@ -107,7 +107,7 @@ const SizeGuidePage: React.FC = () => {
               </thead>
               <tbody>
                 {pantsSizes.map((size, index) => (
-                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800'}>
+                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}>
                     <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{size.size}</td>
                     <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.waist}</td>
                     <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.hips}</td>
@@ -133,7 +133,7 @@ const SizeGuidePage: React.FC = () => {
               </thead>
               <tbody>
                 {shoeSizes.map((size, index) => (
-                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800'}>
+                  <tr key={size.size} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}>
                     <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{size.size}</td>
                     <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.uk}</td>
                     <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{size.us}</td>
@@ -266,9 +266,9 @@ const SizeGuidePage: React.FC = () => {
         </div>
 
         {/* Tips */}
-        <div className="mt-8 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-6 transition-colors duration-300">
-          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">{t('sizeGuidePage.tips.title')}</h3>
-          <ul className="space-y-2 text-blue-800 dark:text-blue-200">
+        <div className="mt-8 bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 rounded-lg p-6 transition-colors duration-300">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-white mb-3">{t('sizeGuidePage.tips.title')}</h3>
+          <ul className="space-y-2 text-blue-800 dark:text-gray-300">
             {(t('sizeGuidePage.tips.list', { returnObjects: true }) as string[]).map((tip, index) => (
               <li key={index}>• {tip}</li>
             ))}

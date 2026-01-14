@@ -69,8 +69,11 @@ import PaymentSettings from './pages/admin/PaymentSettings';
 import AdminNotifications from './pages/admin/AdminNotifications';
 import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminSupportDetailPage from './pages/admin/AdminSupportDetailPage';
-import AdminVendorRequests from './pages/admin/AdminVendorRequests';
+import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminReviews from './pages/admin/AdminReviews';
+import AdminQnA from './pages/admin/AdminQnA';
 import AdminVendorsPage from './pages/admin/AdminVendorsPage';
+import AdminVendorRequests from './pages/admin/AdminVendorRequests';
 
 // User Support Pages
 import SupportTicketListPage from './pages/profile/SupportTicketListPage';
@@ -79,6 +82,9 @@ import VendorDashboard from './pages/vendor/VendorDashboard';
 import VendorProductForm from './pages/vendor/VendorProductForm';
 import VendorOrdersPage from './pages/vendor/VendorOrdersPage';
 import VendorSettingsPage from './pages/vendor/VendorSettingsPage';
+import VendorCoupons from './pages/vendor/VendorCoupons';
+import VendorReviews from './pages/vendor/VendorReviews';
+import VendorQnA from './pages/vendor/VendorQnA';
 
 // Loading component
 const LoadingSpinner = () => (
@@ -171,6 +177,9 @@ function AppContent() {
             <Route path="vendor/dashboard" element={<VendorDashboard />} />
             <Route path="vendor/orders" element={<VendorOrdersPage />} />
             <Route path="vendor/settings" element={<VendorSettingsPage />} />
+            <Route path="vendor/coupons" element={<VendorCoupons />} />
+            <Route path="vendor/reviews" element={<VendorReviews />} />
+            <Route path="vendor/qna" element={<VendorQnA />} />
             <Route path="products/new" element={<VendorProductForm />} />
             <Route path="products/edit/:id" element={<VendorProductForm />} />
           </Route>
@@ -190,6 +199,9 @@ function AppContent() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="vendors" element={<AdminVendorsPage />} />
             <Route path="vendors/requests" element={<AdminVendorRequests />} /> {/* Keeping for backward compat if needed, but UI links to /vendors */}
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="reviews" element={<AdminReviews />} />
+            <Route path="qna" element={<AdminQnA />} />
             <Route path="newsletter" element={<AdminNewsletter />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />

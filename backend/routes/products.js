@@ -345,6 +345,82 @@ router.put(
   }
 );
 
+// @route    PUT api/products/:id/reviews/:reviewId/reply
+// @desc     Vendor reply to a review
+// @access   Private/Vendor
+router.put(
+  '/:id/reviews/:reviewId/reply',
+  [
+    auth,
+    [check('comment', 'Comment is required').not().isEmpty()]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const product = await Product.findById(req.params.id);
+
+      if (!product) {
+        return res.status(404).json({ msg: 'Product not found' });
+      }
+
+      // Verify product ownership (Vendor/Admin/Creator)
+      const isOwner = product.owner && product.owner.toString() === req.user.id;
+      const isCreator = product.createdBy && product.createdBy.toString() === req.user.id;
+      
+      if (req.user.role !== 'admin' && !isOwner && !isCreator) {
+        return res.status(401).json({ msg: 'Not authorized to reply to reviews on this product' });
+      }
+
+      // Find the review
+      const review = product.reviews.id(req.params.reviewId);
+
+      if (!review) {
+        return res.status(404).json({ msg: 'Review not found' });
+      }
+
+      // Ensure owner is set before saving to satisfy schema requirements
+      if (!product.owner) {
+        product.owner = product.createdBy || req.user.id;
+      }
+
+      review.vendorReply = {
+        comment: req.body.comment,
+        date: Date.now(),
+        updatedAt: Date.now()
+      };
+
+      await product.save();
+
+      // Notify the user who left the review
+      // We need to implement a notification for the user
+      // Assuming createNotification handles "system" to user notifications
+      try {
+        await createNotification(
+          'system',
+          `Vendor replied to your review on: ${product.name}`,
+          {
+            userId: review.user, // Notify the reviewer
+            productId: product._id,
+            reviewId: review._id,
+            link: `/product/${product._id}`
+          }
+        );
+      } catch (notifErr) {
+        console.error('Notification error:', notifErr);
+      }
+
+      res.json(product.reviews.id(req.params.reviewId));
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
 // @route    POST api/products/:id/questions
 // @desc     Ask a question about a product
 // @access   Private
@@ -399,13 +475,12 @@ router.post(
 );
 
 // @route    PUT api/products/:id/questions/:qId/answer
-// @desc     Answer a question (Admin only)
-// @access   Private/Admin
+// @desc     Answer a question (Admin or Vendor)
+// @access   Private (Admin/Vendor)
 router.put(
   '/:id/questions/:qId/answer',
   [
     auth,
-    admin,
     [check('answer', 'Answer is required').not().isEmpty()]
   ],
   async (req, res) => {
@@ -421,6 +496,29 @@ router.put(
         return res.status(404).json({ msg: 'Product not found' });
       }
 
+      // Check authorization
+      // 1. Admin can answer any question
+      // 2. Vendor can answer questions on their own products
+      
+      let isAuthorized = false;
+      let responderRole = 'User';
+
+      if (req.user.role === 'admin') {
+        isAuthorized = true;
+        responderRole = 'Admin';
+      } else if (req.user.role === 'vendor') {
+         const isOwner = product.owner && product.owner.toString() === req.user.id;
+         const isCreator = product.createdBy && product.createdBy.toString() === req.user.id;
+         if (isOwner || isCreator) {
+           isAuthorized = true;
+           responderRole = 'Vendor';
+         }
+      }
+
+      if (!isAuthorized) {
+        return res.status(401).json({ msg: 'Not authorized to answer this question' });
+      }
+
       const question = product.qnaQuestions.id(req.params.qId);
 
       if (!question) {
@@ -430,11 +528,23 @@ router.put(
       question.answer = {
         text: req.body.answer,
         answeredBy: req.user.id,
-        answeredByName: req.user.name || 'Admin',
+        answeredByName: req.user.name || responderRole,
         answeredAt: Date.now()
       };
 
       await product.save();
+
+      // Notify the user who asked the question
+      await createNotification(
+        'system',
+        `Your question regarding ${product.name} has been answered`,
+        {
+          userId: question.user,
+          productId: product._id,
+          questionId: question._id,
+          link: `/product/${product._id}`
+        }
+      );
 
       res.json(product.qnaQuestions);
     } catch (err) {

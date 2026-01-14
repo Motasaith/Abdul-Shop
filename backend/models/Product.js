@@ -34,6 +34,11 @@ const reviewSchema = new mongoose.Schema({
   followUp: {
     comment: String,
     date: Date
+  },
+  vendorReply: {
+    comment: String,
+    date: Date,
+    updatedAt: Date
   }
 }, {
   timestamps: true
@@ -163,6 +168,12 @@ const productSchema = new mongoose.Schema({
   onSale: {
     type: Boolean,
     default: false
+  },
+  saleStartDate: {
+    type: Date
+  },
+  saleEndDate: {
+    type: Date
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

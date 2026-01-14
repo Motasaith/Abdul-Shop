@@ -139,6 +139,7 @@ app.use('/api/currency', require('./routes/currency'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/vendor', require('./routes/vendor'));
 app.use('/api/shop', require('./routes/shop'));
+app.use('/api/coupons', require('./routes/coupons'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

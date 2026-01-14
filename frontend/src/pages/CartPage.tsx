@@ -13,15 +13,51 @@ import {
 import WishlistButton from '../components/common/WishlistButton';
 import toast from 'react-hot-toast';
 import { usePrice } from '../hooks/usePrice';
+import { TagIcon, XMarkIcon } from '@heroicons/react/24/outline'; // Add TagIcon
+import { applyCoupon, removeCoupon } from '../store/slices/cartSlice'; // Import actions
 
 const CartPage: React.FC = () => {
   const { formatPrice } = usePrice();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { items, totalItems, totalPrice } = useAppSelector((state) => state.cart);
+  const { items, totalItems, totalPrice, coupon, discount, loading: cartLoading, error: cartError } = useAppSelector((state) => state.cart);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
+  const [couponCode, setCouponCode] = useState('');
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    if (!isAuthenticated) {
+        toast.error(t('auth.loginRequired') || 'Please login to use coupons');
+        return;
+    }
+    
+    // Prepare items for backend validation
+    const cartItemsForValidation = items.map(item => ({
+        product: item.product,
+        price: item.price,
+        quantity: item.quantity
+    }));
+
+    const resultAction = await dispatch(applyCoupon({ 
+        code: couponCode, 
+        cartTotal: totalPrice, 
+        cartItems: cartItemsForValidation 
+    }));
+
+    if (applyCoupon.fulfilled.match(resultAction)) {
+        toast.success(t('cart.couponApplied') || 'Coupon applied successfully!');
+        setCouponCode('');
+    } else {
+        toast.error(typeof resultAction.payload === 'string' ? resultAction.payload : 'Failed to apply coupon');
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    dispatch(removeCoupon());
+    toast.success('Coupon removed');
+  };
 
   const handleQuantityUpdate = async (productId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -60,7 +96,8 @@ const CartPage: React.FC = () => {
   // Convert threshold (Rs. 999) and fee (Rs. 135) to current currency if needed
   // For simplicity, we'll keep the logic but the display will be formatted
   const deliveryFee = totalPrice > 999 ? 0 : 135; 
-  const totalWithDelivery = totalPrice + deliveryFee;
+  const displayTotalPrice = totalPrice - (discount || 0);
+  const totalWithDelivery = displayTotalPrice + deliveryFee;
 
   if (items.length === 0) {
     return (
@@ -229,6 +266,22 @@ const CartPage: React.FC = () => {
                     {deliveryFee === 0 ? t('cart.free') : formatPrice(deliveryFee)}
                   </span>
                 </div>
+
+                {/* Discount Row */}
+                {discount && discount > 0 && (
+                  <div className="flex justify-between text-green-600 dark:text-green-400">
+                    <span className="flex items-center">
+                       <TagIcon className="h-4 w-4 mr-1" />
+                       Discount ({coupon})
+                    </span>
+                    <div className="flex items-center">
+                        <span className="font-medium">-{formatPrice(discount)}</span>
+                        <button onClick={handleRemoveCoupon} className="ml-2 text-gray-400 hover:text-red-500">
+                            <XMarkIcon className="h-4 w-4" />
+                        </button>
+                    </div>
+                  </div>
+                )}
                 
                 {deliveryFee > 0 && (
                   <div className="text-sm text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg border border-orange-100 dark:border-orange-800/30">
@@ -242,6 +295,32 @@ const CartPage: React.FC = () => {
                     <span className="text-orange-600 dark:text-orange-400">{formatPrice(totalWithDelivery)}</span>
                   </div>
                 </div>
+
+                {/* Coupon Input */}
+                {!coupon && (
+                    <div className="pt-4">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Have a coupon?</label>
+                        <div className="flex space-x-2">
+                            <input 
+                                type="text"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value)}
+                                placeholder="Enter code"
+                                className="flex-1 rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2"
+                            />
+                            <button
+                                onClick={handleApplyCoupon}
+                                disabled={cartLoading || !couponCode.trim()}
+                                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+                            >
+                                {cartLoading ? 'Checking...' : 'Apply'}
+                            </button>
+                        </div>
+                        {cartError && (
+                            <p className="mt-2 text-sm text-red-600 dark:text-red-400">{cartError}</p>
+                        )}
+                    </div>
+                )}
 
                 <div className="space-y-3 pt-4">
                   <button

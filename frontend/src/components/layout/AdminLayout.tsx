@@ -28,8 +28,16 @@ import {
   CogIcon as CogIconSolid,
   EnvelopeIcon as EnvelopeIconSolid,
   ChatBubbleLeftRightIcon as ChatBubbleLeftRightIconSolid,
-  BuildingStorefrontIcon as BuildingStorefrontIconSolid
+  BuildingStorefrontIcon as BuildingStorefrontIconSolid,
+  TagIcon,
+  StarIcon,
+  QuestionMarkCircleIcon
 } from '@heroicons/react/24/solid';
+import {
+  TagIcon as TagIconOutline,
+  StarIcon as StarIconOutline,
+  QuestionMarkCircleIcon as QuestionMarkCircleIconOutline
+} from '@heroicons/react/24/outline';
 
 import notificationService from '../../services/notificationService';
 import CurrencySelector from '../common/CurrencySelector';
@@ -98,6 +106,27 @@ const AdminLayout: React.FC = () => {
       icon: BuildingStorefrontIcon, 
       iconSolid: BuildingStorefrontIconSolid,
       description: 'Manage vendors & payouts'
+    },
+    {
+      name: 'Coupons',
+      href: '/admin/coupons',
+      icon: TagIconOutline,
+      iconSolid: TagIcon,
+      description: 'Global discounts'
+    },
+    {
+      name: 'Reviews',
+      href: '/admin/reviews',
+      icon: StarIconOutline,
+      iconSolid: StarIcon,
+      description: 'Moderation'
+    },
+    {
+      name: 'Q&A',
+      href: '/admin/qna',
+      icon: QuestionMarkCircleIconOutline,
+      iconSolid: QuestionMarkCircleIcon,
+      description: 'Customer questions'
     },
     { 
       name: 'Newsletter', 

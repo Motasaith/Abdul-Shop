@@ -291,6 +291,51 @@ const VendorDashboard: React.FC = () => {
         </div>
       </div>
 
+
+
+      {/* Marketing & Interaction */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link to="/vendor/coupons" className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow group">
+           <div className="flex items-center gap-4">
+             <div className="p-3 bg-pink-100 dark:bg-pink-900/30 rounded-full text-pink-600 dark:text-pink-400 group-hover:bg-pink-200 dark:group-hover:bg-pink-900/50 transition-colors">
+               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+               </svg>
+             </div>
+             <div>
+               <h3 className="font-bold text-gray-900 dark:text-white">Coupons</h3>
+               <p className="text-sm text-gray-500 dark:text-gray-400">Manage discounts & codes</p>
+             </div>
+           </div>
+        </Link>
+        <Link to="/vendor/reviews" className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow group">
+           <div className="flex items-center gap-4">
+             <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-full text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/50 transition-colors">
+               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+               </svg>
+             </div>
+             <div>
+               <h3 className="font-bold text-gray-900 dark:text-white">Reviews</h3>
+               <p className="text-sm text-gray-500 dark:text-gray-400">Reply to customer feedback</p>
+             </div>
+           </div>
+        </Link>
+        <Link to="/vendor/qna" className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow group">
+           <div className="flex items-center gap-4">
+             <div className="p-3 bg-teal-100 dark:bg-teal-900/30 rounded-full text-teal-600 dark:text-teal-400 group-hover:bg-teal-200 dark:group-hover:bg-teal-900/50 transition-colors">
+               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+               </svg>
+             </div>
+             <div>
+               <h3 className="font-bold text-gray-900 dark:text-white">Q&A</h3>
+               <p className="text-sm text-gray-500 dark:text-gray-400">Answer open questions</p>
+             </div>
+           </div>
+        </Link>
+      </div>
+
       {/* Analytics Section */}
       {analytics && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -299,7 +344,7 @@ const VendorDashboard: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales Overview (Last 30 Days)</h3>
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={analytics.salesGraph} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <AreaChart data={analytics?.salesGraph || []} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
@@ -334,7 +379,7 @@ const VendorDashboard: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-300">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Selling Products</h3>
             <div className="space-y-4">
-              {analytics.topProducts.map((product) => (
+              {analytics?.topProducts?.map((product) => (
                 <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                   <div className="flex-1 min-w-0 mr-4">
                     <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
@@ -351,7 +396,7 @@ const VendorDashboard: React.FC = () => {
                   </div>
                 </div>
               ))}
-              {analytics.topProducts.length === 0 && (
+              {analytics?.topProducts?.length === 0 && (
                 <p className="text-gray-500 text-sm text-center py-4">No sales data yet.</p>
               )}
             </div>
@@ -439,7 +484,7 @@ const VendorDashboard: React.FC = () => {
           </Link>
         </div>
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {stats.recentOrders.length > 0 ? (
+          {stats?.recentOrders?.length > 0 ? (
             stats.recentOrders.map((order) => (
               <div key={order._id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

@@ -67,7 +67,10 @@ export interface Product {
   seoDescription?: string;
   isActive: boolean;
   isNewArrival?: boolean;
+
   onSale?: boolean;
+  saleStartDate?: string;
+  saleEndDate?: string;
   owner?: User | string; // Populated in details, string ID otherwise
   createdBy: string;
   createdAt: string;
@@ -146,6 +149,10 @@ export interface Review {
     comment: string;
     date: string;
   };
+  vendorReply?: {
+    comment: string;
+    date: string;
+  };
 }
 
 export interface CartItem {
@@ -217,6 +224,10 @@ export interface CartState {
   totalPrice: number;
   shippingAddress: Address | null;
   paymentMethod: string;
+  coupon?: string | null;
+  discount?: number;
+  loading?: boolean;
+  error?: string | null;
 }
 
 export interface OrderState {

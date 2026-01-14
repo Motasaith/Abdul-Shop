@@ -346,6 +346,14 @@ const ProductDetailPage: React.FC = () => {
                 )}
               </div>
 
+               {/* Flash Sale Countdown */}
+               {product.onSale && product.saleEndDate && new Date(product.saleEndDate) > new Date() && (
+                 <div className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg border border-red-100 dark:border-red-800/50 text-sm font-semibold animate-pulse">
+                    <ClockIcon className="w-4 h-4" />
+                    <span>Flash Sale Ends: {new Date(product.saleEndDate).toLocaleDateString()}</span>
+                 </div>
+               )}
+
               {/* Stock */}
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Availability:</span>
@@ -712,15 +720,27 @@ const ProductDetailPage: React.FC = () => {
                               {new Date(review.createdAt).toLocaleDateString()}
                             </p>
 
-                            {/* Follow-up Section */}
-                            {review.followUp && (
-                              <div className="mt-3 pt-3 border-t border-gray-100">
-                                <p className="text-xs font-semibold text-orange-600 mb-1">
-                                  Follow-up ({new Date(review.followUp.date).toLocaleDateString()}):
-                                </p>
-                                <p className="text-gray-700 text-sm">{review.followUp.comment}</p>
-                              </div>
-                            )}
+                              {/* Follow-up Section */}
+                              {review.followUp && (
+                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                  <p className="text-xs font-semibold text-orange-600 mb-1">
+                                    Follow-up ({new Date(review.followUp.date).toLocaleDateString()}):
+                                  </p>
+                                  <p className="text-gray-700 dark:text-gray-300 text-sm">{review.followUp.comment}</p>
+                                </div>
+                              )}
+                              
+                              {/* Vendor Reply Section */}
+                              {review.vendorReply && (
+                                <div className="mt-3 bg-blue-50 dark:bg-gray-700/50 p-3 rounded-lg border-l-4 border-blue-500 dark:border-blue-400">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <CheckBadgeIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                        <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Seller Response</p>
+                                    </div>
+                                    <p className="text-gray-700 dark:text-gray-300 text-sm">{review.vendorReply.comment}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{new Date(review.vendorReply.date).toLocaleDateString()}</p>
+                                </div>
+                              )}
                           </div>
                         </div>
                       </div>
@@ -806,7 +826,7 @@ const ProductDetailPage: React.FC = () => {
                                 {answeringId === qna._id ? (
                                   <div className="space-y-2">
                                     <textarea
-                                      className="w-full p-2 border rounded-md"
+                                      className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                                       rows={2}
                                       placeholder="Write an answer..."
                                       value={answers[qna._id] || ''}

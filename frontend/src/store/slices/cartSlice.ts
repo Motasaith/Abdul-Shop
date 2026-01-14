@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { CartState, CartItem, Address } from '../../types';
+import { apiService } from '../../services/api';
 
 const initialState: CartState = {
   items: [],
@@ -7,7 +8,23 @@ const initialState: CartState = {
   totalPrice: 0,
   shippingAddress: null,
   paymentMethod: 'Stripe',
+  coupon: null,
+  discount: 0,
+  loading: false,
+  error: null
 };
+
+export const applyCoupon = createAsyncThunk(
+  'cart/applyCoupon',
+  async ({ code, cartTotal, cartItems }: { code: string; cartTotal: number; cartItems: { product: string; price: number; quantity: number }[] }, { rejectWithValue }) => {
+    try {
+      const response = await apiService.post('/coupons/validate', { code, cartTotal, cartItems });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.msg || 'Failed to apply coupon');
+    }
+  }
+);
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -60,7 +77,30 @@ const cartSlice = createSlice({
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
       state.totalPrice = state.items.reduce((total, item) => total + (item.price * item.quantity), 0);
     },
+    removeCoupon: (state) => {
+      state.coupon = null;
+      state.discount = 0;
+    }
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(applyCoupon.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(applyCoupon.fulfilled, (state, action) => {
+        state.loading = false;
+        state.coupon = action.payload.code;
+        state.discount = action.payload.discount;
+        state.error = null;
+      })
+      .addCase(applyCoupon.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.coupon = null;
+        state.discount = 0;
+      });
+  }
 });
 
 export const {
@@ -71,6 +111,7 @@ export const {
   setShippingAddress,
   setPaymentMethod,
   calculateTotals,
+  removeCoupon
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -31,6 +31,29 @@ export interface VendorAnalyticsData {
   }>;
 }
 
+export interface Coupon {
+  _id: string;
+  code: string;
+  discountPercentage: number;
+  active: boolean;
+  startDate: string;
+  expiryDate: string;
+  usageLimit?: number;
+  usedCount: number;
+  minPurchaseAmount?: number;
+  isGlobal?: boolean;
+}
+
+export interface CreateCouponData {
+  code: string;
+  discountPercentage: number;
+  startDate: string;
+  expiryDate: string;
+  usageLimit?: number;
+  minPurchaseAmount?: number;
+  applicableProducts?: string[];
+}
+
 const vendorService = {
   getVendorStats: async () => {
     // Note: detailed implementation of this endpoint in backend/routes/orders.js seemed missing for vendor specific stats
@@ -60,6 +83,33 @@ const vendorService = {
     // const response = await apiService.post('/vendor/payout', { amount });
     // return response.data;
     return new Promise(resolve => setTimeout(resolve, 1000));
+  },
+
+  // Coupons
+  getCoupons: async () => {
+    const response = await apiService.get<Coupon[]>('/coupons/my');
+    return response.data;
+  },
+
+  createCoupon: async (data: CreateCouponData) => {
+    const response = await apiService.post<Coupon>('/coupons', data);
+    return response.data;
+  },
+
+  deleteCoupon: async (id: string) => {
+    const response = await apiService.delete(`/coupons/${id}`);
+    return response.data;
+  },
+
+  // Interactions
+  replyToReview: async (productId: string, reviewId: string, comment: string) => {
+    const response = await apiService.put(`/products/${productId}/reviews/${reviewId}/reply`, { comment });
+    return response.data;
+  },
+
+  answerQuestion: async (productId: string, questionId: string, answer: string) => {
+    const response = await apiService.put(`/products/${productId}/questions/${questionId}/answer`, { answer });
+    return response.data;
   }
 };
 

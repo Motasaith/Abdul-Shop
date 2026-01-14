@@ -61,6 +61,8 @@ const VendorProductForm: React.FC = () => {
     featured: false,
     isNewArrival: false,
     onSale: false,
+    saleStartDate: '',
+    saleEndDate: '',
     images: [] as Media[],
     videos: [] as Media[],
     specifications: [] as { name: string; value: string }[],
@@ -105,6 +107,8 @@ const VendorProductForm: React.FC = () => {
             featured: product.featured || false,
             isNewArrival: product.isNewArrival || false,
             onSale: product.onSale || false,
+            saleStartDate: product.saleStartDate ? new Date(product.saleStartDate).toISOString().split('T')[0] : '',
+            saleEndDate: product.saleEndDate ? new Date(product.saleEndDate).toISOString().split('T')[0] : '',
             images: product.images || [],
             videos: product.videos || [],
             specifications: product.specifications || [],
@@ -180,6 +184,8 @@ const VendorProductForm: React.FC = () => {
         formDataToSend.append('featured', formData.featured.toString()); 
         formDataToSend.append('isNewArrival', formData.isNewArrival.toString());
         formDataToSend.append('onSale', formData.onSale.toString());
+        if (formData.saleStartDate) formDataToSend.append('saleStartDate', formData.saleStartDate);
+        if (formData.saleEndDate) formDataToSend.append('saleEndDate', formData.saleEndDate);
         
         if (formData.comparePrice) formDataToSend.append('comparePrice', formData.comparePrice);
         if (formData.sku) formDataToSend.append('sku', formData.sku);
@@ -459,6 +465,41 @@ const VendorProductForm: React.FC = () => {
                <InputField label="Stock *" type="number" name="countInStock" value={formData.countInStock} onChange={handleInputChange} min="0" required icon={Package} />
                <InputField label="SKU" name="sku" value={formData.sku} onChange={handleInputChange} placeholder="Stock Keeping Unit" />
                <InputField label="Weight (kg)" type="number" name="weight" value={formData.weight} onChange={handleInputChange} step="0.01" min="0" />
+            </div>
+
+            <div className="mt-6">
+                <label className="flex items-center cursor-pointer group w-fit">
+                    <input 
+                      type="checkbox" 
+                      name="onSale"
+                      checked={formData.onSale} 
+                      onChange={handleInputChange}
+                      className="sr-only" 
+                    />
+                    <div className={`w-10 h-6 rounded-full transition-colors relative ${formData.onSale ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                        <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.onSale ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">On Sale</span>
+                </label>
+
+                {formData.onSale && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800">
+                     <InputField 
+                       label="Sale Start Date" 
+                       type="date" 
+                       name="saleStartDate" 
+                       value={formData.saleStartDate} 
+                       onChange={handleInputChange} 
+                     />
+                     <InputField 
+                       label="Sale End Date" 
+                       type="date" 
+                       name="saleEndDate" 
+                       value={formData.saleEndDate} 
+                       onChange={handleInputChange} 
+                     />
+                  </div>
+                )}
             </div>
           </section>
 

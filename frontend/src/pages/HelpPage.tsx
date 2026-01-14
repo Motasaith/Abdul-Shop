@@ -55,8 +55,8 @@ const HelpPage: React.FC = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <div className="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-lg text-center transition-colors duration-300">
-                <div className="bg-blue-100 dark:bg-blue-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-blue-50 dark:bg-gray-700 p-6 rounded-lg text-center transition-colors duration-300">
+                <div className="bg-blue-100 dark:bg-gray-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="h-8 w-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
@@ -65,8 +65,8 @@ const HelpPage: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300">{t('helpPage.categories.orders.desc')}</p>
               </div>
               
-              <div className="bg-green-50 dark:bg-green-900/30 p-6 rounded-lg text-center transition-colors duration-300">
-                <div className="bg-green-100 dark:bg-green-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-green-50 dark:bg-gray-700 p-6 rounded-lg text-center transition-colors duration-300">
+                <div className="bg-green-100 dark:bg-gray-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="h-8 w-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                   </svg>
@@ -75,8 +75,8 @@ const HelpPage: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300">{t('helpPage.categories.returns.desc')}</p>
               </div>
               
-              <div className="bg-purple-50 dark:bg-purple-900/30 p-6 rounded-lg text-center transition-colors duration-300">
-                <div className="bg-purple-100 dark:bg-purple-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-purple-50 dark:bg-gray-700 p-6 rounded-lg text-center transition-colors duration-300">
+                <div className="bg-purple-100 dark:bg-gray-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="h-8 w-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
@@ -107,7 +107,7 @@ const HelpPage: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-12 bg-blue-50 dark:bg-blue-900/30 p-6 rounded-lg text-center transition-colors duration-300">
+            <div className="mt-12 bg-blue-50 dark:bg-gray-700 p-6 rounded-lg text-center transition-colors duration-300">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('helpPage.stillNeedHelp.title')}</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">{t('helpPage.stillNeedHelp.desc')}</p>
               <div className="flex justify-center space-x-4">

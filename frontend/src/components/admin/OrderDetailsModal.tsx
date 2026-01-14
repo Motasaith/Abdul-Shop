@@ -287,20 +287,31 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ isOpen, onClose, 
                       </h3>
                       <div className="space-y-4">
                         {order.orderItems.map((item: any, index: number) => (
-                          <div key={index} className="flex items-center gap-4 bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
-                            <div className="h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                              <img 
-                                src={item.image} 
-                                alt={item.name} 
-                                className="h-full w-full object-cover"
-                              />
+                          <div key={index} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 bg-white dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50">
+                            <div className="flex items-center gap-3 w-full sm:w-auto">
+                              <div className="h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                                <img 
+                                  src={item.image} 
+                                  alt={item.name} 
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0 sm:hidden">
+                                <h4 className="text-sm font-medium text-gray-900 dark:text-white line-clamp-1">{item.name}</h4>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Qty: {item.quantity}</p>
+                              </div>
                             </div>
-                            <div className="flex-1">
+                            
+                            <div className="flex-1 min-w-0 hidden sm:block">
                               <h4 className="text-sm font-medium text-gray-900 dark:text-white line-clamp-1">{item.name}</h4>
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Qty: {item.quantity}</p>
                             </div>
-                            <div className="text-sm font-bold text-gray-900 dark:text-white">
-                              {formatPrice(item.price * item.quantity)}
+                            
+                            <div className="w-full sm:w-auto flex justify-between sm:block items-center mt-1 sm:mt-0">
+                               <span className="sm:hidden text-xs text-gray-500 dark:text-gray-400">Total</span>
+                               <div className="text-sm font-bold text-gray-900 dark:text-white sm:text-right">
+                                  {formatPrice(item.price * item.quantity)}
+                               </div>
                             </div>
                           </div>
                         ))}

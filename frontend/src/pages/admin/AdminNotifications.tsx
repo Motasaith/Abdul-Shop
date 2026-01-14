@@ -248,8 +248,8 @@ const AdminNotifications: React.FC = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 min-w-0 pt-1">
-                      <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1 min-w-0 pt-1 pr-6">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4">
                         <p className={`text-base ${!notification.read ? 'font-semibold text-gray-900 dark:text-white' : 'font-medium text-gray-700 dark:text-gray-300'}`}>
                           {notification.message}
                         </p>
@@ -260,7 +260,7 @@ const AdminNotifications: React.FC = () => {
                       </div>
                       
                       {/* Actions */}
-                      <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2 mt-3 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                         {!notification.read && (
                           <button
                             onClick={() => handleMarkAsRead(notification._id)}
@@ -272,7 +272,7 @@ const AdminNotifications: React.FC = () => {
                         )}
                         <button
                           onClick={() => handleDelete(notification._id)}
-                          className="flex items-center text-xs font-medium text-red-500 hover:text-red-700 transition-colors ml-auto"
+                          className="flex items-center text-xs font-medium text-red-500 hover:text-red-700 transition-colors ml-auto sm:ml-0"
                         >
                           <Trash2 className="w-3 h-3 mr-1" />
                           Delete

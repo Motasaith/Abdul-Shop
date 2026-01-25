@@ -37,9 +37,8 @@ router.post('/', [
 
   try {
     console.log('=== ORDER CREATION DEBUG ===');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    // 🛡️ Sentinel: Sanitized logging - removed full body and user object dump
     console.log('User ID:', req.user?.id);
-    console.log('User object:', req.user);
     
     if (orderItems && orderItems.length === 0) {
       console.log('Error: No order items provided');

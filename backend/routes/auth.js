@@ -238,11 +238,13 @@ router.post(
     check('phone', 'Phone number is required').not().isEmpty(),
   ],
   async (req, res) => {
-    console.log('Registration attempt:', req.body);
+    // 🛡️ Sentinel: Sanitized logging to prevent password leakage
+    console.log('Registration attempt for email:', req.body.email);
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log('Validation errors:', errors.array());
+      // 🛡️ Sentinel: Do not log full validation errors as they may contain sensitive data (e.g., passwords)
+      console.log('Validation failed for registration attempt');
       return res.status(400).json({ errors: errors.array() });
     }
 

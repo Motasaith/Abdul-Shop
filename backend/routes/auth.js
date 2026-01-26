@@ -7,6 +7,7 @@ const User = require('../models/User');
 const emailService = require('../services/emailService');
 const axios = require('axios');
 const passport = require('passport');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
@@ -227,6 +228,7 @@ async function sendSMSVerificationCode(phoneNumber, verificationCode) {
 // @access   Public
 router.post(
   '/register',
+  authLimiter,
   [
     check('name', 'Name is required').not().isEmpty().trim(),
     check('email', 'Please include a valid email').isEmail().normalizeEmail(),
@@ -370,7 +372,7 @@ router.post(
 // @route    POST api/auth/login
 // @desc     Login user
 // @access   Public
-router.post('/login', [
+router.post('/login', authLimiter, [
   check('email', 'Please include a valid email').isEmail(),
   check('password', 'Password is required').exists()
 ], async (req, res) => {
@@ -469,7 +471,7 @@ router.post('/logout', require('../middleware/auth'), (req, res) => {
 // @route    POST api/auth/send-phone-verification
 // @desc     Send phone verification code from profile
 // @access   Private
-router.post('/send-phone-verification', require('../middleware/auth'), async (req, res) => {
+router.post('/send-phone-verification', require('../middleware/auth'), authLimiter, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     
@@ -527,7 +529,7 @@ router.post('/send-phone-verification', require('../middleware/auth'), async (re
 // @route    POST api/auth/verify-phone
 // @desc     Verify phone number with code
 // @access   Private
-router.post('/verify-phone', require('../middleware/auth'), async (req, res) => {
+router.post('/verify-phone', require('../middleware/auth'), authLimiter, async (req, res) => {
   const { verificationCode } = req.body;
   
   if (!verificationCode) {
@@ -578,7 +580,7 @@ router.post('/verify-phone', require('../middleware/auth'), async (req, res) => 
 // @route    POST api/auth/resend-verification
 // @desc     Resend verification code
 // @access   Private
-router.post('/resend-verification', require('../middleware/auth'), async (req, res) => {
+router.post('/resend-verification', require('../middleware/auth'), authLimiter, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     
@@ -634,7 +636,7 @@ router.post('/resend-verification', require('../middleware/auth'), async (req, r
 // @route    POST api/auth/verify-email
 // @desc     Verify email address
 // @access   Public
-router.post('/verify-email', async (req, res) => {
+router.post('/verify-email', authLimiter, async (req, res) => {
   const { token } = req.body;
   
   console.log('--- Email Verification Debug ---');
@@ -708,7 +710,7 @@ router.post('/verify-email', async (req, res) => {
 // @route    POST api/auth/resend-verification-email
 // @desc     Resend email verification (Public version - requires email)
 // @access   Public
-router.post('/resend-verification-email', async (req, res) => {
+router.post('/resend-verification-email', authLimiter, async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
@@ -747,7 +749,7 @@ router.post('/resend-verification-email', async (req, res) => {
 // @route    POST api/auth/resend-email-verification
 // @desc     Resend email verification (Authenticated version)
 // @access   Private
-router.post('/resend-email-verification', require('../middleware/auth'), async (req, res) => {
+router.post('/resend-email-verification', require('../middleware/auth'), authLimiter, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     
@@ -780,7 +782,7 @@ router.post('/resend-email-verification', require('../middleware/auth'), async (
 // @route    POST api/auth/forgot-password
 // @desc     Request password reset
 // @access   Public
-router.post('/forgot-password', [
+router.post('/forgot-password', authLimiter, [
   check('email', 'Please include a valid email').isEmail()
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -820,7 +822,7 @@ router.post('/forgot-password', [
 // @route    POST api/auth/reset-password
 // @desc     Reset password with token
 // @access   Public
-router.post('/reset-password', [
+router.post('/reset-password', authLimiter, [
   check('token', 'Reset token is required').not().isEmpty(),
   check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 })
 ], async (req, res) => {

@@ -238,7 +238,9 @@ router.post(
     check('phone', 'Phone number is required').not().isEmpty(),
   ],
   async (req, res) => {
-    console.log('Registration attempt:', req.body);
+    // 🛡️ Sentinel: Sanitize logs to avoid leaking password
+    const { password: _password, ...safeBody } = req.body;
+    console.log('Registration attempt:', safeBody);
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -638,8 +640,10 @@ router.post('/verify-email', async (req, res) => {
   const { token } = req.body;
   
   console.log('--- Email Verification Debug ---');
-  console.log('Body:', req.body);
-  console.log(`Token received: '${token}'`);
+  // 🛡️ Sentinel: Sanitize logs
+  const { token: _token, ...safeVerifyBody } = req.body;
+  console.log('Body:', safeVerifyBody);
+  console.log(`Token received: '${token ? '***' + token.slice(-4) : 'undefined'}'`);
   
   if (!token) {
     console.log('Token is missing/undefined/null');

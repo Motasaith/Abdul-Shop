@@ -102,12 +102,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+}
 
 // SMS service will use RapidAPI
 console.log('SMS service configured to use RapidAPI');
@@ -170,10 +172,12 @@ app.use('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
-  console.log(`Environment loaded from .env: ${process.env.NODE_ENV === 'development' ? 'YES' : 'NO'}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+    console.log(`Environment loaded from .env: ${process.env.NODE_ENV === 'development' ? 'YES' : 'NO'}`);
+  });
+}
 
 module.exports = app;

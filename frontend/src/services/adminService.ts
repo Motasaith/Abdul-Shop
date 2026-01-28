@@ -28,6 +28,13 @@ const adminService = {
     return response.data;
   },
 
+  updateProductWithFiles: async (id: string, formData: FormData) => {
+    const response = await apiService.put(`/admin/products/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+  },
+
   deleteProduct: async (id: string) => {
     const response = await apiService.delete(`/admin/products/${id}`);
     return response.data;

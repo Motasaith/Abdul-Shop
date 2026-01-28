@@ -205,19 +205,21 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
 
       if (product) {
          // Update Logic
-         const updateData = {
-            ...formData,
-            price: parseFloat(formData.price),
-            comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
-            countInStock: parseInt(formData.countInStock),
-            weight: formData.weight ? parseFloat(formData.weight) : undefined
-         };
-         
-         await service.updateProduct(product._id, updateData);
-         
-         if(imageFiles.length > 0) {
-             toast('Note: New file uploads during quick-update are strictly text/url based in this version.', { icon: 'ℹ️'});
+         if (imageFiles.length > 0 || videoFiles.length > 0) {
+             // Use update with files logic
+             await service.updateProductWithFiles(product._id, formDataToSend);
+         } else {
+             // Standard update (JSON)
+              const updateData = {
+                ...formData,
+                price: parseFloat(formData.price),
+                comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
+                countInStock: parseInt(formData.countInStock),
+                weight: formData.weight ? parseFloat(formData.weight) : undefined
+             };
+             await service.updateProduct(product._id, updateData);
          }
+         
          toast.success('Product updated successfully!');
       } else {
         // Create Logic

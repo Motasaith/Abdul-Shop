@@ -3,9 +3,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fetchProduct, fetchProductsByCategory } from '../store/slices/productSlice';
 import { addToCart } from '../store/slices/cartSlice';
-import { 
-  StarIcon, 
-  ShoppingCartIcon, 
+import {
+  StarIcon,
+  ShoppingCartIcon,
   TruckIcon,
   CreditCardIcon,
   ShieldCheckIcon,
@@ -30,6 +30,7 @@ import toast from 'react-hot-toast';
 import { usePrice } from '../hooks/usePrice';
 // Service import
 import productService from '../services/productService';
+import HaggleModal from '../components/common/HaggleModal';
 
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -41,7 +42,7 @@ const ProductDetailPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { product, products, loading, error } = useAppSelector((state) => state.products);
   const { user } = useAppSelector((state) => state.auth);
-  
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
@@ -54,7 +55,8 @@ const ProductDetailPage: React.FC = () => {
   // Admin answer state
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
   const [answeringId, setAnsweringId] = useState<string | null>(null);
-  
+  const [isHaggleModalOpen, setIsHaggleModalOpen] = useState(false);
+
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const handleReviewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,15 +83,15 @@ const ProductDetailPage: React.FC = () => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    
+
     const existingItem = items.find(item => item.product === product._id);
     const currentQty = existingItem ? existingItem.quantity : 0;
-    
+
     if (currentQty + quantity > product.countInStock) {
       toast.error(`Cannot add more items. You already have ${currentQty} in cart and only ${product.countInStock} are available.`);
       return;
     }
-    
+
     dispatch(addToCart({
       product: product._id,
       name: product.name,
@@ -98,7 +100,7 @@ const ProductDetailPage: React.FC = () => {
       countInStock: product.countInStock,
       quantity
     }));
-    
+
     toast.success(`${product.name} added to cart!`);
   };
 
@@ -107,17 +109,17 @@ const ProductDetailPage: React.FC = () => {
       toast.error('Please enter a question');
       return;
     }
-    
+
     if (!user) {
       toast.error('Please login to ask a question');
       return;
     }
-    
+
     try {
       await productService.addProductQuestion(id!, { question: newQuestion });
       toast.success('Question submitted successfully!');
       setNewQuestion('');
-      
+
       // Refresh product data
       if (id) {
         dispatch(fetchProduct(id));
@@ -133,18 +135,18 @@ const ProductDetailPage: React.FC = () => {
       toast.error('Please enter a review comment');
       return;
     }
-    
+
     if (!user) {
       toast.error('Please login to write a review');
       return;
     }
-    
+
     try {
       // Use FormData for image upload
       const formData = new FormData();
       formData.append('rating', newReview.rating.toString());
       formData.append('comment', newReview.comment);
-      
+
       // Append images
       reviewImages.forEach((file) => {
         formData.append('images', file);
@@ -152,13 +154,13 @@ const ProductDetailPage: React.FC = () => {
 
       await productService.addProductReview(id!, formData);
       toast.success('Review submitted successfully!');
-      
+
       // Reset form
       setNewReview({ rating: 5, comment: '' });
       setNewReview({ rating: 5, comment: '' });
       setReviewImages([]);
       setShowReviewForm(false);
-      
+
       // Refresh product data
       if (id) {
         dispatch(fetchProduct(id));
@@ -187,13 +189,13 @@ const ProductDetailPage: React.FC = () => {
 
   const handleBuyNow = () => {
     if (!product) return;
-    
+
     if (!user) {
       toast.error('Please login to buy now');
       navigate('/login');
       return;
     }
-    
+
     const buyNowItem = {
       product: product._id,
       name: product.name,
@@ -202,7 +204,7 @@ const ProductDetailPage: React.FC = () => {
       countInStock: product.countInStock,
       quantity
     };
-    
+
     // Navigate directly to checkout with the item in state
     navigate('/checkout', { state: { buyNowItem } });
   };
@@ -250,7 +252,7 @@ const ProductDetailPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 p-4 sm:p-6">
             {/* Product Images */}
             <div className="lg:col-span-2 space-y-4">
-              <div 
+              <div
                 className="aspect-w-1 aspect-h-1 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden relative group cursor-zoom-in"
                 onClick={() => setIsLightboxOpen(true)}
               >
@@ -265,9 +267,9 @@ const ProductDetailPage: React.FC = () => {
                       }}
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-300">
-                       <div className="bg-white/80 dark:bg-black/60 p-3 rounded-full backdrop-blur-sm shadow-sm">
-                          <MagnifyingGlassPlusIcon className="w-6 h-6 text-gray-800 dark:text-white" />
-                       </div>
+                      <div className="bg-white/80 dark:bg-black/60 p-3 rounded-full backdrop-blur-sm shadow-sm">
+                        <MagnifyingGlassPlusIcon className="w-6 h-6 text-gray-800 dark:text-white" />
+                      </div>
                     </div>
                   </>
                 ) : (
@@ -276,7 +278,7 @@ const ProductDetailPage: React.FC = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Thumbnail Images */}
               {allMedia.length > 1 && (
                 <div className="flex space-x-2 overflow-x-auto">
@@ -284,9 +286,8 @@ const ProductDetailPage: React.FC = () => {
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
-                        selectedImage === index ? 'border-blue-600' : 'border-gray-300 dark:border-gray-600'
-                      }`}
+                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${selectedImage === index ? 'border-blue-600' : 'border-gray-300 dark:border-gray-600'
+                        }`}
                     >
                       <img
                         src={media.url}
@@ -346,20 +347,19 @@ const ProductDetailPage: React.FC = () => {
                 )}
               </div>
 
-               {/* Flash Sale Countdown */}
-               {product.onSale && product.saleEndDate && new Date(product.saleEndDate) > new Date() && (
-                 <div className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg border border-red-100 dark:border-red-800/50 text-sm font-semibold animate-pulse">
-                    <ClockIcon className="w-4 h-4" />
-                    <span>Flash Sale Ends: {new Date(product.saleEndDate).toLocaleDateString()}</span>
-                 </div>
-               )}
+              {/* Flash Sale Countdown */}
+              {product.onSale && product.saleEndDate && new Date(product.saleEndDate) > new Date() && (
+                <div className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg border border-red-100 dark:border-red-800/50 text-sm font-semibold animate-pulse">
+                  <ClockIcon className="w-4 h-4" />
+                  <span>Flash Sale Ends: {new Date(product.saleEndDate).toLocaleDateString()}</span>
+                </div>
+              )}
 
               {/* Stock */}
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Availability:</span>
-                <span className={`text-sm font-medium ${
-                  product.countInStock > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                }`}>
+                <span className={`text-sm font-medium ${product.countInStock > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                  }`}>
                   {product.countInStock > 0 ? `${product.countInStock} ${t('product.inStock')}` : t('product.outOfStock')}
                 </span>
               </div>
@@ -384,9 +384,9 @@ const ProductDetailPage: React.FC = () => {
                   </div>
                   <span className="text-sm text-gray-600 dark:text-gray-400">{t('product.onlyLeft', { count: product.countInStock })}</span>
                 </div>
-                
+
                 <div className="flex space-x-3">
-                  <WishlistButton 
+                  <WishlistButton
                     productId={product._id}
                     className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     size="md"
@@ -399,7 +399,7 @@ const ProductDetailPage: React.FC = () => {
                     <ShoppingCartIcon className="h-5 w-5" />
                     <span>{t('product.addToCart')}</span>
                   </button>
-                  <button 
+                  <button
                     onClick={handleBuyNow}
                     disabled={product.countInStock === 0}
                     className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
@@ -407,6 +407,27 @@ const ProductDetailPage: React.FC = () => {
                     {t('product.buyNow')}
                   </button>
                 </div>
+
+                {/* Haggle AI Button */}
+                <div className="mt-3">
+                  <button
+                    onClick={() => setIsHaggleModalOpen(true)}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-lg font-bold hover:from-emerald-600 hover:to-teal-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group"
+                  >
+                    <div className="bg-white/20 p-1 rounded-full group-hover:scale-110 transition-transform">
+                      <CurrencyDollarIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <span>Haggle with AI Shopkeeper</span>
+                  </button>
+                  <p className="text-xs text-center text-gray-500 mt-2">Think the price is too high? Try your luck!</p>
+                </div>
+
+                {/* Haggle Modal */}
+                <HaggleModal
+                  isOpen={isHaggleModalOpen}
+                  onClose={() => setIsHaggleModalOpen(false)}
+                  product={product as any}
+                />
               </div>
             </div>
 
@@ -418,7 +439,7 @@ const ProductDetailPage: React.FC = () => {
                   <TruckIcon className="h-5 w-5 mr-2" />
                   {t('product.deliveryOptions')}
                 </h3>
-                
+
                 <div className="space-y-3">
                   <div className="flex items-start space-x-2">
                     <MapPinIcon className="h-4 w-4 text-gray-600 dark:text-gray-400 mt-0.5" />
@@ -429,7 +450,7 @@ const ProductDetailPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   {product.deliveryInfo?.standardDelivery?.available && (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
@@ -442,7 +463,7 @@ const ProductDetailPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {product.deliveryInfo?.cashOnDelivery?.available && (
                     <div className="flex items-center space-x-2">
                       <CurrencyDollarIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
@@ -458,7 +479,7 @@ const ProductDetailPage: React.FC = () => {
                   <ShieldCheckIcon className="h-5 w-5 mr-2" />
                   {t('product.returnWarranty')}
                 </h3>
-                
+
                 <div className="space-y-3">
                   {product.returnPolicy?.available && (
                     <div className="flex items-center space-x-2">
@@ -468,7 +489,7 @@ const ProductDetailPage: React.FC = () => {
                       </span>
                     </div>
                   )}
-                  
+
                   {product.warranty?.available ? (
                     <div className="flex items-center space-x-2">
                       <CheckBadgeIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -499,11 +520,10 @@ const ProductDetailPage: React.FC = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === tab
-                      ? 'border-orange-500 text-orange-600 dark:text-orange-400'
-                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
-                  }`}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab
+                    ? 'border-orange-500 text-orange-600 dark:text-orange-400'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+                    }`}
                 >
                   {tab === 'description' && t('product.description')}
                   {tab === 'specifications' && t('product.specifications')}
@@ -603,7 +623,7 @@ const ProductDetailPage: React.FC = () => {
                           {[1, 2, 3, 4, 5].map((rating) => (
                             <button
                               key={rating}
-                              onClick={() => setNewReview({...newReview, rating})}
+                              onClick={() => setNewReview({ ...newReview, rating })}
                               className="focus:outline-none"
                             >
                               {rating <= newReview.rating ? (
@@ -619,13 +639,13 @@ const ProductDetailPage: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Review</label>
                         <textarea
                           value={newReview.comment}
-                          onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
+                          onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                           rows={4}
                           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                           placeholder={t('product.review') + "..."}
                         />
                       </div>
-                      
+
                       {/* Image Upload Section */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('product.addPhotos')}</label>
@@ -645,7 +665,7 @@ const ProductDetailPage: React.FC = () => {
                             {reviewImages.length} file(s) selected
                           </span>
                         </div>
-                        
+
                         {/* Image Previews */}
                         {reviewImages.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-3">
@@ -720,32 +740,32 @@ const ProductDetailPage: React.FC = () => {
                               {new Date(review.createdAt).toLocaleDateString()}
                             </p>
 
-                              {/* Follow-up Section */}
-                              {review.followUp && (
-                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                                  <p className="text-xs font-semibold text-orange-600 mb-1">
-                                    Follow-up ({new Date(review.followUp.date).toLocaleDateString()}):
-                                  </p>
-                                  <p className="text-gray-700 dark:text-gray-300 text-sm">{review.followUp.comment}</p>
+                            {/* Follow-up Section */}
+                            {review.followUp && (
+                              <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                <p className="text-xs font-semibold text-orange-600 mb-1">
+                                  Follow-up ({new Date(review.followUp.date).toLocaleDateString()}):
+                                </p>
+                                <p className="text-gray-700 dark:text-gray-300 text-sm">{review.followUp.comment}</p>
+                              </div>
+                            )}
+
+                            {/* Vendor Reply Section */}
+                            {review.vendorReply && (
+                              <div className="mt-3 bg-blue-50 dark:bg-gray-700/50 p-3 rounded-lg border-l-4 border-blue-500 dark:border-blue-400">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <CheckBadgeIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                  <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Seller Response</p>
                                 </div>
-                              )}
-                              
-                              {/* Vendor Reply Section */}
-                              {review.vendorReply && (
-                                <div className="mt-3 bg-blue-50 dark:bg-gray-700/50 p-3 rounded-lg border-l-4 border-blue-500 dark:border-blue-400">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <CheckBadgeIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                        <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Seller Response</p>
-                                    </div>
-                                    <p className="text-gray-700 dark:text-gray-300 text-sm">{review.vendorReply.comment}</p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{new Date(review.vendorReply.date).toLocaleDateString()}</p>
-                                </div>
-                              )}
+                                <p className="text-gray-700 dark:text-gray-300 text-sm">{review.vendorReply.comment}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{new Date(review.vendorReply.date).toLocaleDateString()}</p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
                     ))}
-                    
+
                     {product.reviews.length > 3 && (
                       <button
                         onClick={() => setShowAllReviews(!showAllReviews)}
@@ -811,7 +831,7 @@ const ProductDetailPage: React.FC = () => {
                           <p className="text-sm text-gray-500 ml-7">
                             Asked by {qna.userName} on {new Date(qna.createdAt).toLocaleDateString()}
                           </p>
-                          
+
                           {/* Answer Section */}
                           {qna.answer ? (
                             <div className="mt-4 pl-4 border-l-2 border-orange-200 dark:border-orange-500/50">
@@ -830,7 +850,7 @@ const ProductDetailPage: React.FC = () => {
                                       rows={2}
                                       placeholder="Write an answer..."
                                       value={answers[qna._id] || ''}
-                                      onChange={(e) => setAnswers({...answers, [qna._id]: e.target.value})}
+                                      onChange={(e) => setAnswers({ ...answers, [qna._id]: e.target.value })}
                                     />
                                     <div className="flex space-x-2">
                                       <button
@@ -896,8 +916,8 @@ const ProductDetailPage: React.FC = () => {
                       />
                     </div>
                     <h4 className="font-medium text-gray-900 mb-1 group-hover:text-orange-600 transition-colors">
-                      {similarProduct.name.length > 50 
-                        ? `${similarProduct.name.substring(0, 50)}...` 
+                      {similarProduct.name.length > 50
+                        ? `${similarProduct.name.substring(0, 50)}...`
                         : similarProduct.name
                       }
                     </h4>
@@ -958,21 +978,20 @@ const ProductDetailPage: React.FC = () => {
               />
 
               {allMedia.length > 1 && (
-                 <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 p-4 overflow-x-auto" onClick={(e) => e.stopPropagation()}>
-                    {allMedia.map((media, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImage(index)}
-                        className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                          selectedImage === index 
-                            ? 'border-white scale-110 shadow-lg' 
-                            : 'border-white/30 opacity-60 hover:opacity-100 hover:border-white/60'
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 p-4 overflow-x-auto" onClick={(e) => e.stopPropagation()}>
+                  {allMedia.map((media, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(index)}
+                      className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
+                        ? 'border-white scale-110 shadow-lg'
+                        : 'border-white/30 opacity-60 hover:opacity-100 hover:border-white/60'
                         }`}
-                      >
-                        <img src={media.url} alt="" className="w-full h-full object-cover" />
-                      </button>
-                    ))}
-                 </div>
+                    >
+                      <img src={media.url} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
           </motion.div>

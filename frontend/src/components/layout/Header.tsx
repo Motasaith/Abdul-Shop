@@ -24,6 +24,8 @@ import ThemeToggle from '../common/ThemeToggle';
 import { usePrice } from '../../hooks/usePrice';
 import { useTranslation } from '../../hooks/useTranslation';
 import { AnimatePresence, motion } from 'framer-motion';
+import ShopLensModal from '../ShopLens/ShopLensModal';
+import { Sparkles as SparklesIcon } from 'lucide-react';
 
 const Header: React.FC = () => {
   const { formatPrice } = usePrice();
@@ -37,6 +39,7 @@ const Header: React.FC = () => {
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isShopLensOpen, setIsShopLensOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
 
@@ -161,6 +164,16 @@ const Header: React.FC = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-1 sm:gap-2">
+            
+            {/* ShopLens AI Trigger */}
+            <button
+              onClick={() => setIsShopLensOpen(true)}
+              className="hidden sm:flex relative p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all group mr-2"
+              title="ShopLens AI Stylist"
+            >
+              <SparklesIcon className="h-5 w-5 fill-current" />
+              <span className="hidden lg:block ml-2 text-xs font-bold">ShopLens AI</span>
+            </button>
             {/* Wishlist */}
             <Link 
               to="/wishlist" 
@@ -466,6 +479,7 @@ const Header: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <ShopLensModal isOpen={isShopLensOpen} onClose={() => setIsShopLensOpen(false)} />
     </header>
   );
 };

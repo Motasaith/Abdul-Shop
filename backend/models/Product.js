@@ -66,6 +66,11 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Please add a price'],
     min: [0, 'Price cannot be negative']
   },
+  floorPrice: {
+    type: Number,
+    min: [0, 'Floor price cannot be negative'],
+    description: "The minimum price the AI shopkeeper will accept. Defaults to 80% of price if not set."
+  },
   comparePrice: {
     type: Number,
     min: [0, 'Compare price cannot be negative']
@@ -250,14 +255,14 @@ productSchema.index({ featured: 1 });
 productSchema.index({ createdAt: -1 });
 
 // Virtual for average rating calculation
-productSchema.virtual('averageRating').get(function() {
+productSchema.virtual('averageRating').get(function () {
   if (this.reviews.length === 0) return 0;
   const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
   return sum / this.reviews.length;
 });
 
 // Pre-save middleware to update rating and numReviews
-productSchema.pre('save', function(next) {
+productSchema.pre('save', function (next) {
   if (this.reviews.length > 0) {
     this.numReviews = this.reviews.length;
     this.rating = this.reviews.reduce((acc, review) => acc + review.rating, 0) / this.reviews.length;

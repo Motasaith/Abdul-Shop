@@ -62,10 +62,10 @@ const corsOptions = {
       process.env.CORS_ORIGIN?.replace(/\/$/, ''), // Remove trailing slash
       process.env.CORS_ORIGIN?.replace(/\/$/, '') + '/', // Add trailing slash
     ].filter(Boolean);
-    
+
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
+
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -106,16 +106,16 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // SMS service will use RapidAPI
 console.log('SMS service configured to use RapidAPI');
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
+  res.status(200).json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development'
@@ -141,11 +141,14 @@ app.use('/api/vendor', require('./routes/vendor'));
 app.use('/api/shop', require('./routes/shop'));
 app.use('/api/coupons', require('./routes/coupons'));
 app.use('/api/content', require('./routes/content'));
+app.use('/api/shoplens', require('./routes/shopLensRoutes'));
+app.use('/api/haggle', require('./routes/haggleRoutes'));
+app.use('/api/gift-scout', require('./routes/giftScoutRoutes'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));
-  
+
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
   });

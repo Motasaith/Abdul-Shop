@@ -713,6 +713,13 @@ router.post('/', [
        whatsInBox.push(...req.body.whatsInBox);
     }
 
+    // Sanitize SKU: ensure we don't save empty strings which violate unique sparse index
+    if (sku === '') {
+      // req.body.sku is already destructured into sku var, but for the object creation below:
+       // we handled it by using the var. We just need to ensure `sku` passed to `new Product` is undefined if empty.
+    }
+    const finalSku = sku === '' ? undefined : sku;
+
     const newProduct = new Product({
       name,
       description,
@@ -726,7 +733,7 @@ router.post('/', [
       featured: featured === 'true' || featured === true,
       isNewArrival: isNewArrival === 'true' || isNewArrival === true,
       onSale: onSale === 'true' || onSale === true,
-      sku,
+      sku: finalSku,
       weight: weight ? (typeof weight === 'string' ? parseFloat(weight) : weight) : undefined,
       dimensions,
       specifications,
@@ -771,7 +778,10 @@ router.post('/', [
 // @route    PUT api/products/:id
 // @desc     Update product
 // @access   Private/Admin/Vendor
-router.put('/:id', auth, async (req, res) => {
+// @route    PUT api/products/:id
+// @desc     Update product
+// @access   Private/Admin/Vendor
+router.put('/:id', [auth, uploadMiddleware], async (req, res) => {
   try {
     let product = await Product.findById(req.params.id);
 
@@ -788,9 +798,171 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(401).json({ msg: 'Not authorized to update this product' });
     }
 
+    // Handle File Uploads (Same logic as POST)
+    const processedImages = [];
+    if (req.files && req.files.images) {
+      const imageFiles = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
+      for (const file of imageFiles) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, 'products', 'image');
+          processedImages.push({ url: result.secure_url, public_id: result.public_id });
+        } catch (error) {
+          console.error('Image upload error:', error);
+        }
+      }
+    }
+
+    const processedVideos = [];
+    if (req.files && req.files.videos) {
+      const videoFiles = Array.isArray(req.files.videos) ? req.files.videos : [req.files.videos];
+      for (const file of videoFiles) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, 'products', 'video');
+          processedVideos.push({ url: result.secure_url, public_id: result.public_id });
+        } catch (error) {
+          console.error('Video upload error:', error);
+        }
+      }
+    }
+
+    // Prepare update object
+    const updateFields = { ...req.body };
+
+    // Handle Nested Array Fields (FormData flattens them, so we might need to parse them if sent via FormData)
+    // If sent as JSON, they are objects. if FormData, they are strings like "specifications[0][name]" 
+    // BUT since we are using `uploadMiddleware` (multer), `req.body` only contains textual fields.
+    // Multer does NOT automatically parse nested object keys like "specifications[0][name]".
+    // We need to reconstruct arrays if they are present in flattened format.
+    
+    // NOTE: The `product` model update via $set with plain `req.body` works for JSON.
+    // For FormData, we must manually reconstruct complex fields OR relies on a library.
+    // Given the complexity of mixing JSON and Multer, the easiest way for "Quick Update" of images 
+    // is to MERGE the new images into the existing image array in `req.body.images` if provided.
+
+    // However, the Frontend sends EVERYTHING in FormData when files are present.
+    // So `req.body` will be messy. 
+    // Let's parse the specific complex fields similar to POST route:
+    
+    // Helper to parse array from indexed keys
+    const parseIndexedArray = (prefix, keys) => {
+        const items = [];
+        let i = 0;
+        // Check for first item
+        while (req.body[`${prefix}[${i}][${keys[0]}]`] !== undefined) {
+             const obj = {};
+             keys.forEach(k => obj[k] = req.body[`${prefix}[${i}][${k}]`]);
+             items.push(obj);
+             i++;
+        }
+        return items;
+    };
+
+    // Reconstruct specs and box
+    // ONLY IF they are not already arrays (which would happen if JSON or if middleware parsed it)
+    if (!Array.isArray(req.body.specifications) && req.body['specifications[0][name]']) {
+         updateFields.specifications = parseIndexedArray('specifications', ['name', 'value']);
+    }
+    if (!Array.isArray(req.body.whatsInBox) && req.body['whatsInBox[0][item]']) {
+         // quantity needs parsing to int
+         const boxItems = parseIndexedArray('whatsInBox', ['item', 'quantity']);
+         updateFields.whatsInBox = boxItems.map(b => ({ ...b, quantity: parseInt(b.quantity) }));
+    }
+
+    // Reconstruct URLs from existing/text inputs
+    // The frontend sends `imageUrls` for existing or URL-added images
+    const existingImageUrls = [];
+    let imgIdx = 0;
+    while(req.body[`imageUrls[${imgIdx}][url]`]) {
+        existingImageUrls.push({
+            url: req.body[`imageUrls[${imgIdx}][url]`],
+            public_id: req.body[`imageUrls[${imgIdx}][public_id]`]
+        });
+        imgIdx++;
+    }
+    
+    const existingVideoUrls = [];
+    let vidIdx = 0;
+    while(req.body[`videoUrls[${vidIdx}][url]`]) {
+        existingVideoUrls.push({
+            url: req.body[`videoUrls[${vidIdx}][url]`],
+            public_id: req.body[`videoUrls[${vidIdx}][public_id]`]
+        });
+        vidIdx++;
+    }
+
+    // Merge new files with existing/url images
+    // Note: If `req.body.images` exists (from JSON), use it. Else use constructed.
+    // But usually frontend sends EITHER JSON (no files) OR FormData (files + flattened).
+    
+    let finalImages;
+    if (processedImages.length > 0 || existingImageUrls.length > 0) {
+        finalImages = [...existingImageUrls, ...processedImages];
+        // If there were also JSON images passed (rare in FormData mix?), add them
+        if (req.body.images && Array.isArray(req.body.images)) finalImages.push(...req.body.images);
+        updateFields.images = finalImages;
+    }
+
+    let finalVideos;
+    if (processedVideos.length > 0 || existingVideoUrls.length > 0) {
+        finalVideos = [...existingVideoUrls, ...processedVideos];
+         if (req.body.videos && Array.isArray(req.body.videos)) finalVideos.push(...req.body.videos);
+        updateFields.videos = finalVideos;
+    }
+
+    // Sanitize numeric fields if they came as strings
+    if (updateFields.price) updateFields.price = parseFloat(updateFields.price);
+    if (updateFields.comparePrice) updateFields.comparePrice = parseFloat(updateFields.comparePrice);
+    if (updateFields.countInStock) updateFields.countInStock = parseInt(updateFields.countInStock);
+    if (updateFields.weight) updateFields.weight = parseFloat(updateFields.weight);
+    if (updateFields.featured) updateFields.featured = updateFields.featured === 'true' || updateFields.featured === true;
+    if (updateFields.onSale) updateFields.onSale = updateFields.onSale === 'true' || updateFields.onSale === true;
+    if (updateFields.isNewArrival) updateFields.isNewArrival = updateFields.isNewArrival === 'true' || updateFields.isNewArrival === true;
+
+    // Sanitize SKU
+    if (updateFields.sku === '') {
+        delete updateFields.sku; 
+        // If we wanted to unset, we'd need $unset. For now, deleting prevents setting it to "".
+        // If the document already has "", this still won't fix validation on save unless we force unset, 
+        // but since we are using findByIdAndUpdate with $set, it just won't update sku to "".
+        // If it was already "", we might want to clean it up:
+        // updateFields.$unset = { sku: 1 }; // Mixed with $set in Mongoose might be tricky if not careful
+    }
+
+    // Delivery & Warranty - Nested objects are tricky in FormData "deliveryInfo[standardDelivery][cost]"
+    // We might need to manually reconstruct them if they are flattened strings
+    if (req.body['deliveryInfo[standardDelivery][cost]']) {
+        updateFields.deliveryInfo = {
+            standardDelivery: {
+                cost: parseFloat(req.body['deliveryInfo[standardDelivery][cost]']),
+                days: req.body['deliveryInfo[standardDelivery][days]']
+            },
+            cashOnDelivery: {
+                available: req.body['deliveryInfo[cashOnDelivery][available]'] === 'true'
+            }
+        };
+    }
+    // Similar for warranty/return policy... this is getting verbose. 
+    // Ideally user sends JSON for mixed data, but we can't upload files in JSON.
+    // For now, let's assume the Critical fields are updated, and if nested objects are missing due to FormData, we try to preserve old ones or parse if present.
+    
+    if (req.body['returnPolicy[available]']) {
+        updateFields.returnPolicy = {
+            available: req.body['returnPolicy[available]'] === 'true',
+            days: parseInt(req.body['returnPolicy[days]'])
+        };
+    }
+    
+    if (req.body['warranty[available]']) {
+        updateFields.warranty = {
+            available: req.body['warranty[available]'] === 'true',
+             duration: req.body['warranty[duration]'],
+             type: req.body['warranty[type]']
+        };
+    }
+
     product = await Product.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateFields },
       { new: true }
     );
 

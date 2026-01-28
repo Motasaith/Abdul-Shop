@@ -5,7 +5,9 @@ import {
   PencilSquareIcon, 
   ArrowPathIcon,
   GlobeAltIcon,
-  PhoneIcon
+  PhoneIcon,
+  DocumentTextIcon,
+  ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 
 const AdminCMS: React.FC = () => {
@@ -88,6 +90,16 @@ const AdminCMS: React.FC = () => {
     }
   });
 
+  // Terms Page State
+  const [termsContent, setTermsContent] = useState({
+    content: ''
+  });
+
+  // Privacy Page State
+  const [privacyContent, setPrivacyContent] = useState({
+    content: ''
+  });
+
   useEffect(() => {
     fetchContent(activeTab);
   }, [activeTab]);
@@ -99,6 +111,8 @@ const AdminCMS: React.FC = () => {
       if (data.sections && Object.keys(data.sections).length > 0) {
         if (page === 'home') setHomeContent((prev: any) => ({ ...prev, ...data.sections }));
         if (page === 'contact') setContactContent((prev: any) => ({ ...prev, ...data.sections }));
+        if (page === 'terms') setTermsContent((prev: any) => ({ ...prev, ...data.sections }));
+        if (page === 'privacy') setPrivacyContent((prev: any) => ({ ...prev, ...data.sections }));
       }
     } catch (error) {
       toast.error('Failed to load content');
@@ -112,6 +126,8 @@ const AdminCMS: React.FC = () => {
       let contentToSave = {};
       if (activeTab === 'home') contentToSave = homeContent;
       if (activeTab === 'contact') contentToSave = contactContent;
+      if (activeTab === 'terms') contentToSave = termsContent;
+      if (activeTab === 'privacy') contentToSave = privacyContent;
 
       await adminService.updatePageContent(activeTab, contentToSave);
       toast.success('Page content updated successfully');
@@ -151,6 +167,28 @@ const AdminCMS: React.FC = () => {
           >
             <PhoneIcon className="w-5 h-5" />
             Contact Page
+          </button>
+          <button
+            onClick={() => setActiveTab('terms')}
+            className={`${
+              activeTab === 'terms'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+          >
+            <DocumentTextIcon className="w-5 h-5" />
+            Terms of Service
+          </button>
+          <button
+            onClick={() => setActiveTab('privacy')}
+            className={`${
+              activeTab === 'privacy'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+          >
+            <ShieldCheckIcon className="w-5 h-5" />
+            Privacy Policy
           </button>
         </nav>
       </div>
@@ -596,6 +634,42 @@ const AdminCMS: React.FC = () => {
                       />
                    </div>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'terms' && (
+              <div className="space-y-6">
+                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">Terms of Service Content</h3>
+                 <p className="text-sm text-gray-500 dark:text-gray-400">
+                    You can use HTML tags for formatting (e.g., &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;).
+                 </p>
+                 <div>
+                    <textarea 
+                      value={termsContent.content}
+                      onChange={(e) => setTermsContent({...termsContent, content: e.target.value})}
+                      rows={20}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border font-mono"
+                      placeholder="<h3>1. Introduction</h3><p>Welcome to our Terms of Service...</p>"
+                    />
+                 </div>
+              </div>
+            )}
+
+            {activeTab === 'privacy' && (
+              <div className="space-y-6">
+                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">Privacy Policy Content</h3>
+                 <p className="text-sm text-gray-500 dark:text-gray-400">
+                    You can use HTML tags for formatting (e.g., &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;).
+                 </p>
+                 <div>
+                    <textarea 
+                      value={privacyContent.content}
+                      onChange={(e) => setPrivacyContent({...privacyContent, content: e.target.value})}
+                      rows={20}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-2 border font-mono"
+                       placeholder="<h3>1. Information We Collect</h3><p>We collect...</p>"
+                    />
+                 </div>
               </div>
             )}
 

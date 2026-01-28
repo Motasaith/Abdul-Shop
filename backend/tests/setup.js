@@ -6,6 +6,7 @@ let mongoServer;
 
 // Setup before all tests
 beforeAll(async () => {
+  process.env.JWT_SECRET = 'test-secret';
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
   

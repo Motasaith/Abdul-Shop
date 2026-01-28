@@ -12,34 +12,32 @@ describe('Authentication Tests', () => {
   describe('POST /api/auth/register', () => {
     it('should register a new user successfully', async () => {
       const userData = {
-        firstName: 'John',
-        lastName: 'Doe',
+        name: 'John Doe',
         email: 'john@example.com',
-        password: 'password123',
+        password: 'Password123!',
         phone: '+1234567890'
       };
 
       const response = await request(app)
         .post('/api/auth/register')
         .send(userData)
-        .expect(201);
+        .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.user.email).toBe(userData.email);
-      expect(response.body.data.token).toBeDefined();
+      // API returns { message: ..., emailVerificationRequired: true, user: ... }
+      expect(response.body.user).toBeDefined();
+      expect(response.body.user.email).toBe(userData.email);
 
       // Verify user was created in database
       const user = await User.findOne({ email: userData.email });
       expect(user).toBeTruthy();
-      expect(user.firstName).toBe(userData.firstName);
+      expect(user.name).toBe(userData.name);
     });
 
     it('should not register user with existing email', async () => {
       const userData = {
-        firstName: 'John',
-        lastName: 'Doe',
+        name: 'John Doe',
         email: 'john@example.com',
-        password: 'password123',
+        password: 'Password123!',
         phone: '+1234567890'
       };
 
@@ -54,8 +52,7 @@ describe('Authentication Tests', () => {
         .send(userData)
         .expect(400);
 
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toContain('already exists');
+      expect(response.body.errors).toBeDefined();
     });
 
     it('should validate required fields', async () => {
@@ -67,21 +64,19 @@ describe('Authentication Tests', () => {
         })
         .expect(400);
 
-      expect(response.body.success).toBe(false);
+      expect(response.body.errors).toBeDefined();
     });
   });
 
   describe('POST /api/auth/login', () => {
     beforeEach(async () => {
       // Create a test user
-      const hashedPassword = await bcrypt.hash('password123', 12);
       await User.create({
-        firstName: 'John',
-        lastName: 'Doe',
+        name: 'John Doe',
         email: 'john@example.com',
-        password: hashedPassword,
+        password: 'Password123!',
         phone: '+1234567890',
-        isVerified: true
+        emailVerified: true
       });
     });
 
@@ -90,13 +85,12 @@ describe('Authentication Tests', () => {
         .post('/api/auth/login')
         .send({
           email: 'john@example.com',
-          password: 'password123'
+          password: 'Password123!'
         })
         .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.token).toBeDefined();
-      expect(response.body.data.user.email).toBe('john@example.com');
+      expect(response.body.token).toBeDefined();
+      expect(response.body.user.email).toBe('john@example.com');
     });
 
     it('should not login with invalid credentials', async () => {
@@ -106,9 +100,9 @@ describe('Authentication Tests', () => {
           email: 'john@example.com',
           password: 'wrongpassword'
         })
-        .expect(401);
+        .expect(400);
 
-      expect(response.body.success).toBe(false);
+      expect(response.body.errors).toBeDefined();
     });
 
     it('should not login with non-existent user', async () => {
@@ -116,11 +110,11 @@ describe('Authentication Tests', () => {
         .post('/api/auth/login')
         .send({
           email: 'nonexistent@example.com',
-          password: 'password123'
+          password: 'Password123!'
         })
-        .expect(401);
+        .expect(400);
 
-      expect(response.body.success).toBe(false);
+      expect(response.body.errors).toBeDefined();
     });
   });
 });

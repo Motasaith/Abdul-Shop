@@ -37,7 +37,7 @@ router.post('/', [
 
   try {
     console.log('=== ORDER CREATION DEBUG ===');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    // Security: Removed console.log of req.body to prevent PII leakage
     console.log('User ID:', req.user?.id);
     console.log('User object:', req.user);
     

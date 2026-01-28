@@ -238,7 +238,7 @@ router.post(
     check('phone', 'Phone number is required').not().isEmpty(),
   ],
   async (req, res) => {
-    console.log('Registration attempt:', req.body);
+    // Security: Removed console.log of req.body to prevent password leakage (CWE-532)
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

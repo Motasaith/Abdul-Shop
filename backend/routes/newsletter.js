@@ -16,7 +16,7 @@ router.post('/subscribe', [
   check('source', 'Subscription source is required').optional().isIn(['homepage', 'footer', 'checkout', 'profile'])
 ], async (req, res) => {
   try {
-    console.log('Newsletter subscription attempt:', req.body);
+    // Security: Removed console.log of req.body to prevent email leakage
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

@@ -68,6 +68,21 @@ async function validatePhoneNumber(phoneNumber, countryCode = '') {
   }
 }
 
+// Helper to sanitize sensitive data from logs
+const sanitizeLogData = (data) => {
+  if (!data) return data;
+  const sanitized = { ...data };
+  const sensitiveFields = ['password', 'confirmPassword', 'token', 'verificationCode'];
+
+  sensitiveFields.forEach(field => {
+    if (sanitized[field]) {
+      sanitized[field] = '***';
+    }
+  });
+
+  return sanitized;
+};
+
 // Generate random verification code
 function generateVerificationCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -182,17 +197,19 @@ async function sendSMSVerificationCode(phoneNumber, verificationCode) {
     }
     
     // Development fallback - always works
-    console.log(`\n🚀 ================================`);
-    console.log(`📱 SMS VERIFICATION CODE`);
-    console.log(`📞 Phone: ${phoneNumber}`);
-    console.log(`🔢 Code: ${verificationCode}`);
-    console.log(`⏰ Expires: 10 minutes`);
-    console.log(`================================`);
-    console.log(`⚠️  SMS DELIVERY NOTE:`);
-    console.log(`💰 Most free SMS APis only work in test mode`);
-    console.log(`📱 Code shown above for development/testing`);
-    console.log(`🌐 For production, consider paid SMS service`);
-    console.log(`================================\n`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`\n🚀 ================================`);
+      console.log(`📱 SMS VERIFICATION CODE`);
+      console.log(`📞 Phone: ${phoneNumber}`);
+      console.log(`🔢 Code: ${verificationCode}`);
+      console.log(`⏰ Expires: 10 minutes`);
+      console.log(`================================`);
+      console.log(`⚠️  SMS DELIVERY NOTE:`);
+      console.log(`💰 Most free SMS APis only work in test mode`);
+      console.log(`📱 Code shown above for development/testing`);
+      console.log(`🌐 For production, consider paid SMS service`);
+      console.log(`================================\n`);
+    }
     
     return { 
       success: true, 
@@ -205,12 +222,14 @@ async function sendSMSVerificationCode(phoneNumber, verificationCode) {
     console.error('SMS service error:', error.message);
     
     // Always provide the code for development
-    console.log(`\n🚀 ================================`);
-    console.log(`📱 SMS VERIFICATION CODE (FALLBACK)`);
-    console.log(`📞 Phone: ${phoneNumber}`);
-    console.log(`🔢 Code: ${verificationCode}`);
-    console.log(`❌ Error: ${error.message}`);
-    console.log(`================================\n`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`\n🚀 ================================`);
+      console.log(`📱 SMS VERIFICATION CODE (FALLBACK)`);
+      console.log(`📞 Phone: ${phoneNumber}`);
+      console.log(`🔢 Code: ${verificationCode}`);
+      console.log(`❌ Error: ${error.message}`);
+      console.log(`================================\n`);
+    }
     
     return { 
       success: true, 
@@ -238,7 +257,7 @@ router.post(
     check('phone', 'Phone number is required').not().isEmpty(),
   ],
   async (req, res) => {
-    console.log('Registration attempt:', req.body);
+    console.log('Registration attempt:', sanitizeLogData(req.body));
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -516,7 +535,7 @@ router.post('/send-phone-verification', require('../middleware/auth'), async (re
       msg: 'Verification code sent to your phone',
       phoneNumber: user.phone.replace(/\d(?=\d{4})/g, '*'), // Mask phone number
       expiresIn: '10 minutes',
-      devCode: verificationCode // Include for development
+      ...(process.env.NODE_ENV !== 'production' && { devCode: verificationCode }) // Include for development
     });
   } catch (err) {
     console.error(err.message);
@@ -623,7 +642,7 @@ router.post('/resend-verification', require('../middleware/auth'), async (req, r
       msg: smsResult.success ? 'New verification code sent to your phone' : 'Verification code generated. Please check your phone.',
       smsSuccess: smsResult.success,
       // Include verification code in development mode for easier testing
-      devCode: verificationCode // Always include for debugging
+      ...(process.env.NODE_ENV !== 'production' && { devCode: verificationCode }) // Always include for debugging
     });
   } catch (err) {
     console.error(err.message);
@@ -638,8 +657,8 @@ router.post('/verify-email', async (req, res) => {
   const { token } = req.body;
   
   console.log('--- Email Verification Debug ---');
-  console.log('Body:', req.body);
-  console.log(`Token received: '${token}'`);
+  console.log('Body:', sanitizeLogData(req.body));
+  console.log(`Token received: '${token ? '***' : 'missing'}'`);
   
   if (!token) {
     console.log('Token is missing/undefined/null');

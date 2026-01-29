@@ -1,0 +1,4 @@
+## 2025-02-12 - Critical Sensitive Data Exposure in Logs
+**Vulnerability:** Registration endpoint was logging the entire `req.body` object, including the plaintext password. SMS verification codes were also logged to console in all environments and returned in API responses.
+**Learning:** Developers often add `console.log(req.body)` for debugging but forget to remove it or sanitize it. "Dev-friendly" features like returning verification codes in responses can be accidentally left enabled in production if not strictly guarded by environment checks.
+**Prevention:** Always use a sanitization helper before logging request data. Strictly guard debug information and "backdoor" fields with `process.env.NODE_ENV !== 'production'`. Implement automated checks or linter rules to detect `console.log` of sensitive variables.

@@ -238,8 +238,6 @@ router.post(
     check('phone', 'Phone number is required').not().isEmpty(),
   ],
   async (req, res) => {
-    console.log('Registration attempt:', req.body);
-    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log('Validation errors:', errors.array());
@@ -636,10 +634,6 @@ router.post('/resend-verification', require('../middleware/auth'), async (req, r
 // @access   Public
 router.post('/verify-email', async (req, res) => {
   const { token } = req.body;
-  
-  console.log('--- Email Verification Debug ---');
-  console.log('Body:', req.body);
-  console.log(`Token received: '${token}'`);
   
   if (!token) {
     console.log('Token is missing/undefined/null');

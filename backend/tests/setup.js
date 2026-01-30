@@ -2,6 +2,9 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
+process.env.JWT_SECRET = 'test_jwt_secret';
+process.env.NODE_ENV = 'test';
+
 let mongoServer;
 
 // Setup before all tests

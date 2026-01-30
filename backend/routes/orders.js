@@ -36,10 +36,7 @@ router.post('/', [
   } = req.body;
 
   try {
-    console.log('=== ORDER CREATION DEBUG ===');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
     console.log('User ID:', req.user?.id);
-    console.log('User object:', req.user);
     
     if (orderItems && orderItems.length === 0) {
       console.log('Error: No order items provided');

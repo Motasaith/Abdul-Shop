@@ -16,8 +16,6 @@ router.post('/subscribe', [
   check('source', 'Subscription source is required').optional().isIn(['homepage', 'footer', 'checkout', 'profile'])
 ], async (req, res) => {
   try {
-    console.log('Newsletter subscription attempt:', req.body);
-    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });

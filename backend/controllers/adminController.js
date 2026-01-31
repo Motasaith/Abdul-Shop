@@ -12,7 +12,7 @@ const getDashboardStats = async (req, res) => {
     const totalUsers = await User.countDocuments();
     const totalProducts = await Product.countDocuments();
     const totalOrders = await Order.countDocuments();
-    
+
     const orders = await Order.find({ orderStatus: { $ne: 'Cancelled' } })
       .populate({
         path: 'orderItems.product',
@@ -27,32 +27,32 @@ const getDashboardStats = async (req, res) => {
 
     orders.forEach(order => {
       totalRevenue += order.totalPrice;
-      
+
       order.orderItems.forEach(item => {
-         const product = item.product;
-         const itemTotal = item.price * item.quantity;
-         
-         if (product && product.owner) {
-           if (product.owner.role === 'admin') {
-             // Admin gets 100% of their own products
-             netRevenue += itemTotal;
-           } else {
-             // For vendors, Admin gets commission
-             const commissionRate = product.owner.vendorDetails?.commissionRate || 0;
-             const commissionAmount = itemTotal * (commissionRate / 100);
-             netRevenue += commissionAmount;
-           }
-         } else {
-             // Fallback: If product deleted or owner missing, count as 0 or full?
-             // Let's assume standard commission 5% if missing details? Or 0 to be safe
-             // netRevenue += 0; 
-         }
+        const product = item.product;
+        const itemTotal = item.price * item.quantity;
+
+        if (product && product.owner) {
+          if (product.owner.role === 'admin') {
+            // Admin gets 100% of their own products
+            netRevenue += itemTotal;
+          } else {
+            // For vendors, Admin gets commission
+            const commissionRate = product.owner.vendorDetails?.commissionRate || 0;
+            const commissionAmount = itemTotal * (commissionRate / 100);
+            netRevenue += commissionAmount;
+          }
+        } else {
+          // Fallback: If product deleted or owner missing, count as 0 or full?
+          // Let's assume standard commission 5% if missing details? Or 0 to be safe
+          // netRevenue += 0; 
+        }
       });
     });
 
     const cancelledOrders = await Order.find({ orderStatus: 'Cancelled' });
     const lostRevenue = cancelledOrders.reduce((sum, order) => sum + order.totalPrice, 0);
-    
+
     const recentOrders = await Order.find({})
       .populate('user', 'name email')
       .sort({ createdAt: -1 })
@@ -61,7 +61,7 @@ const getDashboardStats = async (req, res) => {
     const topProducts = await Product.find({ isActive: true })
       .sort({ rating: -1 })
       .limit(5);
-      
+
     const recentUsers = await User.find({})
       .select('name email createdAt avatar')
       .sort({ createdAt: -1 })
@@ -84,7 +84,7 @@ const getDashboardStats = async (req, res) => {
         createdAt: user.createdAt
       }))
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 5);
+      .slice(0, 5);
 
     // Get daily stats for the last 7 days
     const last7Days = new Date();
@@ -114,9 +114,9 @@ const getDashboardStats = async (req, res) => {
       d.setDate(d.getDate() - i);
       const dateString = d.toISOString().split('T')[0];
       const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
-      
+
       const foundStat = dailyStats.find(stat => stat._id === dateString);
-      
+
       formattedDailyStats.push({
         name: dayName,
         date: dateString,
@@ -153,16 +153,16 @@ const getAdminProducts = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || '';
     const category = req.query.category || '';
-    
+
     const query = {};
-    
+
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } }
       ];
     }
-    
+
     if (category && category !== 'all') {
       query.category = category;
     }
@@ -208,12 +208,13 @@ const createProduct = async (req, res) => {
       seoTitle,
       seoDescription,
       images,
-      videos
+      videos,
+      floorPrice
     } = req.body;
 
     // Validate required fields
     if (!name || !description || !price || !category || !countInStock) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'Missing required fields',
         received: { name, description, price, category, countInStock }
       });
@@ -315,31 +316,32 @@ const createProduct = async (req, res) => {
       seoTitle,
       seoDescription,
       createdBy: req.user.id,
-      owner: req.user.id
+      owner: req.user.id,
+      floorPrice: floorPrice ? Number(floorPrice) : 0
     });
 
     const savedProduct = await product.save();
     res.status(201).json(savedProduct);
   } catch (error) {
     console.error('Create product error:', error);
-    
+
     // Handle validation errors
     if (error.name === 'ValidationError') {
       const errorMessages = Object.values(error.errors).map(err => err.message);
       console.error('Validation Error Details:', errorMessages);
-      return res.status(400).json({ 
-        message: 'Validation failed: ' + errorMessages.join(', '), 
-        errors: errorMessages 
+      return res.status(400).json({
+        message: 'Validation failed: ' + errorMessages.join(', '),
+        errors: errorMessages
       });
     }
-    
+
     // Handle duplicate key error
     if (error.code === 11000) {
-      return res.status(400).json({ 
-        message: 'Product with this name or SKU already exists' 
+      return res.status(400).json({
+        message: 'Product with this name or SKU already exists'
       });
     }
-    
+
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -350,7 +352,7 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    
+
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -374,7 +376,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    
+
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -396,16 +398,16 @@ const getAdminUsers = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || '';
     const role = req.query.role || '';
-    
+
     const query = {};
-    
+
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } }
       ];
     }
-    
+
     if (role && role !== 'all') {
       query.role = role;
     }
@@ -446,7 +448,7 @@ const getAdminUsers = async (req, res) => {
 const updateUserStatus = async (req, res) => {
   try {
     const { isActive } = req.body;
-    
+
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { isActive },
@@ -473,16 +475,16 @@ const getAdminOrders = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const status = req.query.status || '';
     const search = req.query.search || '';
-    
+
     const query = {};
-    
+
     if (status && status !== 'all') {
       query.orderStatus = status;
     }
 
     if (search) {
       const searchRegex = new RegExp(search, 'i');
-      
+
       // Find users matching the search term
       const matchingUsers = await User.find({
         $or: [
@@ -490,9 +492,9 @@ const getAdminOrders = async (req, res) => {
           { email: searchRegex }
         ]
       }).select('_id');
-      
+
       const matchingUserIds = matchingUsers.map(user => user._id);
-      
+
       const orConditions = [
         { user: { $in: matchingUserIds } }
       ];
@@ -515,24 +517,24 @@ const getAdminOrders = async (req, res) => {
 
     // Calculate stats for the full result set (ignoring pagination)
     // We need to be careful not to override the status filter if it exists
-    
+
     // Revenue: Matches query AND is NOT Cancelled
     let revenueQuery = { ...query };
     if (revenueQuery.orderStatus) {
       if (revenueQuery.orderStatus === 'Cancelled') {
         // If sorting only by Cancelled, Revenue is 0
         // We handle this logic by checking if the existing filter conflicts
-         // Implicitly handled: if status=Cancelled, $ne: Cancelled will match nothing.
-         revenueQuery = { ...query, orderStatus: { $ne: 'Cancelled' } }; // This would override 'Cancelled'. 
-         // Wait, if query is {orderStatus: 'Cancelled'}, then adding {orderStatus: {$ne: 'Cancelled'} } creates a conflict or overrides.
-         // Actually, if user selected 'Cancelled', revenue SHOULD be 0.
-         // If user selected 'Processing', revenue is sum of Processing.
+        // Implicitly handled: if status=Cancelled, $ne: Cancelled will match nothing.
+        revenueQuery = { ...query, orderStatus: { $ne: 'Cancelled' } }; // This would override 'Cancelled'. 
+        // Wait, if query is {orderStatus: 'Cancelled'}, then adding {orderStatus: {$ne: 'Cancelled'} } creates a conflict or overrides.
+        // Actually, if user selected 'Cancelled', revenue SHOULD be 0.
+        // If user selected 'Processing', revenue is sum of Processing.
       }
-    } 
+    }
     // The logic is:
     // 1. Base Revenue Query: Matches current filters (search, etc)
     // 2. EXCLUDE Cancelled (Unless the filter specifically asks for only Cancelled, in which case empty)
-    
+
     // Let's use aggregation or separate finds.
     // Simplifying: If the user filters by a status, we respect it.
     // Standard Revenue = Sum of (Query Matches AND Status != Cancelled)
@@ -540,29 +542,29 @@ const getAdminOrders = async (req, res) => {
 
     // Note: If query.orderStatus is 'Cancelled', 'Revenue' calc query becomes { orderStatus: 'Cancelled', orderStatus: {$ne: 'Cancelled'} } -> Empty/Conflict.
     // MongoDB doesn't support duplicate keys in object.
-    
+
     // Constructing queries properly:
     const revenueQueryObject = { ...query };
     if (revenueQueryObject.orderStatus === 'Cancelled') {
-       // Impossible to have revenue if we only want cancelled orders
-       // So we can skip or force 0. 
-       // Effectively, we can't add $ne: Cancelled if it's already == Cancelled.
+      // Impossible to have revenue if we only want cancelled orders
+      // So we can skip or force 0. 
+      // Effectively, we can't add $ne: Cancelled if it's already == Cancelled.
     } else {
-       // Add exclusion if not already specified
-       // But if query.orderStatus is 'Processing', we don't need $ne: Cancelled explicitly, but adding it is safe?
-       // No, { orderStatus: 'Processing' } is sufficient.
-       
-       // Basically: If query.orderStatus is SET, follow it.
-       // If query.orderStatus is NOT SET (All), calculate (All - Cancelled) and (Cancelled).
-       
-       // BUT, what if I search for "John"?
-       // Query: { user: ..., $or: ... }
-       // I want Revenue for "John" (excl cancelled) and Lost for "John" (only cancelled).
+      // Add exclusion if not already specified
+      // But if query.orderStatus is 'Processing', we don't need $ne: Cancelled explicitly, but adding it is safe?
+      // No, { orderStatus: 'Processing' } is sufficient.
+
+      // Basically: If query.orderStatus is SET, follow it.
+      // If query.orderStatus is NOT SET (All), calculate (All - Cancelled) and (Cancelled).
+
+      // BUT, what if I search for "John"?
+      // Query: { user: ..., $or: ... }
+      // I want Revenue for "John" (excl cancelled) and Lost for "John" (only cancelled).
     }
 
     // approach: manually sum based on status in a loop? No, too slow for all docs.
     // Database aggregation is best.
-    
+
     /* 
        If I filter by "All":
        - Revenue: Sum where orderStatus != Cancelled
@@ -576,15 +578,15 @@ const getAdminOrders = async (req, res) => {
        - Revenue: Sum where orderStatus == Cancelled AND orderStatus != Cancelled (0)
        - Lost: Sum where orderStatus == Cancelled
     */
-    
+
     // Implementation:
     // 1. Find all docs matching 'query' (without limit/skip).
     // 2. Reduce them. 
     // Since we don't expect millions of orders yet, this is okay. 
     // For scale, use aggregate pipeline. Let's use find to be consistent with current codebase style usually.
-    
+
     const allMatchingOrders = await Order.find(query).select('totalPrice orderStatus');
-    
+
     const totalRevenue = allMatchingOrders.reduce((sum, order) => {
       return order.orderStatus !== 'Cancelled' ? sum + order.totalPrice : sum;
     }, 0);
@@ -614,22 +616,22 @@ const getAdminOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { orderStatus } = req.body;
-    
+
     const order = await Order.findById(req.params.id);
-    
+
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
     order.orderStatus = orderStatus;
-    
+
     if (orderStatus === 'Delivered') {
       order.isDelivered = true;
       order.deliveredAt = new Date();
     }
 
     const updatedOrder = await order.save();
-    
+
     res.json(updatedOrder);
   } catch (error) {
     console.error('Update order status error:', error);
@@ -643,26 +645,26 @@ const updateOrderStatus = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
     // Prevent admin from deleting themselves
     if (user._id.toString() === req.user.id) {
       return res.status(400).json({ message: 'You cannot delete your own account' });
     }
-    
+
     // Log the deletion for security audit
     console.log(`Admin ${req.user.id} is deleting user ${user._id} (${user.email})`);
-    
+
     // Delete all products created by this user (Cascade Delete)
     const productDeletionResult = await Product.deleteMany({ createdBy: user._id });
     console.log(`Deleted ${productDeletionResult.deletedCount} products associated with user ${user._id}`);
 
     await User.findByIdAndDelete(req.params.id);
-    
-    res.json({ 
+
+    res.json({
       message: 'User and associated products deleted successfully',
       deletedProductsCount: productDeletionResult.deletedCount,
       deletedUser: {
@@ -715,7 +717,7 @@ const approveVendor = async (req, res) => {
     await user.save();
 
     // Notify user (email implementation omitted for brevity)
-    
+
     res.json({ message: 'Vendor approved', user });
   } catch (error) {
     console.error('Approve vendor error:', error);

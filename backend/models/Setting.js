@@ -40,6 +40,9 @@ const settingSchema = new mongoose.Schema({
     },
     testMode: { type: Boolean, default: true }
   },
+  negotiation: {
+    defaultFloorPricePercent: { type: Number, default: 80 }
+  },
   email: {
     provider: { type: String, default: 'brevo' },
     fromName: { type: String, default: 'ShopHub' },
@@ -60,7 +63,7 @@ const settingSchema = new mongoose.Schema({
 });
 
 // Ensure only one settings document exists
-settingSchema.statics.getSettings = async function() {
+settingSchema.statics.getSettings = async function () {
   const settings = await this.findOne();
   if (settings) return settings;
   return await this.create({});

@@ -12,7 +12,8 @@ import {
   CheckCircle,
   AlertTriangle,
   Lock,
-  Server
+  Server,
+  MessageSquare
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { getSettings, updateSettings } from '../../store/slices/settingSlice';
@@ -96,13 +97,18 @@ interface Settings {
   payment: PaymentSettings;
   email: EmailSettings;
   appearance: AppearanceSettings;
+  negotiation: NegotiationSettings;
+}
+
+interface NegotiationSettings {
+  defaultFloorPricePercent: number;
 }
 
 const AdminSettings: React.FC = () => {
   const dispatch = useAppDispatch();
   const { settings, loading, error } = useAppSelector((state) => state.settings);
   const { setTheme } = useTheme();
-  
+
   // Use a local state that defaults to a safe structure to avoid undefined errors
   const [localSettings, setLocalSettings] = useState<Settings | null>(null);
   const [activeTab, setActiveTab] = useState('general');
@@ -124,12 +130,13 @@ const AdminSettings: React.FC = () => {
     { id: 'security', name: 'Security', icon: Shield },
     { id: 'notifications', name: 'Notifications', icon: Bell },
     { id: 'email', name: 'Email', icon: Mail },
-    { id: 'appearance', name: 'Appearance', icon: Palette }
+    { id: 'appearance', name: 'Appearance', icon: Palette },
+    { id: 'negotiation', name: 'Negotiation', icon: MessageSquare }
   ];
 
   const handleSave = async () => {
     if (!localSettings) return;
-    
+
     try {
       setIsSaving(true);
       await dispatch(updateSettings(localSettings)).unwrap();
@@ -151,14 +158,14 @@ const AdminSettings: React.FC = () => {
       const newState = { ...prev };
       const parts = path.split('.');
       let current: any = newState;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         // Create a shallow copy of the nested object to avoid mutating read-only state
         current[part] = current[part] ? { ...current[part] } : {};
         current = current[part];
       }
-      
+
       current[parts[parts.length - 1]] = value;
       return newState;
     });
@@ -307,7 +314,7 @@ const AdminSettings: React.FC = () => {
 
             {/* Bank Transfer Section */}
             <div className="space-y-4 p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
-               <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">Bank Transfer</h3>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -319,9 +326,9 @@ const AdminSettings: React.FC = () => {
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
               </div>
-               {localSettings.payment?.bankTransfer?.isEnabled && (
+              {localSettings.payment?.bankTransfer?.isEnabled && (
                 <div className="grid gap-4">
-                   <div className="space-y-2">
+                  <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Bank Name</label>
                     <input
                       type="text"
@@ -339,7 +346,7 @@ const AdminSettings: React.FC = () => {
                       className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl"
                     />
                   </div>
-                   <div className="space-y-2">
+                  <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Account Name</label>
                     <input
                       type="text"
@@ -348,7 +355,7 @@ const AdminSettings: React.FC = () => {
                       className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl"
                     />
                   </div>
-                   <div className="space-y-2">
+                  <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Instructions</label>
                     <textarea
                       value={localSettings.payment.bankTransfer.instructions || ''}
@@ -358,15 +365,15 @@ const AdminSettings: React.FC = () => {
                     />
                   </div>
                 </div>
-               )}
+              )}
             </div>
 
             {/* COD Section */}
             <div className="space-y-4 p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">Cash on Delivery</h3>
-                   <p className="text-sm text-gray-500 dark:text-gray-400">Allow customers to pay when order is delivered</p>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Cash on Delivery</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Allow customers to pay when order is delivered</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -385,7 +392,7 @@ const AdminSettings: React.FC = () => {
       case 'security':
         return (
           <div className="space-y-6">
-             <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
               <Shield className="w-5 h-5 text-blue-500" />
               Security Configuration
             </h2>
@@ -395,7 +402,7 @@ const AdminSettings: React.FC = () => {
                   <h3 className="font-medium text-gray-900 dark:text-white">Admin IP Restriction</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Limit admin access to specific IP addresses</p>
                 </div>
-                 <label className="relative inline-flex items-center cursor-pointer">
+                <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={localSettings.security?.adminIpRestriction || false}
@@ -406,7 +413,7 @@ const AdminSettings: React.FC = () => {
                 </label>
               </div>
 
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Session Timeout (minutes)</label>
                 <input
                   type="number"
@@ -422,7 +429,7 @@ const AdminSettings: React.FC = () => {
       case 'notifications':
         return (
           <div className="space-y-6">
-             <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
               <Bell className="w-5 h-5 text-blue-500" />
               Notification Preferences
             </h2>
@@ -456,8 +463,8 @@ const AdminSettings: React.FC = () => {
               <Mail className="w-5 h-5 text-blue-500" />
               SMTP Configuration
             </h2>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">SMTP Host</label>
                 <input
                   type="text"
@@ -466,7 +473,7 @@ const AdminSettings: React.FC = () => {
                   className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
                 />
               </div>
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">SMTP Port</label>
                 <input
                   type="number"
@@ -475,7 +482,7 @@ const AdminSettings: React.FC = () => {
                   className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
                 />
               </div>
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">From Name</label>
                 <input
                   type="text"
@@ -484,7 +491,7 @@ const AdminSettings: React.FC = () => {
                   className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
                 />
               </div>
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">From Email</label>
                 <input
                   type="email"
@@ -493,7 +500,7 @@ const AdminSettings: React.FC = () => {
                   className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
                 />
               </div>
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">SMTP User</label>
                 <input
                   type="text"
@@ -502,7 +509,7 @@ const AdminSettings: React.FC = () => {
                   className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
                 />
               </div>
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">SMTP Password</label>
                 <input
                   type="password"
@@ -511,36 +518,36 @@ const AdminSettings: React.FC = () => {
                   className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
                 />
               </div>
-             </div>
+            </div>
           </div>
         );
 
       case 'appearance':
         return (
           <div className="space-y-6">
-             <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
               <Palette className="w-5 h-5 text-blue-500" />
               Theme & Branding
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Primary Color</label>
-                 <div className="flex gap-2">
-                   <input
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Primary Color</label>
+                <div className="flex gap-2">
+                  <input
                     type="color"
                     value={localSettings.appearance?.primaryColor || '#3B82F6'}
                     onChange={(e) => updateState('appearance.primaryColor', e.target.value)}
                     className="h-10 w-20 rounded-lg cursor-pointer border border-gray-200 dark:border-gray-700"
-                   />
-                   <input
-                     type="text"
-                     value={localSettings.appearance?.primaryColor || '#3B82F6'}
-                     onChange={(e) => updateState('appearance.primaryColor', e.target.value)}
-                     className="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                   />
-                 </div>
+                  />
+                  <input
+                    type="text"
+                    value={localSettings.appearance?.primaryColor || '#3B82F6'}
+                    onChange={(e) => updateState('appearance.primaryColor', e.target.value)}
+                    className="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
+                  />
+                </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Logo URL</label>
                 <input
@@ -552,22 +559,53 @@ const AdminSettings: React.FC = () => {
                 />
               </div>
 
-               <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 col-span-full">
+              <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 col-span-full">
                 <div>
                   <h3 className="font-medium text-gray-900 dark:text-white">Dark Mode Default</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Set default theme for new users</p>
                 </div>
-                 <label className="relative inline-flex items-center cursor-pointer">
+                <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={localSettings.appearance?.darkMode || false}
                     onChange={(e) => {
-                       updateState('appearance.darkMode', e.target.checked);
+                      updateState('appearance.darkMode', e.target.checked);
                     }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'negotiation':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-blue-500" />
+              Negotiation Settings
+            </h2>
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 space-y-4">
+              <div>
+                <h3 className="font-medium text-gray-900 dark:text-white">Default Floor Price Percentage</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  The default percentage of the product price below which the AI will reject offers.
+                  <br />
+                  Example: If set to 80%, a $100 product will have a floor price of $80.
+                </p>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={localSettings.negotiation?.defaultFloorPricePercent || 80}
+                    onChange={(e) => updateState('negotiation.defaultFloorPricePercent', parseInt(e.target.value))}
+                    className="w-24 px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl"
+                  />
+                  <span className="text-xl font-bold text-gray-500">%</span>
+                </div>
               </div>
             </div>
           </div>
@@ -615,11 +653,10 @@ const AdminSettings: React.FC = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${
-                      isActive
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                    }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${isActive
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                      }`}
                   >
                     <tab.icon className={`w-5 h-5 ${isActive ? 'text-blue-500' : 'text-gray-400'}`} />
                     {tab.name}

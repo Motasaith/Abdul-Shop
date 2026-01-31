@@ -46,6 +46,7 @@ export interface Product {
   description: string;
   price: number;
   comparePrice?: number;
+  floorPrice?: number;
   category: string;
   brand?: string;
   countInStock: number;

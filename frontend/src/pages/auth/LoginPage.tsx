@@ -45,7 +45,7 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       toast.error('Please fill in all fields');
       return;
@@ -54,7 +54,7 @@ const LoginPage: React.FC = () => {
     try {
       const result = await dispatch(loginUser(formData)).unwrap();
       toast.success('Login successful!');
-      
+
       // Redirect based on user role
       if (result.user.role === 'admin') {
         navigate('/admin');
@@ -82,13 +82,9 @@ const LoginPage: React.FC = () => {
               {t('auth.registerHere')}
             </Link>
           </p>
-          <div className="mt-4 p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-100 dark:border-purple-800">
-            <p className="text-sm text-purple-700 dark:text-purple-300 text-center">
-              <strong>Admin Demo:</strong> admin@ecommerce.com / admin123
-            </p>
-          </div>
+
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
@@ -107,7 +103,7 @@ const LoginPage: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('auth.password')}

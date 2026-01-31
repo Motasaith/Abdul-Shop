@@ -101,7 +101,7 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
           <Shirt className="w-5 h-5 text-pink-500" />
         </div>
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Fashion Stylist</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Find your perfect look.</p>
+        <p className="text-xs text-gray-600 dark:text-gray-400">Upload your photo to find your perfect look.</p>
       </button>
 
       <button
@@ -112,7 +112,7 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
           <Home className="w-5 h-5 text-indigo-500" />
         </div>
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Interior Designer</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Match decor to your room.</p>
+        <p className="text-xs text-gray-600 dark:text-gray-400">Upload a photo of your room or house.</p>
       </button>
 
       <button
@@ -123,7 +123,7 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
           <Wrench className="w-5 h-5 text-slate-600 dark:text-slate-400" />
         </div>
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">The Mechanic</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Fix broken things.</p>
+        <p className="text-xs text-gray-600 dark:text-gray-400">Upload a photo of the broken part or machine.</p>
       </button>
 
       <button
@@ -134,7 +134,7 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
           <Sparkles className="w-5 h-5 text-purple-500" />
         </div>
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Gift Scout</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Analyze a profile to find gifts.</p>
+        <p className="text-xs text-gray-600 dark:text-gray-400">Upload their social profile/pic to find a gift.</p>
       </button>
     </div>
   );

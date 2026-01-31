@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, DollarSign, ShoppingCart, MessageCircle, AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import apiService from '../../services/api';
 import { useAppDispatch } from '../../hooks/redux';
 import { addToCart } from '../../store/slices/cartSlice';
 import toast from 'react-hot-toast';
@@ -58,8 +58,7 @@ const HaggleModal: React.FC<HaggleModalProps> = ({ isOpen, onClose, product }) =
         setStatus('thinking');
 
         try {
-            const apiUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-            const response = await axios.post(`${apiUrl}/api/haggle/negotiate`, {
+            const response = await apiService.post('/haggle/negotiate', {
                 productId: product._id,
                 offer: offerAmount,
                 history: history.map(h => ({ role: h.sender === 'ai' ? 'model' : 'user', content: h.text }))
@@ -143,8 +142,8 @@ const HaggleModal: React.FC<HaggleModalProps> = ({ isOpen, onClose, product }) =
                                 {history.map((msg, i) => (
                                     <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[80%] p-4 rounded-2xl shadow-sm ${msg.sender === 'user'
-                                                ? 'bg-blue-600 text-white rounded-br-none'
-                                                : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-none border border-gray-100 dark:border-gray-700'
+                                            ? 'bg-blue-600 text-white rounded-br-none'
+                                            : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-none border border-gray-100 dark:border-gray-700'
                                             }`}>
                                             <p className="text-sm">{msg.text}</p>
                                         </div>

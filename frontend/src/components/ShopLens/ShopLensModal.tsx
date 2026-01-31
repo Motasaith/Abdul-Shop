@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Camera, Sparkles, Shirt, Home, Wrench, Loader2, ArrowLeft, Search } from 'lucide-react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import apiService from '../../services/api';
+import toast from 'react-hot-toast';
 
 interface ShopLensModalProps {
   isOpen: boolean;
@@ -57,16 +58,11 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
     formData.append('mode', mode);
 
     try {
-      const apiUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-
       let response;
       if (mode === 'gift') {
-        response = await axios.post(`${apiUrl}/api/gift-scout/analyze`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const result = await apiService.uploadFile('/gift-scout/analyze', formData);
+        const data = result.data;
 
-        // Normalize Gift Scout response to AnalysisResult
-        const data = response.data;
         setResult({
           ai_comment: data.profile_summary,
           analysis: "Suggested Categories: " + data.gift_categories.join(', '),
@@ -76,14 +72,13 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
 
       } else {
         // Standard ShopLens
-        response = await axios.post(`${apiUrl}/api/shoplens/analyze`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        setResult(response.data);
+        const result = await apiService.uploadFile('/shoplens/analyze', formData);
+        setResult(result.data);
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error analyzing image:', error);
+      toast.error(error.response?.data?.message || 'Failed to analyze image. Please try again.');
     } finally {
       setLoading(false);
     }

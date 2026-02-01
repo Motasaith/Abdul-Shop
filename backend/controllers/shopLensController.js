@@ -53,8 +53,14 @@ You are ShopLens, an intelligent multi-modal shopping assistant capable of three
 }
 `;
 
+    // Hybrid Model Strategy: "Safe Mode" vs "Hackathon Mode"
+    const isStable = process.env.FORCE_STABLE === 'true';
+    const modelVersion = isStable ? "gemini-2.5-flash" : "gemini-3-flash-preview";
+
+    console.log(`🚀 ShopLens analyzing with model: ${modelVersion}`);
+
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: modelVersion,
       systemInstruction: systemInstruction
     });
 

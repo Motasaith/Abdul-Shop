@@ -4,6 +4,15 @@ A comprehensive full-stack e-commerce application built with MongoDB, Express.js
 
 ## 🚀 Features
 
+### 🤖 AI-Powered Shopping (New!)
+- **ShopLens AI**: A multi-modal visual search assistant powered by **Gemini Pro Vision**.
+  - **Fashion Stylist Mode**: Analyzes outfits and recommends matching accessories.
+  - **Interior Designer Mode**: Suggests decor items based on room photos.
+  - **Mechanic Mode**: Identifies broken parts and finds replacement tools.
+- **Haggle AI**: An interactive AI negotiator that lets users bargain for a better price.
+  - **Charismatic Shopkeeper Persona**: Witty, tough, but fair negotiation logic.
+  - **Dynamic Floor Pricing**: Rejects low-ball offers and accepts fair deals in real-time.
+
 ### 🛍️ Customer Experience
 - **Advanced Product Browsing**: Search, filter, and sort products with ease.
 - **Dynamic Pricing**: Global support with **Multi-Currency** selection (USD, EUR, GBP, etc.) powered by live exchange rates.

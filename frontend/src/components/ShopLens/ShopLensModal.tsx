@@ -92,50 +92,62 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
   };
 
   const renderModeSelection = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <button
-        onClick={() => handleModeSelect('fashion')}
-        className="group relative p-4 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/10 dark:to-rose-900/10 hover:from-pink-100 hover:to-rose-100 dark:hover:from-pink-900/20 dark:hover:to-rose-900/20 rounded-2xl border border-pink-100 dark:border-pink-900/30 hover:border-pink-200 transition-all text-left shadow-sm hover:shadow-md"
-      >
-        <div className="bg-white dark:bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
-          <Shirt className="w-5 h-5 text-pink-500" />
-        </div>
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Fashion Stylist</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Upload your photo to find your perfect look.</p>
-      </button>
+    <div className="space-y-4">
+      {/* Helpful intro text */}
+      <div className="text-center mb-4 sm:mb-6">
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+          📸 <span className="font-medium">Upload a photo</span> and let our AI find the perfect products for you!
+        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+          Skip the endless scrolling — just snap a pic and shop smarter.
+        </p>
+      </div>
 
-      <button
-        onClick={() => handleModeSelect('decor')}
-        className="group relative p-4 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/10 dark:to-blue-900/10 hover:from-indigo-100 hover:to-blue-100 dark:hover:from-indigo-900/20 dark:hover:to-blue-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 hover:border-indigo-200 transition-all text-left shadow-sm hover:shadow-md"
-      >
-        <div className="bg-white dark:bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
-          <Home className="w-5 h-5 text-indigo-500" />
-        </div>
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Interior Designer</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Upload a photo of your room or house.</p>
-      </button>
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+        <button
+          onClick={() => handleModeSelect('fashion')}
+          className="group relative p-3 sm:p-4 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/10 dark:to-rose-900/10 hover:from-pink-100 hover:to-rose-100 dark:hover:from-pink-900/20 dark:hover:to-rose-900/20 rounded-xl sm:rounded-2xl border border-pink-100 dark:border-pink-900/30 hover:border-pink-200 transition-all text-left shadow-sm hover:shadow-md"
+        >
+          <div className="bg-white dark:bg-gray-800 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mb-2 sm:mb-3 shadow-sm group-hover:scale-110 transition-transform">
+            <Shirt className="w-4 h-4 sm:w-5 sm:h-5 text-pink-500" />
+          </div>
+          <h3 className="text-sm sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-0.5 sm:mb-1">Fashion Stylist</h3>
+          <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-2">Upload your photo to find your perfect look.</p>
+        </button>
 
-      <button
-        onClick={() => handleModeSelect('repair')}
-        className="group relative p-4 bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-800/30 dark:to-gray-800/30 hover:from-slate-100 hover:to-gray-100 dark:hover:from-slate-800/50 dark:hover:to-gray-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all text-left shadow-sm hover:shadow-md"
-      >
-        <div className="bg-white dark:bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
-          <Wrench className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-        </div>
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">The Mechanic</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Upload a photo of the broken part or machine.</p>
-      </button>
+        <button
+          onClick={() => handleModeSelect('decor')}
+          className="group relative p-3 sm:p-4 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/10 dark:to-blue-900/10 hover:from-indigo-100 hover:to-blue-100 dark:hover:from-indigo-900/20 dark:hover:to-blue-900/20 rounded-xl sm:rounded-2xl border border-indigo-100 dark:border-indigo-900/30 hover:border-indigo-200 transition-all text-left shadow-sm hover:shadow-md"
+        >
+          <div className="bg-white dark:bg-gray-800 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mb-2 sm:mb-3 shadow-sm group-hover:scale-110 transition-transform">
+            <Home className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" />
+          </div>
+          <h3 className="text-sm sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-0.5 sm:mb-1">Interior Designer</h3>
+          <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-2">Upload a photo of your room or house.</p>
+        </button>
 
-      <button
-        onClick={() => handleModeSelect('gift')}
-        className="group relative p-4 bg-gradient-to-br from-purple-50 to-fuchsia-50 dark:from-purple-900/10 dark:to-fuchsia-900/10 hover:from-purple-100 hover:to-fuchsia-100 dark:hover:from-purple-900/20 dark:hover:to-fuchsia-900/20 rounded-2xl border border-purple-100 dark:border-purple-900/30 hover:border-purple-200 transition-all text-left shadow-sm hover:shadow-md"
-      >
-        <div className="bg-white dark:bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
-          <Sparkles className="w-5 h-5 text-purple-500" />
-        </div>
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Gift Scout</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Upload their social profile/pic to find a gift.</p>
-      </button>
+        <button
+          onClick={() => handleModeSelect('repair')}
+          className="group relative p-3 sm:p-4 bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-800/30 dark:to-gray-800/30 hover:from-slate-100 hover:to-gray-100 dark:hover:from-slate-800/50 dark:hover:to-gray-800/50 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all text-left shadow-sm hover:shadow-md"
+        >
+          <div className="bg-white dark:bg-gray-800 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mb-2 sm:mb-3 shadow-sm group-hover:scale-110 transition-transform">
+            <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600 dark:text-slate-400" />
+          </div>
+          <h3 className="text-sm sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-0.5 sm:mb-1">The Mechanic</h3>
+          <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-2">Upload a photo of the broken part or machine.</p>
+        </button>
+
+        <button
+          onClick={() => handleModeSelect('gift')}
+          className="group relative p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-fuchsia-50 dark:from-purple-900/10 dark:to-fuchsia-900/10 hover:from-purple-100 hover:to-fuchsia-100 dark:hover:from-purple-900/20 dark:hover:to-fuchsia-900/20 rounded-xl sm:rounded-2xl border border-purple-100 dark:border-purple-900/30 hover:border-purple-200 transition-all text-left shadow-sm hover:shadow-md"
+        >
+          <div className="bg-white dark:bg-gray-800 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mb-2 sm:mb-3 shadow-sm group-hover:scale-110 transition-transform">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
+          </div>
+          <h3 className="text-sm sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-0.5 sm:mb-1">Gift Scout</h3>
+          <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-2">Upload their social profile/pic to find a gift.</p>
+        </button>
+      </div>
     </div>
   );
 
@@ -270,7 +282,7 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
   const modalContent = (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 md:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -282,41 +294,41 @@ const ShopLensModal: React.FC<ShopLensModalProps> = ({ isOpen, onClose }) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-4xl h-[85vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10"
+            className="relative w-full max-w-4xl h-[95vh] sm:h-[90vh] md:h-[85vh] bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10"
           >
             {/* Header */}
-            <div className="px-8 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-gray-900">
-              <div className="flex items-center gap-4">
+            <div className="px-4 sm:px-8 py-3 sm:py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-gray-900">
+              <div className="flex items-center gap-2 sm:gap-4">
                 {mode && !result && (
                   <button
                     onClick={() => setMode(null)}
-                    className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
+                    className="p-1.5 sm:p-2 -ml-1 sm:-ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
                     aria-label="Back to modes"
                   >
-                    <ArrowLeft className="w-5 h-5" />
+                    <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 )}
 
                 <div className="flex items-center gap-2">
-                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl text-white">
-                    <Sparkles className="w-5 h-5" />
+                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg sm:rounded-xl text-white">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">ShopLens AI</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">VISUAL SHOPPING ASSISTANT</p>
+                    <h2 className="text-lg sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">ShopLens AI</h2>
+                    <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">VISUAL SHOPPING ASSISTANT</p>
                   </div>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
               >
-                <X className="w-6 h-6 text-gray-400" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="flex-1 p-8 overflow-hidden bg-white/50 dark:bg-gray-900/50 relative">
+            <div className="flex-1 p-3 sm:p-6 md:p-8 overflow-hidden bg-white/50 dark:bg-gray-900/50 relative">
               {/* Background Pattern */}
               <div className="absolute inset-0 bg-grid-slate-50 dark:bg-grid-slate-900/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.0))] pointer-events-none" />
 

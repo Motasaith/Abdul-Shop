@@ -174,26 +174,32 @@ const HaggleModal: React.FC<HaggleModalProps> = ({ isOpen, onClose, product }) =
                                     Add to Cart @ ${acceptedPrice}
                                 </motion.button>
                             ) : (
-                                <div className="flex gap-2">
-                                    <div className="relative flex-1">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">$</span>
-                                        <input
-                                            type="number"
-                                            value={offer}
-                                            onChange={(e) => setOffer(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleNegotiate()}
-                                            placeholder="Your offer..."
-                                            disabled={status === 'thinking'}
-                                            className="w-full pl-8 pr-4 py-3 bg-gray-100 dark:bg-gray-900 rounded-xl border-none focus:ring-2 focus:ring-emerald-500 font-medium"
-                                        />
+                                <div className="space-y-2">
+                                    <div className="flex gap-2">
+                                        <div className="relative flex-1">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">$</span>
+                                            <input
+                                                type="number"
+                                                value={offer}
+                                                onChange={(e) => setOffer(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleNegotiate()}
+                                                placeholder="Your offer..."
+                                                disabled={status === 'thinking'}
+                                                className="w-full pl-8 pr-4 py-3 bg-gray-100 dark:bg-gray-900 rounded-xl border-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={handleNegotiate}
+                                            disabled={status === 'thinking' || !offer}
+                                            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                        >
+                                            Offer
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={handleNegotiate}
-                                        disabled={status === 'thinking' || !offer}
-                                        className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                                    >
-                                        Offer
-                                    </button>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 text-center flex items-center justify-center gap-1">
+                                        <AlertCircle className="w-3 h-3" />
+                                        Enter a number only — just type your best price to negotiate!
+                                    </p>
                                 </div>
                             )}
                         </div>

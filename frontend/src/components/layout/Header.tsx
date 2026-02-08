@@ -3,18 +3,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { logout } from '../../store/slices/authSlice';
 import { fetchWishlist, selectWishlistItemCount } from '../../store/slices/wishlistSlice';
-import { 
-  ShoppingBag, 
-  User, 
-  Search, 
-  Menu, 
-  X, 
-  Heart, 
-  LogOut, 
-  Settings, 
-  LayoutDashboard, 
-  Package, 
-  MessageSquare, 
+import {
+  ShoppingBag,
+  User,
+  Search,
+  Menu,
+  X,
+  Heart,
+  LogOut,
+  Settings,
+  LayoutDashboard,
+  Package,
+  MessageSquare,
   Star,
   ChevronDown
 } from 'lucide-react';
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
   const { totalItems } = useAppSelector((state) => state.cart);
   const { publicSettings } = useAppSelector((state) => state.settings);
   const wishlistItemCount = useAppSelector(selectWishlistItemCount);
-  
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isShopLensOpen, setIsShopLensOpen] = useState(false);
@@ -98,12 +98,11 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header 
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50' 
+    <header
+      className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled
+          ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50'
           : 'bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800'
-      }`}
+        }`}
     >
       {/* Top bar - Consolidated & Sleek */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-1.5 relative z-[60]">
@@ -164,26 +163,26 @@ const Header: React.FC = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-1 sm:gap-2">
-            
+
             {/* ShopLens AI Trigger */}
             <button
               onClick={() => setIsShopLensOpen(true)}
-              className="hidden sm:flex relative p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all group mr-2"
+              className="flex relative p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all group mr-2"
               title="ShopLens AI Stylist"
             >
               <SparklesIcon className="h-5 w-5 fill-current" />
               <span className="hidden lg:block ml-2 text-xs font-bold">ShopLens AI</span>
             </button>
             {/* Wishlist */}
-            <Link 
-              to="/wishlist" 
+            <Link
+              to="/wishlist"
               className="flex relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:text-red-500 dark:hover:text-red-400 group"
               title={t('common.wishlist')}
             >
               <Heart className="h-5 w-5 transition-transform group-hover:scale-110" />
               <AnimatePresence>
                 {isAuthenticated && wishlistItemCount > 0 && (
-                  <motion.span 
+                  <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
@@ -196,8 +195,8 @@ const Header: React.FC = () => {
             </Link>
 
             {/* Cart */}
-            <Link 
-              to="/cart" 
+            <Link
+              to="/cart"
               className="relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:text-blue-600 dark:hover:text-blue-400 group"
               title={t('common.cart')}
             >
@@ -208,7 +207,7 @@ const Header: React.FC = () => {
               </motion.div>
               <AnimatePresence>
                 {totalItems > 0 && (
-                  <motion.span 
+                  <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
@@ -224,7 +223,7 @@ const Header: React.FC = () => {
             <div className="relative hidden md:block">
               {isAuthenticated ? (
                 <div className="relative">
-                  <button 
+                  <button
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                     className="flex items-center gap-2 p-1.5 pr-3 rounded-full border border-gray-200 dark:border-gray-700 hover:border-blue-500/50 hover:shadow-sm transition-all ml-2 group"
                   >
@@ -239,20 +238,20 @@ const Header: React.FC = () => {
 
                   <AnimatePresence>
                     {isProfileMenuOpen && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                         className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 py-2 z-50 overflow-hidden"
                       >
-                         <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
+                        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
                           <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Signed in as</p>
                           <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user?.email}</p>
                         </div>
-                        
+
                         <div className="p-2">
-                           {user?.role === 'admin' && (
+                          {user?.role === 'admin' && (
                             <Link to="/admin" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors mb-1">
                               <LayoutDashboard className="h-4 w-4" />
                               Admin Dashboard
@@ -264,7 +263,7 @@ const Header: React.FC = () => {
                               Vendor Dashboard
                             </Link>
                           )}
-                          
+
                           <Link to="/profile" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
                             <User className="h-4 w-4" />
                             {t('common.profile')}
@@ -273,7 +272,7 @@ const Header: React.FC = () => {
                             <Package className="h-4 w-4" />
                             {t('common.myOrders')}
                           </Link>
-                           <Link to="/wishlist" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
+                          <Link to="/wishlist" onClick={() => setIsProfileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors">
                             <Heart className="h-4 w-4" />
                             {t('common.wishlist')}
                           </Link>
@@ -372,6 +371,23 @@ const Header: React.FC = () => {
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               </form>
 
+              {/* ShopLens Mobile Button */}
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsShopLensOpen(true);
+                }}
+                className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-md active:scale-95 transition-all"
+              >
+                <div className="bg-white/20 p-2 rounded-lg">
+                  <SparklesIcon className="h-5 w-5" />
+                </div>
+                <div className="text-left">
+                  <p className="font-bold text-sm">ShopLens AI Stylist</p>
+                  <p className="text-[10px] opacity-90">Upload a photo to find products</p>
+                </div>
+              </button>
+
               {/* Mobile Profile Link */}
               {isAuthenticated ? (
                 <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3">
@@ -387,41 +403,41 @@ const Header: React.FC = () => {
                       <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
                     </div>
                   </div>
-                  
+
                   {/* Mobile Profile Links */}
                   <div className="grid grid-cols-1 gap-1 pl-2">
-                     {user?.role === 'admin' && (
-                        <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-blue-600 dark:text-blue-400">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Admin Dashboard
-                        </Link>
-                      )}
-                      {user?.role === 'vendor' && (
-                        <Link to="/vendor/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-purple-600 dark:text-purple-400">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Vendor Dashboard
-                        </Link>
-                      )}
-                      <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
-                        <User className="h-4 w-4" />
-                        {t('common.profile')}
+                    {user?.role === 'admin' && (
+                      <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-blue-600 dark:text-blue-400">
+                        <LayoutDashboard className="h-4 w-4" />
+                        Admin Dashboard
                       </Link>
-                      <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
-                        <Package className="h-4 w-4" />
-                        {t('common.myOrders')}
+                    )}
+                    {user?.role === 'vendor' && (
+                      <Link to="/vendor/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-purple-600 dark:text-purple-400">
+                        <LayoutDashboard className="h-4 w-4" />
+                        Vendor Dashboard
                       </Link>
-                      <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
-                        <Heart className="h-4 w-4" />
-                        {t('common.wishlist')}
-                      </Link>
-                      <Link to="/profile/tickets" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
-                        <MessageSquare className="h-4 w-4" />
-                        {t('support.myTickets')}
-                      </Link>
-                      <Link to="/reviews" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
-                        <Star className="h-4 w-4" />
-                        {t('common.myReviews')}
-                      </Link>
+                    )}
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                      <User className="h-4 w-4" />
+                      {t('common.profile')}
+                    </Link>
+                    <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                      <Package className="h-4 w-4" />
+                      {t('common.myOrders')}
+                    </Link>
+                    <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                      <Heart className="h-4 w-4" />
+                      {t('common.wishlist')}
+                    </Link>
+                    <Link to="/profile/tickets" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                      <MessageSquare className="h-4 w-4" />
+                      {t('support.myTickets')}
+                    </Link>
+                    <Link to="/reviews" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-300">
+                      <Star className="h-4 w-4" />
+                      {t('common.myReviews')}
+                    </Link>
                   </div>
                 </div>
               ) : (
@@ -467,7 +483,7 @@ const Header: React.FC = () => {
                   {t('common.trackOrder')}
                 </Link>
                 {isAuthenticated && (
-                  <button 
+                  <button
                     onClick={handleLogout}
                     className="w-full text-left px-2 py-2 text-red-600 font-medium text-sm"
                   >
